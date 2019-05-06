@@ -6,6 +6,13 @@ module.exports = ({ config }) => {
       presets: [["react-app", { flow: false, typescript: true }]]
     }
   })
+  config.externals = {
+    jsdom: "window",
+    cheerio: "window",
+    "react/lib/ExecutionEnvironment": true,
+    "react/lib/ReactContext": "window",
+    "react/addons": true
+  }
   config.resolve.extensions.push(".ts", ".tsx")
   return config
 }
