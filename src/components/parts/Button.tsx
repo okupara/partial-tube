@@ -12,6 +12,15 @@ const StyledButton = styled(Button)({
   padding: "0 30px"
 })
 
-const MyButton = () => <StyledButton>Hello</StyledButton>
+export const SpecialButton = () => <StyledButton>Hello</StyledButton>
 
-export default MyButton
+const WhiteTextButton = styled(Button)({
+  color: "#FFF"
+})
+
+interface NormalButtonProps {
+  children: string
+}
+export const NormalButton = ({ children }: NormalButtonProps) => (
+  <WhiteTextButton>{children}</WhiteTextButton>
+)

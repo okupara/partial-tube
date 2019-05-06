@@ -19,6 +19,6 @@
     "baseUrl": ".",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "stories/**/*"],
   "exclude": ["node_modules", "config", "dist", "webpack", "jest"]
 }
