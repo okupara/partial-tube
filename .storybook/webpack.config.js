@@ -13,6 +13,7 @@ module.exports = ({ config }) => {
     "react/lib/ReactContext": "window",
     "react/addons": true
   }
+  config.node = { fs: "empty" }
   config.resolve.extensions.push(".ts", ".tsx")
   return config
 }

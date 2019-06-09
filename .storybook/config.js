@@ -5,9 +5,11 @@ import { configure } from "@storybook/react"
 // import Adapter from "enzyme-adapter-react-16"
 
 // configureEnzyme({ adapter: new Adapter() })
-
 // with RTL
-// import "jest-dom/extend-expect"
+// import expect from "expect"
+// console.log(expect)
+// window.expect = expect
+// require("jest-dom/extend-expect")
 // import "react-testing-library/cleanup-after-each"
 
 // automatically import all files ending in *.stories.js
