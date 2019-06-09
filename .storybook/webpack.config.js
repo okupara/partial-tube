@@ -15,5 +15,8 @@ module.exports = ({ config }) => {
   }
   config.node = { fs: "empty" }
   config.resolve.extensions.push(".ts", ".tsx")
+  //
+  console.log("DEBUG", config.resolve.alias)
+  delete config.resolve.alias["core-js"]
   return config
 }
