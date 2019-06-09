@@ -3,7 +3,7 @@ import AppBar from "@material-ui/core/AppBar"
 import { styled } from "@material-ui/styles"
 import Typography from "@material-ui/core/Typography"
 import Toolbar from "@material-ui/core/Toolbar"
-import { NormalButton } from "./Button"
+import WhiteTextButton from "./WhiteTextButton"
 import { Authentication, isAuthenticated } from "../../domain"
 import Condition from "../containers/Condition"
 import Avatar from "@material-ui/core/Avatar"
@@ -32,7 +32,7 @@ const Header = (props: Props) => {
         <Condition
           cond={isAuthenticated(props.authentication)}
           valid={<StyledAvatar>N</StyledAvatar>}
-          invalid={<NormalButton>Login</NormalButton>}
+          invalid={<WhiteTextButton>Login</WhiteTextButton>}
         />
       </Toolbar>
     </StyledAppBar>

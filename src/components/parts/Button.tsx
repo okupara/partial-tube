@@ -13,14 +13,3 @@ const StyledButton = styled(Button)({
 })
 
 export const SpecialButton = () => <StyledButton>Hello</StyledButton>
-
-const WhiteTextButton = styled(Button)({
-  color: "#FFF"
-})
-
-interface NormalButtonProps {
-  children: string
-}
-export const NormalButton = ({ children }: NormalButtonProps) => (
-  <WhiteTextButton>{children}</WhiteTextButton>
-)
