@@ -13,3 +13,7 @@ const StyledButton = styled(Button)({
 })
 
 export const SpecialButton = () => <StyledButton>Hello</StyledButton>
+
+export const WhiteTextButton = styled(Button)({
+  color: "white"
+})
