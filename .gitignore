@@ -1,5 +1,7 @@
 node_modules/
 dist/
 .node-version
+.firebaserc
 .DS_Store
 npm-debug.log
+lerna-debug.log

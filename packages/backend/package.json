@@ -1,0 +1,42 @@
+{
+  "name": "@partial-tube/backend",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "okupara <okuharakensuke@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "directories": {
+    "dist": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write './**/*.{js,ts,json}'",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "devDependencies": {
+    "@types/node": "^12.6.2",
+    "firebase-functions-test": "^0.1.6",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@partial-tube/domain": "file:./partial-tube-domain-0.0.0.tgz",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.2.0",
+    "firebase-functions": "3.0.2"
+  }
+}

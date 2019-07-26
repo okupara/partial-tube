@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "public": "./packages/frontend/hosting",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": {
+    "source": "./packages/backend"
+  }
+}
