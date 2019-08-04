@@ -5,3 +5,7 @@ dist/
 .DS_Store
 npm-debug.log
 lerna-debug.log
+.env
+credential.json
+firebase-debug.log
+firebase.dev.config.json

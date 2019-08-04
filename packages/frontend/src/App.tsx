@@ -1,5 +1,13 @@
-import * as React from "react"
-import Header from "components/organisms/Header"
-import {unAuthedMock} from "@partial-tube/domain/lib/Mock"
+import React from 'react'
+import CSSBaseline from '@material-ui/core/CssBaseline'
+import { Provider as AuthContextProvider } from 'context/Auth'
+import PlaylistCollection from 'containers/PlaylistCollection'
 
-export default () => <Header auth={unAuthedMock}/>
+export default () => (
+  <AuthContextProvider>
+    <>
+      <CSSBaseline />
+      <PlaylistCollection />
+    </>
+  </AuthContextProvider>
+)

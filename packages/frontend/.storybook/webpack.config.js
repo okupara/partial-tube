@@ -1,5 +1,5 @@
 const path = require('path')
-const baseConfig = require("../webpack.config.base")
+const baseConfig = require('../webpack.config.base')
 
 module.exports = ({ config }) => {
   config.module.rules.push({
@@ -21,8 +21,6 @@ module.exports = ({ config }) => {
 
   config.resolve.alias = baseConfig.resolve.alias
 
-  //
-  console.log('DEBUG', config.resolve.alias)
   delete config.resolve.alias['core-js']
   return config
 }

@@ -1,9 +1,12 @@
-export interface User {
+export interface Record {
   name: string
-  avatarUrl: string
+  avatarUrl: string | null
 }
 
-export const createUser = (name: string, avatarUrl: string): User => ({
-  name,
-  avatarUrl
-})
+export const createUser = (n: string | null, u: string | null): Record => {
+  const name = n ? n : 'anonymous'
+  return {
+    name,
+    avatarUrl: u
+  }
+}

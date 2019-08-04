@@ -27,7 +27,11 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      "components": path.resolve("./src/components")
+      components: path.resolve('./src/components'),
+      containers: path.resolve('./src/containers'),
+      context: path.resolve('./src/context'),
+      hooks: path.resolve('./src/hooks'),
+      apollo: path.resolve('./src/apollo')
     }
   }
 }

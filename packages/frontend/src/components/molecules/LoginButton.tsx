@@ -1,4 +1,12 @@
 import * as React from 'react'
 import { WhiteTextButton } from '../atoms/Buttons'
 
-export default () => <WhiteTextButton>Login</WhiteTextButton>
+interface Props {
+  onClick?: () => void
+}
+
+export default (props: Props) => (
+  <WhiteTextButton onClick={() => props.onClick && props.onClick()}>
+    Login
+  </WhiteTextButton>
+)
