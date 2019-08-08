@@ -48,7 +48,7 @@ export const Provider = (props: Props) => {
     if (Auth.isStateInit(state)) {
       dispatch(Auth.getToken(getTokenLS))
     }
-    if (Auth.isStateGotToken) {
+    if (Auth.isStateGotToken(state)) {
       client
         .query(query)
         .then(a => dispatch(Auth.receiveQuery(a)))
