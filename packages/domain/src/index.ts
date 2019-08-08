@@ -1,5 +1,5 @@
 import * as Auth from './Auth'
-import * as State from './State'
 import * as User from './User'
+import * as Token from './Token'
 
-export { Auth, State, User }
+export { Auth, User, Token }

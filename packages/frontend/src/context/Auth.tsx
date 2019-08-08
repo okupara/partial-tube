@@ -1,15 +1,18 @@
-import React, { createContext, useState, useEffect, useContext } from 'react'
-import { right, isRight, Either, fold } from 'fp-ts/lib/Either'
-import { pipe } from 'fp-ts/lib/pipeable'
-import { task, chain } from 'fp-ts/lib/Task'
-import * as State from '@partial-tube/domain/lib/State'
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback
+} from 'react'
+import { useApolloClient } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import * as Auth from '@partial-tube/domain/lib/Auth'
-import * as User from '@partial-tube/domain/lib/User'
+import * as Token from '@partial-tube/domain/lib/Token'
 
-type StateType = State.Type<Auth.Error, User.Record>
-type CompleteDispatcher = (user: User.Record, token: string) => void
+type CompleteDispatcher = (user: unknown, token: unknown) => void
 
-const Context = createContext<StateType>(State.init())
+const Context = createContext<Auth.State>(Auth.Init.createState())
 const DispatchContext = createContext<CompleteDispatcher>(() => {})
 
 interface Props {
@@ -17,54 +20,44 @@ interface Props {
 }
 
 const getTokenLS = () => localStorage.getItem('token')
-const setTokenLS = (token: Auth.Token) =>
+const setTokenLS = (token: Token.Record) =>
   localStorage.setItem('token', token.value)
 
-const dummyAPI = (a: Either<Auth.InvalidTokenError, Auth.Token>) => (): Promise<
-  Auth.Result
-> =>
-  isRight(a)
-    ? Promise.resolve(right({ name: 'hoge', avatarUrl: 'huga' }))
-    : Promise.resolve(a)
+const query = gql`
+  query verify: User {
+    name,
+    avatarUrl
+  }
+`
+const _loginDoneDidpatch = (setState: (s: Auth.State) => void) => (
+  t: unknown,
+  u: unknown
+) => setState(Auth.updateLoggedIn(setTokenLS, t, u))
 
-const update = (setState: (state: Auth.State) => void, result: Auth.Result) => {
-  isRight(result)
-    ? setState(State.complete(result.right))
-    : setState(State.fail(result.left))
-}
-
-const _updateAuthState = (setState: (s: Auth.State) => void) => (
-  user: User.Record,
-  tokenStr: string
-) => {
-  const res = Auth.createToken(tokenStr)
-  fold<Auth.Error, Auth.Token, void>(
-    e => setState(State.fail(e)),
-    r => {
-      setTokenLS(r)
-      setState(State.complete(user))
-    }
-  )(res)
-}
+const _dispatch = (setState: (state: Auth.State) => void) => (
+  state: Auth.State
+) => setState(state)
 
 export const Provider = (props: Props) => {
-  const [state, setState] = useState<StateType>(State.init())
-  // useCallback???
-  const updateAuthState = _updateAuthState(setState)
+  const [state, setState] = useState<Auth.State>(Auth.Init.createState())
+  const dispatch = useCallback(_dispatch(setState), [])
+  const client = useApolloClient()
+  const loginDispatch = _loginDoneDidpatch(setState)
+
   useEffect(() => {
-    if (State.notFinished(state)) {
-      // the main sequence
-      pipe(
-        task.of(Auth.retrieveToken(getTokenLS)),
-        chain((a: any) => dummyAPI(a))
-      )().then(result => {
-        update(setState, result)
-      })
+    if (Auth.isStateInit(state)) {
+      dispatch(Auth.getToken(getTokenLS))
+    }
+    if (Auth.isStateGotToken) {
+      client
+        .query(query)
+        .then(a => dispatch(Auth.receiveQuery(a)))
+        .catch(e => dispatch(Auth.updateNetWorkError()))
     }
   }, [state])
   return (
     <Context.Provider value={state}>
-      <DispatchContext.Provider value={updateAuthState}>
+      <DispatchContext.Provider value={loginDispatch}>
         {props.children}
       </DispatchContext.Provider>
     </Context.Provider>

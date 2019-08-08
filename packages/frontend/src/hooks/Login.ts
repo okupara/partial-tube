@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 import { useAuthDispatcher } from 'context/Auth'
-import { createUser } from '@partial-tube/domain/lib/User'
 
 //TODO: should move to useLogin.ts??
 const provider = new firebase.auth.GoogleAuthProvider()
@@ -24,8 +23,12 @@ export const useLogin = () => {
         const user = firebase.auth().currentUser
         if (user) {
           user.getIdToken(true).then(idToken => {
-            const userRecord = createUser(user.displayName, user.photoURL)
-            dispatcher(userRecord, idToken)
+            // directly updates the state to the "logged-in"
+            // because we're sure that this user is valid at this block.
+            dispatcher(
+              { name: user.displayName, avatarUrl: user.photoURL },
+              idToken
+            )
           })
         }
       })

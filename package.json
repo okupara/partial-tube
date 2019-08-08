@@ -6,6 +6,7 @@
     "storybook": "lerna exec --scope @partial-tube/frontend -- npm run storybook",
     "build:backend:dev": "",
     "build:backend:pro": "",
+    "build:domain": "lerna exec --scope=@partial-tube/domain -- npm run build",
     "dev:frontend": "lerna exec --scope @partial-tube/frontend -- npm run dev",
     "dev:backend": "MODE=develop firebase serve",
     "deploy": "firebase deploy"

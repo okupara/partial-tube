@@ -22,16 +22,19 @@ const StyledAvatar = styled(Avatar)({
 
 interface CasesProps {
   authState: Auth.State
-  whenVerifying: () => JSX.Element
-  whenRejected: (e: Auth.Error) => JSX.Element
-  whenAuthed: (u: User.Record) => JSX.Element
+  default: () => JSX.Element
+  error: () => JSX.Element
+  authed: (u: User.Record) => JSX.Element
 }
-const Cases = (props: CasesProps) =>
-  Auth.processAuthState(props.authState, {
-    Verifying: props.whenVerifying,
-    Rejected: props.whenRejected,
-    Authed: props.whenAuthed
-  })
+const Cases = (props: CasesProps) => {
+  if (Auth.isError(props.authState)) {
+    return props.error()
+  }
+  if (Auth.done(props.authState)) {
+    return props.authed(props.authState.right.record)
+  }
+  return props.default()
+}
 
 interface Props {
   authState: Auth.State
@@ -45,9 +48,9 @@ const Header = (props: Props) => {
         <AppTitle>Partial Tube</AppTitle>
         <Cases
           authState={props.authState}
-          whenVerifying={() => <div />}
-          whenRejected={() => <LoginButton onClick={props.onClickLogin} />}
-          whenAuthed={() => <StyledAvatar>N</StyledAvatar>}
+          default={() => <div />}
+          error={() => <LoginButton onClick={props.onClickLogin} />}
+          authed={() => <StyledAvatar>N</StyledAvatar>}
         />
       </Toolbar>
     </StyledAppBar>
