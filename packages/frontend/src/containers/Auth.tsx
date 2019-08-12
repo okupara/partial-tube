@@ -92,12 +92,14 @@ const userLogin = (): Promise<AuthModel.takeLoggedInCommand> =>
         if (!user) {
           return rej()
         }
+        console.log("user:", user)
         user
           .getIdToken(true)
           .then(idToken =>
             res({
               token: idToken,
               user: {
+                userId: user.uid,
                 name: user.displayName,
                 avatarUrl: user.photoURL
               }

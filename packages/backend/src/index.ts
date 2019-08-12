@@ -26,6 +26,7 @@ const typeDefs = gql`
     verify: User
   }
   type User {
+    userId: String
     name: String
     avatarUrl: String
   }
@@ -46,14 +47,11 @@ const apolloServer = new ApolloServer({
   resolvers: {
     Query: {
       // basically, doesnt check authentication in this block, it's supposed to be finished before comes here.
-      verify: (parent, args, context, info) => (
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ', context),
-        {
-          userId: context.user_id,
-          name: context.name,
-          avatarUrl: context.picture
-        }
-      )
+      verify: (parent, args, context, info) => ({
+        userId: context.user_id,
+        name: context.name,
+        avatarUrl: context.picture
+      })
     }
   },
   context: async ({ req }: ReqContext) => {
@@ -61,6 +59,7 @@ const apolloServer = new ApolloServer({
     if (authInfo === null) {
       throw new InvalidTokenError()
     }
+    console.log('authInfo:', authInfo)
     return authInfo
   },
   plugins: [
