@@ -4,29 +4,35 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import * as User from './User'
 import * as Token from './Token'
 
-export const enum ErrorTags {
+enum StateTags {
+  MisMatchError = 'MissMatchError',
+  NetworkError = 'NetworkError',
+  RejectedError = 'RejectedError',
   InvalidTokenError = 'InvalidTokenError'
 }
 
-enum StateTags {
-  Init = 'Init',
-  GotToken = 'GotToken',
-  Done = 'Done',
-  NoStoredTokenError = 'NoStoredTokenError',
-  MisMatchError = 'MissMatchError',
-  NetworkError = 'NetworkError',
-  RejectedError = 'RejectedError'
-}
-
-export namespace Init {
+namespace Init {
+  export const tag = 'Init'
   export interface Type {
-    tag: StateTags.Init
+    tag: typeof tag
   }
   export const createState = (): State =>
     E.right({
-      tag: StateTags.Init
+      tag
     })
-  export const next = (anything: unknown): State =>
+}
+
+namespace GotToken {
+  export const tag = 'GotToken'
+  export interface Type {
+    tag: typeof tag
+    token: Token.Record
+  }
+  export const create = (token: Token.Record): Type => ({
+    tag,
+    token
+  })
+  export const takeToken = (anything: unknown): State =>
     pipe(
       Token.create(anything),
       E.fold<io.Errors, Token.Record, State>(
@@ -36,16 +42,17 @@ export namespace Init {
     )
 }
 
-export namespace GotToken {
+namespace Done {
+  export const tag = 'Done'
   export interface Type {
-    tag: StateTags.GotToken
-    token: Token.Record
+    tag: typeof tag
+    record: User.Record
   }
-  export const create = (token: Token.Record): Type => ({
-    tag: StateTags.GotToken,
-    token
+  export const create = (record: User.Record): Type => ({
+    tag,
+    record
   })
-  export const next = (anything: unknown): State =>
+  export const takeResult = (anything: unknown): State =>
     pipe(
       User.create(anything),
       E.fold<io.Errors, User.Record, State>(
@@ -55,27 +62,17 @@ export namespace GotToken {
     )
 }
 
-export namespace Done {
+namespace NoStoredTokenError {
+  export const tag = 'NoStoredTokenError'
   export interface Type {
-    tag: StateTags.Done
-    record: User.Record
-  }
-  export const create = (record: User.Record): Type => ({
-    tag: StateTags.Done,
-    record
-  })
-}
-
-export namespace NoStoredTokenError {
-  export interface Type {
-    tag: StateTags.NoStoredTokenError
+    tag: typeof tag
   }
   export const create = (): Type => ({
-    tag: StateTags.NoStoredTokenError
+    tag
   })
 }
 
-export namespace MismatchError {
+namespace MismatchError {
   export interface Type {
     tag: StateTags.MisMatchError
   }
@@ -84,7 +81,7 @@ export namespace MismatchError {
   })
 }
 
-export namespace NetworkError {
+namespace NetworkError {
   export interface Type {
     tag: StateTags.NetworkError
   }
@@ -94,7 +91,17 @@ export namespace NetworkError {
   export const createState = (): State => E.left(create())
 }
 
-export namespace RejectedError {
+export namespace InvalidTokenError {
+  export const tag = 'InvalidTokenError'
+  export interface Type {
+    tag: typeof tag
+  }
+  export const create = (): Type => ({
+    tag
+  })
+}
+
+namespace RejectedError {
   export interface Type {
     tag: StateTags.RejectedError
   }
@@ -105,45 +112,52 @@ export namespace RejectedError {
 }
 
 type RightState = Init.Type | GotToken.Type | Done.Type
-type AuthError =
+export type ErrorTypes =
   | MismatchError.Type
   | NetworkError.Type
   | NoStoredTokenError.Type
   | RejectedError.Type
-type LeftState = AuthError
+type LeftState = ErrorTypes
 export type State = E.Either<LeftState, RightState>
-export type StateExperiment = RightState | LeftState
 
 export const isStateInit = (s: State): s is E.Right<Init.Type> =>
-  E.isRight(s) && s.right.tag === StateTags.Init
+  E.isRight(s) && s.right.tag === Init.tag
 export const isStateGotToken = (s: State): s is E.Right<Init.Type> =>
-  E.isRight(s) && s.right.tag === StateTags.GotToken
-export const done = (s: State): s is E.Right<Done.Type> =>
-  E.isRight(s) && s.right.tag === StateTags.Done
-export const isError = (s: State): s is E.Left<LeftState> => E.isLeft(s)
+  E.isRight(s) && s.right.tag === GotToken.tag
+export const isStateDone = (s: State): s is E.Right<Done.Type> =>
+  E.isRight(s) && s.right.tag === Done.tag
+export const isErrorState = (s: State): s is E.Left<LeftState> => E.isLeft(s)
+
+export const isNetworkError = (e: ErrorTypes): e is NetworkError.Type =>
+  e.tag === StateTags.NetworkError
 
 // const IsStateLeft = (s: State): s is E.Left<LeftState> => E.isLeft(s)
 
 // assume the function returns unkown because domain doesn't have to know what it is.
-export const getToken = (getTokenFn: () => unknown) => {
-  const r = getTokenFn()
-  return Init.next(r)
-}
+export const takeToken = (token: unknown) => GotToken.takeToken(token)
 
-export const receiveQuery = (queryResult: unknown) => GotToken.next(queryResult)
+export const init = Init.createState
 
-export const updateNetWorkError = () => NetworkError.createState()
+export const takeQueryResult = (state: State, queryResult: unknown) =>
+  E.isLeft(state) ? state : Done.takeResult(queryResult)
 
-export const updateLoggedIn = (
-  saveStorage: (token: Token.Record) => void,
-  tokenStr: unknown,
+export const beNetWorkError = () => NetworkError.createState()
+export const beRejectedError = () => RejectedError.createState()
+
+// it means unvalidated parameters which the function below validates
+export interface takeLoggedInCommand {
+  token: unknown
   user: unknown
+}
+export const takeLoggedIn = (
+  saveStorage: (token: Token.Record) => void,
+  command: takeLoggedInCommand
 ) => {
   return pipe(
-    Token.create(tokenStr),
+    Token.create(command.token),
     E.fold<io.Errors, Token.Record, State>(RejectedError.createState, a => {
       saveStorage(a)
-      return GotToken.next(user)
+      return Done.takeResult(command.user)
     })
   )
 }

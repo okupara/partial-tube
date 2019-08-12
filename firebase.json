@@ -1,6 +1,10 @@
 {
   "hosting": {
     "public": "./packages/frontend/hosting",
+    "rewrites": [{
+      "source": "/graphql",
+      "function": "graphql"
+    }],
     "ignore": [
       "firebase.json",
       "**/.*",

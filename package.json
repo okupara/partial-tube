@@ -7,12 +7,17 @@
     "build:backend:dev": "",
     "build:backend:pro": "",
     "build:domain": "lerna exec --scope=@partial-tube/domain -- npm run build",
+    "buidl:backend": "lerna exec --scope=@partial-tube/backend -- npm run build",
+    "check:frontend": "lerna exec --scope=@partial-tube/frontend -- npm run check",
     "dev:frontend": "lerna exec --scope @partial-tube/frontend -- npm run dev",
     "dev:backend": "MODE=develop firebase serve",
     "deploy": "firebase deploy"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.17",
+    "jest": "^24.8.0",
     "lerna": "^3.15.0",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2"
   }
 }

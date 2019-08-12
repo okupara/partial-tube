@@ -11,4 +11,6 @@ const validator: t.Type<Record> = t.type({
 // MEMO: supposed to be used like below,
 // import * as User from "..."
 // User.create(something)
-export const create = (anything: unknown) => validator.decode(anything)
+export const create = (anything: unknown) => (
+  console.log(anything), validator.decode(anything)
+)

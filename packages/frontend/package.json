@@ -19,6 +19,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1",
     "storybook": "start-storybook -p 6006",
     "dev": "npm run format && npm run gen-html:dev && webpack-dev-server --open --config webpack.config.dev.js",
+    "check": "npm run format && npm run tsc",
     "format": "prettier --write './**/*.{js,ts,tsx,json,html}'",
     "gen-html:dev": "NODE_ENV=development generate-html -s src/index.html -o hosting/index.html",
     "tsc": "tsc --noEmit"

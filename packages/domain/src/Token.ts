@@ -6,8 +6,10 @@ export interface Record {
   value: string
 }
 
-export const create = (anything: unknown) =>
-  pipe(
+export const create = (anything: unknown) => {
+  const result = pipe(
     io.string.decode(anything),
     map<string, Record>(t => ({ value: t }))
   )
+  return result
+}

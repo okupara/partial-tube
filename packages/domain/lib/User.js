@@ -8,5 +8,5 @@ var validator = t.type({
 // MEMO: supposed to be used like below,
 // import * as User from "..."
 // User.create(something)
-exports.create = function (anything) { return validator.decode(anything); };
+exports.create = function (anything) { return (console.log(anything), validator.decode(anything)); };
 //# sourceMappingURL=User.js.map
