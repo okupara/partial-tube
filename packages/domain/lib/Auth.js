@@ -68,6 +68,7 @@ var InvalidTokenError;
     InvalidTokenError.create = function () { return ({
         tag: InvalidTokenError.tag
     }); };
+    InvalidTokenError.createState = function () { return E.left(InvalidTokenError.create()); };
 })(InvalidTokenError = exports.InvalidTokenError || (exports.InvalidTokenError = {}));
 var RejectedError;
 (function (RejectedError) {
@@ -94,10 +95,10 @@ exports.isNetworkError = function (e) {
 // assume the function returns unkown because domain doesn't have to know what it is.
 exports.takeToken = function (token) { return GotToken.takeToken(token); };
 exports.init = Init.createState;
-exports.takeQueryResult = function (state, queryResult) {
-    return E.isLeft(state) ? state : Done.takeResult(queryResult);
-};
-exports.beNetWorkError = function () { return NetworkError.createState(); };
+exports.takeQueryResult = function (state, queryResult) { return (console.log('YOU GOT A:', state, queryResult),
+    E.isLeft(state) ? state : Done.takeResult(queryResult)); };
+exports.beNetworkError = function () { return NetworkError.createState(); };
+exports.beInvalidTokenError = function () { return InvalidTokenError.createState(); };
 exports.beRejectedError = function () { return RejectedError.createState(); };
 exports.takeLoggedIn = function (saveStorage, command) {
     return pipeable_1.pipe(Token.create(command.token), E.fold(RejectedError.createState, function (a) {

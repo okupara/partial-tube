@@ -3,8 +3,9 @@ import gql from 'graphql-tag'
 import { useApolloClient } from '@apollo/react-hooks'
 import * as AuthModel from '@partial-tube/domain/lib/Auth'
 import * as User from '@partial-tube/domain/lib/User'
-import * as Token from '@partial-tube/domain/lib/Token'
+import * as Ls from 'utils/LocalStorage'
 import firebase from 'firebase'
+import { ErrorCommand, isFirst } from 'apollo/ErrorHelper'
 
 const provider = new firebase.auth.GoogleAuthProvider()
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
@@ -18,14 +19,15 @@ if (process.env.FIREBASE_CONFIG) {
 const query = gql`
   {
     verify {
+      userId
       name
       avatarUrl
     }
   }
 `
-const getTokenLS = () => localStorage.getItem('token')
-const setTokenLS = (token: Token.Record) =>
-  localStorage.setItem('token', token.value)
+type ResponseData = {
+  verify: User.Record
+}
 
 type NotSiginInProps = {
   error: AuthModel.ErrorTypes
@@ -38,27 +40,37 @@ type Props = {
   default: () => JSX.Element
 }
 
+const identifyError = (error: ErrorCommand): AuthModel.State => {
+  if (isFirst(error, AuthModel.InvalidTokenError.tag)) {
+    console.log('CLEAR TOKEN!!!!')
+    Ls.clearToken()
+    return AuthModel.beInvalidTokenError()
+  }
+  return AuthModel.beNetworkError()
+}
+
 const Auth = (props: Props) => {
   const [state, setState] = useState(AuthModel.init())
   const client = useApolloClient()
 
   useEffect(() => {
-    console.log(state)
     if (AuthModel.isStateInit(state)) {
-      setState(AuthModel.takeToken(getTokenLS()))
+      setState(AuthModel.takeToken(Ls.getToken()))
     }
     if (AuthModel.isStateGotToken(state)) {
       client
-        .query({ query })
-        .then(result => setState(AuthModel.takeQueryResult(state, result.data)))
-        .catch(() => setState(AuthModel.beNetWorkError()))
+        .query<ResponseData>({ query })
+        .then(result =>
+          setState(AuthModel.takeQueryResult(state, result.data.verify))
+        )
+        .catch(error => setState(identifyError(error)))
     }
   }, [state])
 
   if (AuthModel.isErrorState(state)) {
     const signIn = () =>
       userLogin()
-        .then(res => setState(AuthModel.takeLoggedIn(setTokenLS, res)))
+        .then(res => setState(AuthModel.takeLoggedIn(Ls.setToken, res)))
         .catch(() => setState(AuthModel.beRejectedError()))
 
     return props.notSignedIn({ error: state.left, signIn })

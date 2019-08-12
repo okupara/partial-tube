@@ -31,7 +31,8 @@ module.exports = {
       containers: path.resolve('./src/containers'),
       context: path.resolve('./src/context'),
       hooks: path.resolve('./src/hooks'),
-      apollo: path.resolve('./src/apollo')
+      apollo: path.resolve('./src/apollo'),
+      utils: path.resolve('./src/utils')
     }
   }
 }

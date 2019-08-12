@@ -5,10 +5,13 @@ import { ApolloProvider } from '@apollo/react-hooks'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloClient } from 'apollo-client'
+import { from } from 'apollo-link'
 import Auth from 'containers/Auth'
 import * as Header from 'components/organisms/Headers'
 import Errors from 'containers/Errors'
 import DefaultError from './DefaultError'
+import AuthHeader from 'apollo/Verification'
+import HandleError from 'apollo/Errors'
 
 const inMemoryCache = new InMemoryCache()
 const httpLink = createHttpLink({
@@ -16,7 +19,7 @@ const httpLink = createHttpLink({
 })
 
 const client = new ApolloClient({
-  link: httpLink,
+  link: from([HandleError, AuthHeader, httpLink]),
   cache: inMemoryCache
 })
 

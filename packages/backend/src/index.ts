@@ -31,32 +31,47 @@ const typeDefs = gql`
   }
 `
 
-const veriyfyToken = (token: string | undefined) => {
+const verifyToken = (token: string | undefined) => {
   if (!token) {
     throw new InvalidTokenError()
   }
   return admin
     .auth()
-    .verifyIdToken(token)
-    .catch(e => (console.log('EXPECTED??'), new InvalidTokenError()))
+    .verifyIdToken(token.replace('Bearer ', '').trim())
+    .catch(_ => null)
 }
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers: {
     Query: {
-      verify: (a, b, c, d) => (
-        console.log(a, b, c, d),
+      // basically, doesnt check authentication in this block, it's supposed to be finished before comes here.
+      verify: (parent, args, context, info) => (
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ', context),
         {
-          name: 'oooooooooo',
-          avatarUrl: 'jkjkjkfjkdjfkdjfdjfk'
+          userId: context.user_id,
+          name: context.name,
+          avatarUrl: context.picture
         }
       )
     }
   },
   context: async ({ req }: ReqContext) => {
-    // await veriyfyToken(req.headers.authorization)
+    const authInfo = await verifyToken(req.headers.authorization)
+    if (authInfo === null) {
+      throw new InvalidTokenError()
+    }
+    return authInfo
   },
+  plugins: [
+    {
+      requestDidStart() {
+        return {
+          didEncounterErrors({ response, errors }) {}
+        }
+      }
+    }
+  ],
   playground: true,
   introspection: true
 })

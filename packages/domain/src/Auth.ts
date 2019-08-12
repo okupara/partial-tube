@@ -99,6 +99,7 @@ export namespace InvalidTokenError {
   export const create = (): Type => ({
     tag
   })
+  export const createState = (): State => E.left(create())
 }
 
 namespace RejectedError {
@@ -117,6 +118,7 @@ export type ErrorTypes =
   | NetworkError.Type
   | NoStoredTokenError.Type
   | RejectedError.Type
+  | InvalidTokenError.Type
 type LeftState = ErrorTypes
 export type State = E.Either<LeftState, RightState>
 
@@ -138,10 +140,13 @@ export const takeToken = (token: unknown) => GotToken.takeToken(token)
 
 export const init = Init.createState
 
-export const takeQueryResult = (state: State, queryResult: unknown) =>
+export const takeQueryResult = (state: State, queryResult: unknown) => (
+  console.log('YOU GOT A:', state, queryResult),
   E.isLeft(state) ? state : Done.takeResult(queryResult)
+)
 
-export const beNetWorkError = () => NetworkError.createState()
+export const beNetworkError = () => NetworkError.createState()
+export const beInvalidTokenError = () => InvalidTokenError.createState()
 export const beRejectedError = () => RejectedError.createState()
 
 // it means unvalidated parameters which the function below validates
