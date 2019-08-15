@@ -19,6 +19,7 @@ class FilledString extends t.Type<string> {
   }
 }
 const filledString: FilledString = new FilledString()
+FilledString
 
 export const create = (anything: unknown) => {
   const result = pipe(

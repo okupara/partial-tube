@@ -92,7 +92,6 @@ const userLogin = (): Promise<AuthModel.takeLoggedInCommand> =>
         if (!user) {
           return rej()
         }
-        console.log("user:", user)
         user
           .getIdToken(true)
           .then(idToken =>

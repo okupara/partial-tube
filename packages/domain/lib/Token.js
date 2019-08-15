@@ -28,6 +28,7 @@ var FilledString = /** @class */ (function (_super) {
     return FilledString;
 }(t.Type));
 var filledString = new FilledString();
+FilledString;
 exports.create = function (anything) {
     var result = pipeable_1.pipe(filledString.decode(anything), Either_1.map(function (t) { return ({ value: t }); }));
     return result;

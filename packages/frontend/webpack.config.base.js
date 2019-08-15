@@ -32,7 +32,8 @@ module.exports = {
       context: path.resolve('./src/context'),
       hooks: path.resolve('./src/hooks'),
       apollo: path.resolve('./src/apollo'),
-      utils: path.resolve('./src/utils')
+      utils: path.resolve('./src/utils'),
+      __mocks__: path.resolve('./src/__mocks__')
     }
   }
 }
