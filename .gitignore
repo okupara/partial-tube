@@ -9,3 +9,4 @@ lerna-debug.log
 credential.json
 firebase-debug.log
 firebase.dev.config.json
+packages/domain/lib/
