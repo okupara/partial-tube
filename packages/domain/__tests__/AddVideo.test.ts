@@ -1,16 +1,12 @@
-import { VideoId } from '../src/AddVideo'
-import { isRight, isLeft } from 'fp-ts/lib/Either'
+import { validateVideoId } from '../src/workflow/AddVideo'
 
 describe('AddVideo', () => {
-  it('should be Right', () => {
-    const res = VideoId.create('https://www.youtube.com/watch?v=JkF8AZeiY5E')
-    expect(isRight(res)).toStrictEqual(true)
-    if (isLeft(res)) {
-      throw new Error('unexpected behaviour')
-    }
-    expect(res.right).toStrictEqual({
-      tag: 'YoutubeVideoId',
-      value: 'JkF8AZeiY5E'
-    })
+  it('should be succeeded', () => {
+    const res = validateVideoId('https://www.youtube.com/watch?v=JkF8AZeiY5E')
+    expect(res).toEqual('JkF8AZeiY5E')
+  })
+  it('should be null', () => {
+    const res = validateVideoId('https://www.youte.com/watch?v=JkF8AZeiY5E')
+    expect(res).toEqual(null)
   })
 })

@@ -1,9 +1,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react",
+    "lib": ["dom", "esnext"],
+    "module": "esnext",
+    "esModuleInterop": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "typeRoots": [
+      "types",
+      "node_modules/@types",
+      "node_modules/@testing-library/jest-dom/extend-expect"
+    ],
+    "types": ["jest", "node"]
   },
   "include": ["./src"]
 }

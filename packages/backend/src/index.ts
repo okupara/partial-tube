@@ -4,6 +4,10 @@ import * as path from 'path'
 import { ApolloServer, gql } from 'apollo-server-cloud-functions'
 import { IncomingMessage } from 'http'
 import { InvalidTokenError } from './errors'
+// import fetch from 'node-fetch'
+
+// const YTDataApiUrl = (videoId: string) =>
+// `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=AIzaSyAS-goNOhWg1Co3gK8p0oEk1Hm6yIqWE_I`
 
 interface ReqContext {
   req: IncomingMessage
@@ -14,7 +18,7 @@ async function initialize() {
   // const jsonStr = await asyncReadFile(jsonPath, {encoding: "utf-8"})
   admin.initializeApp({
     credential: admin.credential.cert(jsonPath),
-    databaseURL: 'https://okuparatest-91da0.firebaseio.com'
+    databaseURL: 'https://partialtube-dev.firebaseio.com'
   })
 }
 
@@ -24,11 +28,17 @@ initialize()
 const typeDefs = gql`
   type Query {
     verify: User
+    checkVideoExistance(videoId: String!): [Video]
   }
   type User {
     userId: String
     name: String
     avatarUrl: String
+  }
+  type Video {
+    id: ID
+    videoId: String
+    title: String
   }
 `
 
@@ -39,7 +49,10 @@ const verifyToken = (token: string | undefined) => {
   return admin
     .auth()
     .verifyIdToken(token.replace('Bearer ', '').trim())
-    .catch(_ => null)
+    .catch(e => {
+      console.log('verification error:', e)
+      return null
+    })
 }
 
 const apolloServer = new ApolloServer({
@@ -51,7 +64,22 @@ const apolloServer = new ApolloServer({
         userId: context.user_id,
         name: context.name,
         avatarUrl: context.picture
-      })
+      }),
+      checkVideoExistance: async (parent, args, context, info) => {
+        // console.log('Check::::::::', args)
+        // const url = YTDataApiUrl(args.videoId)
+        // console.log('URL::::', url)
+        // const res = await fetch(url)
+        // const data = await res.json()
+        // console.log('RES::::', data)
+        return [
+          {
+            id: 'hohohoho',
+            videoId: 'hoge',
+            title: 'hogehogeo'
+          }
+        ]
+      }
     }
   },
   context: async ({ req }: ReqContext) => {
@@ -75,4 +103,54 @@ const apolloServer = new ApolloServer({
   introspection: true
 })
 
+const db = admin.firestore()
+const playlistCollection = db.collection('playlist')
+
 export const graphql = functions.https.onRequest(apolloServer.createHandler())
+
+export const unko = functions.https.onRequest(async (request, response) => {
+  const snapshot = await playlistCollection.get()
+  // this object doesn't have map??
+  const playlistsArray: any[] = []
+  snapshot.forEach(r =>
+    playlistsArray.push({ data: r.data(), ref: r, id: r.id })
+  )
+  console.log(playlistsArray[0].id)
+  const aaa = db
+    .collection('playlist')
+    .doc(playlistsArray[0].id)
+    .collection('items')
+  const subSnap = await aaa.get()
+  subSnap.forEach(s => console.log(s.data().videoId))
+
+  response.send('okk')
+
+  // console.log(db)
+  // db.collection('playlist')
+  //   .get()
+  //   .then(snapshot => {
+  //     let shots: any[] = []
+  //     snapshot.forEach(record => {
+  //       const r = record.data()
+  //       console.log('HI*', r.gid.get)
+  //       shots.push(r)
+  //     })
+  //     console.log('SHOTS', shots)
+  //     shots[0].gid
+  //       .get()
+  //       .then((a: any) => {
+  //         response.send('ok')
+  //         console.log('TEST----', a.data())
+  //       })
+  //       .catch((e: any) => console.log('ERROR!!!', e))
+  //   })
+  //   .catch(e => console.log('EEEEEE:', e))
+  // const ref = db.collection('testusers').doc('vkEYgJNGQPcrCmmZQ5Ks')
+  // ref
+  //   .get()
+  //   .then(r => {
+  //     console.log(r.data())
+  //     response.send('ok')
+  //   })
+  //   .catch(e => console.log('error', e))
+})

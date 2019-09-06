@@ -42,7 +42,6 @@ type Props = {
 
 const identifyError = (error: ErrorCommand): AuthModel.State => {
   if (isFirst(error, AuthModel.InvalidTokenError.tag)) {
-    console.log('CLEAR TOKEN!!!!')
     Ls.clearToken()
     return AuthModel.beInvalidTokenError()
   }

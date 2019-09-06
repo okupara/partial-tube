@@ -19,7 +19,7 @@ const StyledAvatar = styled(Avatar)({
   margin: 10
 })
 
-type SignedProps = {
+export type SignedProps = {
   signOut: () => void
 }
 

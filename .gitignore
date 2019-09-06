@@ -6,7 +6,9 @@ dist/
 npm-debug.log
 lerna-debug.log
 .env
+env.json
 credential.json
 firebase-debug.log
 firebase.dev.config.json
+youtube.config.json
 packages/domain/lib/

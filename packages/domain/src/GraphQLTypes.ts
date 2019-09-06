@@ -20,8 +20,10 @@ export type ParamedPlayItem = { [k in keyof PlayItem]: t.Mixed }
 export type Playlist = {
   id: string
   title: string
+  userId: string
   description: string
   items: PlayItem[]
+  sort: number
   created: string
 }
 
