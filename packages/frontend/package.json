@@ -17,6 +17,7 @@
   },
   "scripts": {
     "test": "jest --watch",
+    "cypress": "cypress open",
     "storybook": "start-storybook -p 6006",
     "dev": "npm run format && npm run gen-html:dev && webpack-dev-server --open --config webpack.config.dev.js",
     "check": "npm run format && npm run tsc",
@@ -30,6 +31,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@cypress/webpack-preprocessor": "^4.1.0",
     "@partial-tube/helper-cli": "^0.0.0",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-info": "^5.1.9",
@@ -48,6 +50,7 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "core-js": "2.6.5",
+    "cypress": "^3.4.1",
     "ejs": "^2.6.2",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
