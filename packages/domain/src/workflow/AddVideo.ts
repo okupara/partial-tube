@@ -86,7 +86,7 @@ export namespace NetworkError {
 
 export namespace ExistedVideo {
   export const tag = 'ExistedVideo'
-  export type Type = Status<typeof tag> & {value: string}
+  export type Type = Status<typeof tag> & { value: string }
   export const create = buildStatusCreator<typeof tag, Type>(tag)
 }
 

@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest",
     "cypress": "cypress open",
     "storybook": "start-storybook -p 6006",
     "dev": "npm run format && npm run gen-html:dev && webpack-dev-server --open --config webpack.config.dev.js",
@@ -82,7 +82,7 @@
     "apollo-link-error": "^1.1.11",
     "apollo-link-http": "^1.5.15",
     "apollo-link-rest": "^0.7.3",
-    "firebase": "^6.3.3",
+    "firebase": "^6.6.0",
     "formik": "^1.5.8",
     "formik-material-ui": "^0.0.20",
     "fp-ts": "^2.0.3",

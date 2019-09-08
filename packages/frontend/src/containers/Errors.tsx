@@ -1,9 +1,9 @@
 import React from 'react'
 import * as Headers from 'components/organisms/Headers'
-import { ErrorTypes, isNetworkError } from '@partial-tube/domain/lib/Auth'
+// import { ErrorTypes, isNetworkError } from '@partial-tube/domain/lib/Auth'
 
 type Props = {
-  error: ErrorTypes
+  // error: ErrorTypes
   signIn: () => void
 }
 
@@ -12,11 +12,11 @@ const Errors = (props: Props) => (
   (
     <div>
       <Headers.NotSigned signIn={props.signIn} />
-      {isNetworkError(props.error) && <NetworkError />}
+      {/* {isNetworkError(props.error) && <NetworkError />} */}
     </div>
   )
 )
 
-const NetworkError = () => <div>Your network seems not connected.</div>
+// const NetworkError = () => <div>Your network seems not connected.</div>
 
 export default Errors

@@ -1,30 +1,16 @@
-import { pipe } from 'fp-ts/lib/pipeable'
-import { map } from 'fp-ts/lib/Either'
 import * as t from 'io-ts'
+import * as FilledString from './core/FilledString'
 
-export interface Record {
-  value: string
-}
+const RecordRuntime = t.type({ value: FilledString.runtimeType })
+export type Record = t.TypeOf<typeof RecordRuntime>
 
-class FilledString extends t.Type<string> {
-  readonly _tag = 'FilledString'
-  constructor() {
-    super(
-      'FilledString',
-      (u): u is string => typeof u === 'string' && u.length > 0,
-      (input, context) =>
-        this.is(input) ? t.success(input) : t.failure(input, context),
-      t.identity
-    )
-  }
-}
-const filledString: FilledString = new FilledString()
-FilledString
+const tokenRecordRuntime = new t.Type<Record, string, string>(
+  'Token',
+  (i): i is Record => RecordRuntime.is(i),
+  i => t.success({ value: i }),
+  a => a.value
+)
 
-export const create = (anything: unknown) => {
-  const result = pipe(
-    filledString.decode(anything),
-    map<string, Record>(t => ({ value: t }))
-  )
-  return result
-}
+export const runtimeType = FilledString.runtimeType.pipe(tokenRecordRuntime)
+
+export const create = runtimeType.decode

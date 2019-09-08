@@ -1,34 +1,23 @@
 // so far, I don't think the id which we should deal them as a Number comes
 // I assume all of id that I use in this app are String
 import * as t from 'io-ts'
+import * as FilledString from './core/FilledString'
 
-const validation = (i: string): i is string => i.length > 0
-
-const FilledStringChecker = new t.Type<string, string, string>(
-  'FilledStringChecker',
-  validation,
-  (i, c) => (validation(i) ? t.success(i) : t.failure(i, c)),
-  t.identity
-)
-const FilledString = t.string.pipe(
-  FilledStringChecker,
-  'FilledString'
-)
-
-const BaseStringId = t.type({ value: FilledString })
+const BaseStringId = t.type({ value: FilledString.runtimeType })
 
 export type BaseStringId = t.TypeOf<typeof BaseStringId>
 
 export const createIdType = <T extends BaseStringId>(
   f: (i: BaseStringId['value']) => T
 ) => {
-  const StringId = new t.Type<T, string>(
+  const StringId = new t.Type<T, string, string>(
     'StringId',
     (i): i is T => BaseStringId.is(i),
-    (i, c) => (FilledString.is(i) ? t.success<T>(f(i)) : t.failure(i, c)),
+    (i, c) =>
+      FilledString.runtimeType.is(i) ? t.success<T>(f(i)) : t.failure(i, c),
     a => a.value
   )
-  return StringId
+  return FilledString.runtimeType.pipe(StringId)
 }
 
 export namespace PlayItem {

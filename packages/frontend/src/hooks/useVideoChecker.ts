@@ -50,7 +50,6 @@ const validateUrlExisted = (result: QueryResult): Add.ExistedVideo => {
 const StateAddVideo = () => {
   const ref = useRef('')
   const [execute, res] = useLazyQuery<QueryData, QueryParams>(query)
-  console.log('ERROR', res.error)
 
   const dispatcher = (videoId: string) => {
     if (ref.current === videoId) return

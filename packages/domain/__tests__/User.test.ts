@@ -23,7 +23,7 @@ describe('User', () => {
       throw new Error('We got an unexpected value...')
     }
     expect(res.right.userId).toStrictEqual({
-      tag: 'userId',
+      tag: 'UserId',
       value: 'kjsakjfdakjsd-111'
     })
     expect(res.right.name).toEqual('Jimi Hendrix')

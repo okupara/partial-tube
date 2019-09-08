@@ -36,7 +36,6 @@ describe('AddVideoForm', () => {
         result: { data: YOUTUBE_NORMAL_RESPONSE }
       }
     ]
-    console.log(YOUTUBE_MOCKS[0].request.variables)
     const wrapper = ({ children }: { children: JSX.Element }) => (
       <MockedProvider mocks={YOUTUBE_MOCKS}>{children}</MockedProvider>
     )

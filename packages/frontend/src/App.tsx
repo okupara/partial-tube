@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import CSSBaseline from '@material-ui/core/CssBaseline'
 // import PlaylistCollection from 'containers/PlaylistCollection'
 import { ApolloProvider } from '@apollo/react-hooks'
@@ -8,12 +8,12 @@ import { ApolloClient } from 'apollo-client'
 import { from } from 'apollo-link'
 import { RestLink } from 'apollo-link-rest'
 import Auth from 'containers/Auth'
-import * as Header from 'components/organisms/Headers'
-import Errors from 'containers/Errors'
+// import * as Header from 'components/organisms/Headers'
+// import Errors from 'containers/Errors'
 import DefaultError from './DefaultError'
 import AuthHeader from 'apollo/Verification'
 import HandleError from 'apollo/Errors'
-import AddVideo from 'components/pages/AddVideo'
+// import AddVideo from 'components/pages/AddVideo'
 import { create } from '@partial-tube/domain/lib/YTVideo'
 import { isLeft } from 'fp-ts/lib/Either'
 
@@ -60,9 +60,9 @@ export default () => (
       <CSSBaseline />
       <DefaultError>
         <Auth
-          default={() => <Header.Default />}
-          notSignedIn={props => <Errors {...props} />}
-          signedIn={signOut => <AddVideo signOut={signOut} />}
+          waiting={() => <div>hhhh</div>}
+          failed={error => <div>failed</div>}
+          success={user => <div>aaa</div>}
         />
       </DefaultError>
     </>
