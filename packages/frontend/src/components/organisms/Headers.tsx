@@ -1,30 +1,20 @@
-import React from 'react'
-import { styled } from '@material-ui/styles'
-import Avatar from '@material-ui/core/Avatar'
-import Header from 'components/molecules/Header'
-import LoginButton from 'components/molecules/LoginButton'
+// import React from 'react'
+// import { styled } from '@material-ui/styles'
+// import Avatar from '@material-ui/core/Avatar'
+// import Header from 'components/molecules/Header'
 
-export const Default = () => <Header />
+// export const NotSigned = () => <Header />
 
-type NotSignedPorps = {
-  signIn: () => void
-}
-export const NotSigned = (props: NotSignedPorps) => (
-  <Header>
-    <LoginButton onClick={() => props.signIn()} />
-  </Header>
-)
+// const StyledAvatar = styled(Avatar)({
+//   margin: 10
+// })
 
-const StyledAvatar = styled(Avatar)({
-  margin: 10
-})
+// export type SignedProps = {
+//   signOut: () => void
+// }
 
-export type SignedProps = {
-  signOut: () => void
-}
-
-export const Signed = (props: SignedProps) => (
-  <Header>
-    <StyledAvatar>N</StyledAvatar>
-  </Header>
-)
+// export const Signed = (props: SignedProps) => (
+//   <Header>
+//     <StyledAvatar>N</StyledAvatar>
+//   </Header>
+// )

@@ -1,5 +1,7 @@
-import { configure } from '@storybook/react'
-
+import * as React from 'react'
+import { configure, addDecorator } from '@storybook/react'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import GlobalCss from '../src/GlobalCss'
 // with Enzyme
 // import { configure as configureEnzyme } from "enzyme"
 // import Adapter from "enzyme-adapter-react-16"
@@ -19,3 +21,13 @@ function loadStories() {
 }
 
 configure(loadStories, module)
+
+addDecorator(s => {
+  return (
+    <>
+      <CssBaseline />
+      <GlobalCss />
+      {s()}
+    </>
+  )
+})

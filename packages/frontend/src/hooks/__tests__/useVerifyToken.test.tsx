@@ -64,13 +64,10 @@ describe('useVerifyToken', () => {
     )
 
     await waitForExpect(() => {
-      if (isLeft(result.current.state)) return
-      const user = VERIFY_RESPONSE.verify
-      expect(result.current.state.right).toStrictEqual({
-        userId: { tag: 'UserId', value: user.userId },
-        name: user.name,
-        avatarUrl: user.avatarUrl
-      })
-    }, 2000)
+      // if (isLeft(result.current.state)) return
+      expect(result.current.state).toStrictEqual(
+        tv.validateUser(VERIFY_RESPONSE.verify)
+      )
+    }, 3000)
   })
 })

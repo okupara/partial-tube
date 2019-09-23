@@ -1,5 +1,5 @@
 import React from 'react'
-import { Default as DefaultHeader } from 'components/organisms/Headers'
+import Header from 'components/organisms/Header'
 
 interface State {
   isError: boolean
@@ -22,7 +22,7 @@ class DefaultErrorBoundary extends React.Component<Props> {
 
     return isError ? (
       <>
-        <DefaultHeader />
+        <Header />
         <div>There&lsquo;s something wrong...</div>
       </>
     ) : (

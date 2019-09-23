@@ -16,9 +16,10 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
+    "test:file": "jest --watch",
     "cypress": "cypress open",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 -s ./hosting",
     "dev": "npm run format && npm run gen-html:dev && webpack-dev-server --open --config webpack.config.dev.js",
     "check": "npm run format && npm run tsc",
     "format": "prettier --write './**/*.{js,ts,tsx,json,html}'",
@@ -45,6 +46,7 @@
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.15",
     "@types/node": "^12.6.2",
+    "@types/react-router-dom": "^4.3.5",
     "@types/storybook__react": "^4.0.2",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
@@ -94,6 +96,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-hot-loader": "^4.12.6",
+    "react-router-dom": "^5.0.1",
     "react-test-renderer": "^16.9.0"
   },
   "jest": {
@@ -105,7 +108,9 @@
     "moduleNameMapper": {
       "^components/(.+)": "<rootDir>/src/components/$1",
       "^hooks/(.+)": "<rootDir>/src/hooks/$1",
-      "^utils/(.+)": "<rootDir>/src/utils/$1"
+      "^utils/(.+)": "<rootDir>/src/utils/$1",
+      "^containers/(.*)": "<rootDir>/src/containers/$1",
+      "^__mocks__/(.+)": "<rootDir>/src/__mocks__/$1"
     },
     "transform": {
       "^.+\\.tsx?$": "ts-jest"

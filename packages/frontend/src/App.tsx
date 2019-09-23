@@ -16,6 +16,10 @@ import HandleError from 'apollo/Errors'
 // import AddVideo from 'components/pages/AddVideo'
 import { create } from '@partial-tube/domain/lib/YTVideo'
 import { isLeft } from 'fp-ts/lib/Either'
+import AuthWaiting from 'containers/AuthWaiting'
+import GlobalCss from './GlobalCss'
+// import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { resolvers, initialData } from './apollo/Resolvers'
 
 const inMemoryCache = new InMemoryCache()
 const httpLink = createHttpLink({
@@ -51,18 +55,29 @@ const restLink = new RestLink({
 
 const client = new ApolloClient({
   link: from([HandleError, AuthHeader, restLink, httpLink]),
-  cache: inMemoryCache
+  cache: inMemoryCache,
+  resolvers
 })
+inMemoryCache.writeData(initialData)
+
+// const App = () => (
+//   <>
+//     <Router>
+//       <Route path="/" component={() => <div>App</div>} />
+//     </Router>
+//   </>
+// )
 
 export default () => (
   <ApolloProvider client={client}>
     <>
       <CSSBaseline />
+      <GlobalCss />
       <DefaultError>
         <Auth
-          waiting={() => <div>hhhh</div>}
-          failed={error => <div>failed</div>}
-          success={user => <div>aaa</div>}
+          waiting={() => <AuthWaiting />}
+          failed={() => <div>failed</div>}
+          success={() => <div>success</div>}
         />
       </DefaultError>
     </>

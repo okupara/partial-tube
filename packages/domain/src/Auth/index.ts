@@ -1,68 +1,95 @@
-import * as fb from './Firebase'
-import * as token from './TokenVerification'
-import * as s from '../core/AbstractState'
-import * as User from '../User'
+import * as FP from 'fp-ts/lib/Either'
+import * as AS from '../core/AbstractState'
+import * as FirebaseModel from './Firebase'
+import * as ApolloModel from '../ApolloState'
 
-export namespace Waiting {
-  export const tag = 'AuthWaiting'
-  export type Type = s.Status<typeof tag>
-  export const create = s.buildStatusCreator<typeof tag, Type>(tag)
-}
-
-export namespace Failed {
-  export const tag = 'AuthFailed'
-  export type Type = {
-    tag: typeof tag
-    reason?: Error
-  }
-  export const create = (error?: Error): Type =>
-    error ? { tag } : { tag, reason: error }
+export namespace Init {
+  export const tag = 'AuthInit'
+  export type Type = AS.Status<typeof tag>
+  export const create = AS.buildStatusCreator<typeof tag, Type>(tag)
 }
 
 export namespace Success {
   export const tag = 'AuthSuccess'
-  export type Type = {
-    tag: typeof tag
-    user: User.Record
-  }
-  export const create = (user: User.Record): Type => ({
+  export type Type = AS.Status<typeof tag>
+  export const create = AS.buildStatusCreator<typeof tag, Type>(tag)
+}
+
+export namespace ReadyToSaveInfo {
+  export const tag = 'AuthReadyToSaveInfo'
+  export type Type = AS.ValueStatus<typeof tag, FirebaseModel.Record>
+  export const create = AS.buildValueStatusCreator<
+    typeof tag,
+    FirebaseModel.Record,
+    Type
+  >(tag)
+}
+
+export namespace AuthError {
+  export const tag = 'AuthError'
+  export type Type = AS.ErrorStatus<typeof tag>
+  export const create = AS.buildErrorStatusCreator<typeof tag, Type>(
     tag,
-    user
-  })
+    'hello',
+    'AUE'
+  )
 }
 
-export type State = Failed.Type | Waiting.Type | Success.Type
+export type RightState =
+  | Init.Type
+  | FirebaseModel.InProgress.Type
+  | ApolloModel.InProgress.Type
+  | ReadyToSaveInfo.Type
+  | Success.Type
+export type LeftState = AuthError.Type
+export type State = FP.Either<LeftState, RightState>
 
-type Param = {
-  fbState: fb.State
-  tokenState: token.State
-}
-export const makeCurrentState = ({ fbState, tokenState }: Param): State => {
-  if (fb.isFailed(fbState) && token.isFailed(tokenState)) {
-    return Failed.create()
+export const createState = <V>(
+  firebaseState: FirebaseModel.State,
+  apolloState: ApolloModel.State<V>
+): State => {
+  if (
+    FirebaseModel.isSucceeded(firebaseState) &&
+    ApolloModel.isSucceeded(apolloState)
+  ) {
+    return FP.right(Success.create())
   }
-  if (fb.isSucceeded(fbState)) {
-    return Success.create(fbState.right.value.user)
-  }
-  if (token.isSucceeded(tokenState)) {
-    return Success.create(tokenState.right.user)
-  }
-  return Waiting.create()
+  if (FirebaseModel.isInProgress(firebaseState))
+    return FP.right(FirebaseModel.InProgress.create())
+
+  if (
+    FirebaseModel.isSucceeded(firebaseState) &&
+    ApolloModel.isInit(apolloState)
+  )
+    return FP.right(ReadyToSaveInfo.create(firebaseState.right.value))
+
+  if (ApolloModel.isInProgress(apolloState))
+    return FP.right(ApolloModel.InProgress.create())
+
+  // TODO: Implement failed cases...
+
+  return FP.right(Init.create())
 }
 
-export type MatchParam<R> = {
-  waiting: () => R
-  failed: (reason?: Error) => R
-  success: (user: User.Record) => R
+type MatchFuncs<T> = {
+  waiting: () => T
+  success: () => T
+  failed: (error: AS.PTError) => T
 }
-export const match = <R>(state: State, param: MatchParam<R>): R => {
-  switch (state.tag) {
-    case Waiting.tag:
-    default:
-      return param.waiting()
+
+export const isReadyToSave = (
+  state: State
+): state is FP.Right<ReadyToSaveInfo.Type> =>
+  FP.isRight(state) ? state.right.tag === ReadyToSaveInfo.tag : false
+
+export const match = <T>(state: State, funcs: MatchFuncs<T>): T => {
+  if (FP.isLeft(state)) {
+    return funcs.failed(new AS.PTError('test', 'SSSS'))
+  }
+  switch (state.right.tag) {
     case Success.tag:
-      return param.success(state.user)
-    case Failed.tag:
-      return param.failed(state.reason)
+      return funcs.success()
+    default:
+      return funcs.waiting()
   }
 }

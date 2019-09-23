@@ -3,6 +3,7 @@ import * as t from '@partial-tube/domain/lib/Auth/TokenVerification'
 import { getToken, clearToken } from 'utils/LocalStorage'
 import gql from 'graphql-tag'
 import { useLazyQuery } from '@apollo/react-hooks'
+import { QueryResult } from '@apollo/react-common'
 
 export const query = gql`
   query {
@@ -17,8 +18,11 @@ type VerifyResponse = {
   verify: unknown
 }
 
-const updateState = (setState: any, res: any) => {
-  if (res.data) return setState(t.validateUser(res.data))
+const updateState = (
+  setState: (state: t.State) => void,
+  res: QueryResult<VerifyResponse>
+) => {
+  if (res.data) return setState(t.validateUser(res.data.verify))
   if (res.error) {
     clearToken()
     return setState(t.createInvalidTokenError())

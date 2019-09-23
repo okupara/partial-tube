@@ -6,6 +6,7 @@ dist/
 npm-debug.log
 lerna-debug.log
 .env
+.vscode
 env.json
 credential.json
 firebase-debug.log

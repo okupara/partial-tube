@@ -4,10 +4,6 @@ import * as path from 'path'
 import { ApolloServer, gql } from 'apollo-server-cloud-functions'
 import { IncomingMessage } from 'http'
 import { InvalidTokenError } from './errors'
-// import fetch from 'node-fetch'
-
-// const YTDataApiUrl = (videoId: string) =>
-// `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=AIzaSyAS-goNOhWg1Co3gK8p0oEk1Hm6yIqWE_I`
 
 interface ReqContext {
   req: IncomingMessage
