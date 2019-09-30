@@ -4,38 +4,58 @@ import * as AS from '@partial-tube/domain/lib/ApolloState'
 import { QueryResult } from '@apollo/react-common'
 import { QueryLazyOptions } from '@apollo/react-hooks'
 
-export const useStateMutation = <TData, TValiables>(
-  mutationHookRes: MutationTuple<TData, TValiables>
-) => {
-  const [dispatcher, result] = mutationHookRes
-  const state = useApolloResultState(result)
+type Validate<TData> = { validate?: AS.Validate<TData> }
+
+type StateMutationParam<TData, TVariables> = {
+  mutationResult: MutationTuple<TData, TVariables>
+}
+
+export const useStateMutation = <TData, TVariables>({
+  mutationResult,
+  validate
+}: StateMutationParam<TData, TVariables> & Validate<TData>) => {
+  const [dispatcher, result] = mutationResult
+  const state = useApolloResultState({ apolloResult: result, validate })
   return {
     dispatcher,
     state
   }
 }
 
-type LazyDispatcher<TValiables> = (option: QueryLazyOptions<TValiables>) => void
-type LazyQueryTuple<TData, TValiables> = [
-  LazyDispatcher<TValiables>,
-  QueryResult<TData, TValiables>
+type LazyDispatcher<TVariables> = (option: QueryLazyOptions<TVariables>) => void
+type LazyQueryTuple<TData, TVariables> = [
+  LazyDispatcher<TVariables>,
+  QueryResult<TData, TVariables>
 ]
-export const useStateLazyQuery = <TData, TVariables>(
-  lazyQueryRes: LazyQueryTuple<TData, TVariables>
-) => {
-  const [dispatcher, result] = lazyQueryRes
-  const state = useApolloResultState(result)
+type StateLazyQueryParam<TData, TVariables> = {
+  lazyQueryResult: LazyQueryTuple<TData, TVariables>
+}
+export const useStateLazyQuery = <TData, TVariables>({
+  lazyQueryResult,
+  validate
+}: StateLazyQueryParam<TData, TVariables> & Validate<TData>) => {
+  const [dispatcher, result] = lazyQueryResult
+  const state = useApolloResultState({ apolloResult: result, validate })
   return {
     dispatcher,
     state
   }
 }
 
-type ApolloResult<TData, TVariables> =
-  | MutationTuple<TData, TVariables>[1]
-  | QueryResult<TData, TVariables>
-const useApolloResultState = <TData, TValiables>(
-  result: ApolloResult<TData, TValiables>
-) => {
-  return AS.toState(result.loading, result.error, result.data)
+type ApolloResult<TData, TVariables> = {
+  apolloResult:
+    | MutationTuple<TData, TVariables>[1]
+    | QueryResult<TData, TVariables>
+}
+
+const useApolloResultState = <TData, TValiables>({
+  apolloResult,
+  validate
+}: ApolloResult<TData, TValiables> & Validate<TData>) => {
+  return AS.toState({
+    waiting: apolloResult.loading,
+    error: apolloResult.error,
+    data: apolloResult.data,
+    validate
+  })
 }

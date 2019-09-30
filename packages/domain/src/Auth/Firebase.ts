@@ -48,8 +48,8 @@ export namespace Success {
 }
 
 const runtimeType = I.type({
-  token: Token.runtimeType,
-  user: User.runtimeType
+  token: Token.IOType,
+  user: User.IOType
 })
 
 export type Record = I.TypeOf<typeof runtimeType>

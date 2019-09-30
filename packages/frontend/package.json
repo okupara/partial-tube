@@ -16,6 +16,7 @@
     "access": "public"
   },
   "scripts": {
+    "start": "npm run dev",
     "test": "jest --watchAll",
     "test:file": "jest --watch",
     "cypress": "cypress open",

@@ -13,11 +13,12 @@ describe('User', () => {
     expect(isLeft(res)).toEqual(true)
   })
   it('should be Right when an expected object comes', () => {
-    const res = User.create({
+    const dummyUser = {
       userId: 'kjsakjfdakjsd-111',
       name: 'Jimi Hendrix',
       avatarUrl: 'http://hoge.com/img/jimi'
-    })
+    }
+    const res = User.create(dummyUser)
     expect(isRight(res)).toEqual(true)
     if (!isRight(res)) {
       throw new Error('We got an unexpected value...')
@@ -27,6 +28,7 @@ describe('User', () => {
       value: 'kjsakjfdakjsd-111'
     })
     expect(res.right.name).toEqual('Jimi Hendrix')
+    expect(User.encode(res.right)).toStrictEqual(dummyUser)
   })
   it('should be Right when an extended object comes', () => {
     const res = User.create({

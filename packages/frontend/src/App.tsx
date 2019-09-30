@@ -1,6 +1,5 @@
 import * as React from 'react'
 import CSSBaseline from '@material-ui/core/CssBaseline'
-// import PlaylistCollection from 'containers/PlaylistCollection'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
@@ -8,7 +7,6 @@ import { ApolloClient } from 'apollo-client'
 import { from } from 'apollo-link'
 import { RestLink } from 'apollo-link-rest'
 import Auth from 'containers/Auth'
-// import * as Header from 'components/organisms/Headers'
 // import Errors from 'containers/Errors'
 import DefaultError from './DefaultError'
 import AuthHeader from 'apollo/Verification'
@@ -18,8 +16,10 @@ import { create } from '@partial-tube/domain/lib/YTVideo'
 import { isLeft } from 'fp-ts/lib/Either'
 import AuthWaiting from 'containers/AuthWaiting'
 import GlobalCss from './GlobalCss'
-// import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { resolvers, initialData } from './apollo/Resolvers'
+import Header from 'components/organisms/Header'
+import Vidoes from 'containers/Videos'
 
 const inMemoryCache = new InMemoryCache()
 const httpLink = createHttpLink({
@@ -60,13 +60,14 @@ const client = new ApolloClient({
 })
 inMemoryCache.writeData(initialData)
 
-// const App = () => (
-//   <>
-//     <Router>
-//       <Route path="/" component={() => <div>App</div>} />
-//     </Router>
-//   </>
-// )
+const App = () => (
+  <>
+    <Header />
+    <Router>
+      <Route path="/" component={() => <Vidoes />} />
+    </Router>
+  </>
+)
 
 export default () => (
   <ApolloProvider client={client}>
@@ -76,8 +77,8 @@ export default () => (
       <DefaultError>
         <Auth
           waiting={() => <AuthWaiting />}
-          failed={() => <div>failed</div>}
-          success={() => <div>success</div>}
+          failed={() => <div>error</div>}
+          success={() => <App />}
         />
       </DefaultError>
     </>

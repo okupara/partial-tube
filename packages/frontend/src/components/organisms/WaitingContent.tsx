@@ -1,15 +1,20 @@
 import * as React from 'react'
-import Typography from '@material-ui/core/Typography'
-import { concatNullable } from 'utils/ClassConcatinator'
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
-type Props = {
-  className?: string
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: theme.spacing(8)
+  }
+}))
+
+const WaitingContent = () => {
+  const classes = useStyles()
+  return (
+    <div className={classes.root}>
+      <LinearProgress />
+    </div>
+  )
 }
-
-const WaitingContent = (props: Props) => (
-  <div className={concatNullable(props.className)}>
-    <Typography variant="h6">Authorizing...</Typography>
-  </div>
-)
 
 export default WaitingContent

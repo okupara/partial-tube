@@ -11,6 +11,6 @@ const tokenRecordRuntime = new t.Type<Record, string, string>(
   a => a.value
 )
 
-export const runtimeType = FilledString.runtimeType.pipe(tokenRecordRuntime)
+export const IOType = FilledString.runtimeType.pipe(tokenRecordRuntime)
 
-export const create = runtimeType.decode
+export const create = IOType.decode

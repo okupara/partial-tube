@@ -1,5 +1,5 @@
 import { ApolloError } from 'apollo-server-cloud-functions'
-import { InvalidTokenError as InvalidTokenDomainError } from '@partial-tube/domain/lib/Auth'
+import { InvalidTokenError as InvalidTokenDomainError } from '@partial-tube/domain/lib/Errors'
 
 class InvalidTokenError extends ApolloError {
   constructor() {

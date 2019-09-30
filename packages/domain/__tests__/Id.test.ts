@@ -16,6 +16,8 @@ describe('Id', () => {
       throw new Error('an unexpected behaviour')
     }
     expect(res.right).toStrictEqual({ tag: 'Hoge', value: 'xxxx111-1111' })
+    // encode: {idobj} -> "id string"
+    expect(HogeId.encode(res.right)).toEqual('xxxx111-1111')
   })
   it('should be Left', () => {
     const res = HogeId.decode('')

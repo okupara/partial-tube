@@ -19,8 +19,8 @@ type Props = {
 
 const Auth = (props: Props) => {
   const resFirebase = useFirebaseAuth()
-  const mu = useMutation(query)
-  const { state, dispatcher } = useStateMutation(mu)
+  const mutationResult = useMutation(query)
+  const { state, dispatcher } = useStateMutation({ mutationResult })
   const authState = A.createState(resFirebase.state, state)
   if (A.isReadyToSave(authState)) {
     const data = authState.right.value

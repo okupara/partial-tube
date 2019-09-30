@@ -1,5 +1,6 @@
 import * as FP from 'fp-ts/lib/Either'
 import * as AS from './core/AbstractState'
+import { Errors } from 'io-ts'
 
 export namespace Init {
   export const tag = 'gqlInit'
@@ -14,11 +15,34 @@ export namespace InProgress {
 export namespace Success {
   export const tag = 'gqlSuccess'
   export type Type<V> = AS.ValueStatus<typeof tag, V>
-  export const create = <V>(value: V): Type<V> => ({
+  export const create = <V = unknown>(value: V): Type<V> => ({
     tag,
     value
   })
 }
+
+export namespace ApolloError {
+  export const tag = 'gqlError'
+  export const errorCode = 'APE'
+  export type Type = AS.ErrorStatus<typeof tag>
+  export const create = AS.buildErrorStatusCreator<typeof tag, Type>(
+    tag,
+    'An error occured in the process of ApolloClient',
+    errorCode
+  )
+}
+
+export namespace InvalidResultError {
+  export const tag = 'gqlInvalidError'
+  export const errorCode = 'IRE'
+  export type Type = AS.ErrorStatus<typeof tag>
+  export const create = AS.buildErrorStatusCreator<typeof tag, Type>(
+    tag,
+    'An error occured in validating the result',
+    errorCode
+  )
+}
+
 export namespace Error {
   export const tag = 'gqlError'
   export const errorCode = 'SLE'
@@ -30,23 +54,34 @@ export namespace Error {
   )
 }
 
-export type LeftState = Error.Type
+export type LeftState = Error.Type | InvalidResultError.Type
 export type RightState<V> = Init.Type | InProgress.Type | Success.Type<V>
 export type State<V> = FP.Either<LeftState, RightState<V>>
 
-export const toState = <V = unknown>(
-  waiting: boolean,
-  error?: Error,
-  data?: V
-): State<V> => {
-  if (error) {
+export type Validate<V> = (input: unknown) => FP.Either<Errors, V>
+
+type ParamToState<V> = {
+  waiting: boolean
+  error?: Error
+  data: V | null
+  validate?: Validate<V>
+}
+
+export const toState = <V>(params: ParamToState<V>): State<V> => {
+  if (params.error) {
     return FP.left(Error.create()) // TODO: reconsider how to deal with each error details
   }
-  if (waiting) {
+  if (params.waiting) {
     return FP.right(InProgress.create())
   }
-  if (data) {
-    return FP.right(Success.create<V>(data))
+  if (params.data) {
+    if (!params.validate) {
+      return FP.right(Success.create(params.data))
+    }
+    const validated = params.validate(params.data)
+    return FP.isLeft(validated)
+      ? FP.left(InvalidResultError.create())
+      : FP.right(Success.create<V>(params.data))
   }
   return FP.right(Init.create())
 }
@@ -69,3 +104,21 @@ export const isInProgress = <V>(
   FP.isRight(state) ? state.right.tag === InProgress.tag : false
 
 export const createInit = <V = unknown>(): State<V> => FP.right(Init.create())
+
+type MatchFuncs<V, T> = {
+  waiting: () => T
+  error: () => T
+  success: (value: V) => T
+}
+
+export const match = <V, T>(state: State<V>, funcs: MatchFuncs<V, T>) => {
+  if (FP.isLeft(state)) {
+    return funcs.error()
+  }
+  switch (state.right.tag) {
+    case Success.tag:
+      return funcs.success(state.right.value)
+    default:
+      return funcs.waiting()
+  }
+}
