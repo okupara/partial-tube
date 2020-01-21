@@ -4,7 +4,8 @@ module.exports = {
       '@babel/preset-env',
       {
         targets: ['last 2 versions', 'not dead', 'not < 2%', 'not ie 11'],
-        useBuiltIns: 'usage'
+        useBuiltIns: 'usage',
+        corejs: 3
       }
     ],
     ['@babel/preset-typescript', { allowNamespaces: true }],
