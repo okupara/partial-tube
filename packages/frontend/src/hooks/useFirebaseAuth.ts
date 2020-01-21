@@ -87,7 +87,7 @@ const useFirebaseAuth = () => {
         .catch(_ => setState(model.createFBAuthFailed()))
       setState(model.createInProgress())
     }
-  }, [state])
+  }, [state]) // tag might be good enough...
   return {
     state,
     loginDispatcher

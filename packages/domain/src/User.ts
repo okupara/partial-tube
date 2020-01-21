@@ -1,12 +1,11 @@
 import * as t from 'io-ts'
 import { BaseStringId, createIdType } from './Id'
 
-const tag = 'UserId'
-export type Id = { tag: typeof tag } & BaseStringId
-export const Id = createIdType<Id>(i => ({ tag, value: i }))
+export const IdTag = 'UserId'
+export type Id = { tag: typeof IdTag } & BaseStringId
+export const Id = createIdType<Id>(i => ({ tag: IdTag, value: i }))
 
 // TODO: userId should be just "id"...
-
 export const IOType = t.type({
   userId: Id,
   name: t.string,

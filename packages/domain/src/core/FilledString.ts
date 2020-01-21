@@ -15,4 +15,4 @@ const PipedFilledString = t.string.pipe(
 )
 
 export const create = PipedFilledString.decode
-export const runtimeType = PipedFilledString
+export const IOType = PipedFilledString

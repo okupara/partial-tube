@@ -10,7 +10,7 @@ const DateConverter = new t.Type<Date, string, string>(
     const date = new Date(i)
     return validation(date) ? t.success(date) : t.failure(date, c)
   },
-  Date
+  a => a.toUTCString()
 )
 
 export const DateFromStringType = t.string.pipe(

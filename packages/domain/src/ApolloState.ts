@@ -60,14 +60,15 @@ export type State<V> = FP.Either<LeftState, RightState<V>>
 
 export type Validate<V> = (input: unknown) => FP.Either<Errors, V>
 
-type ParamToState<V> = {
+export type IOResult<A> = FP.Either<Errors, A>
+
+type ParamToState<A> = {
   waiting: boolean
   error?: Error
-  data: V | null
-  validate?: Validate<V>
+  data: IOResult<A> | null
 }
 
-export const toState = <V>(params: ParamToState<V>): State<V> => {
+export const toState = <A>(params: ParamToState<A>): State<A> => {
   if (params.error) {
     return FP.left(Error.create()) // TODO: reconsider how to deal with each error details
   }
@@ -75,13 +76,9 @@ export const toState = <V>(params: ParamToState<V>): State<V> => {
     return FP.right(InProgress.create())
   }
   if (params.data) {
-    if (!params.validate) {
-      return FP.right(Success.create(params.data))
-    }
-    const validated = params.validate(params.data)
-    return FP.isLeft(validated)
+    return FP.isLeft(params.data)
       ? FP.left(InvalidResultError.create())
-      : FP.right(Success.create<V>(params.data))
+      : FP.right(Success.create<A>(params.data.right))
   }
   return FP.right(Init.create())
 }

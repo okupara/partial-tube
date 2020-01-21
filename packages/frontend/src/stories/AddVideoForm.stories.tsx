@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { storiesOf } from '@storybook/react'
 import AddVideoForm from 'components/organisms/AddVideoForm'
 import * as Add from '@partial-tube/domain/lib/workflow/AddVideo'
 import useYoutube from 'hooks/useYoutube'
@@ -25,10 +24,13 @@ const AddVideoWithRef = (props: Props) => {
   )
 }
 
-storiesOf('Add', module)
-  .add('Default', () => (
-    <AddVideoWithRef videoExistance={Add.createNeverLoadedVideo()} />
-  ))
-  .add('when Video loaded', () => (
-    <AddVideoWithRef videoExistance={Add.createExistedVideo()} />
-  ))
+export const withoutVideo = () => (
+  <AddVideoWithRef videoExistance={Add.createNeverLoadedVideo()} />
+)
+export const withVideo = () => (
+  <AddVideoWithRef videoExistance={Add.createExistedVideo()} />
+)
+
+export default {
+  title: 'Add'
+}

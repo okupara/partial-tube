@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { storiesOf } from '@storybook/react'
 import useYoutube from 'hooks/useYoutube'
 
 // preparing another component for the story.
@@ -21,6 +20,8 @@ const YoutubeView = (props: Props) => {
   )
 }
 
-storiesOf('Youtube', module).add('default', () => {
-  return <YoutubeView videoId="wHCo0Iwra0I" />
-})
+export const youtube = () => <YoutubeView videoId="wHCo0Iwra0I" />
+
+export default {
+  title: 'Youtube'
+}

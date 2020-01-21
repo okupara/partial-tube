@@ -14,14 +14,6 @@ import GlobalCss from '../src/GlobalCss'
 // require("jest-dom/extend-expect")
 // import "react-testing-library/cleanup-after-each"
 
-// automatically import all files ending in *.stories.js
-const req = require.context('../src/stories', true, /\.stories\.tsx?$/)
-function loadStories() {
-  req.keys().forEach(filename => req(filename))
-}
-
-configure(loadStories, module)
-
 addDecorator(s => {
   return (
     <>
@@ -31,3 +23,5 @@ addDecorator(s => {
     </>
   )
 })
+
+configure(require.context('../src/stories', true, /\.stories\.tsx$/), module)

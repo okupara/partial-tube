@@ -3,7 +3,7 @@
 import * as t from 'io-ts'
 import * as FilledString from './core/FilledString'
 
-const BaseStringId = t.type({ value: FilledString.runtimeType })
+const BaseStringId = t.type({ value: FilledString.IOType })
 
 export type BaseStringId = t.TypeOf<typeof BaseStringId>
 
@@ -14,10 +14,10 @@ export const createIdType = <T extends BaseStringId>(
     'StringId',
     (i): i is T => BaseStringId.is(i),
     (i, c) =>
-      FilledString.runtimeType.is(i) ? t.success<T>(f(i)) : t.failure(i, c),
+      FilledString.IOType.is(i) ? t.success<T>(f(i)) : t.failure(i, c),
     a => a.value
   )
-  return FilledString.runtimeType.pipe(StringId)
+  return FilledString.IOType.pipe(StringId)
 }
 
 export namespace PlayItem {

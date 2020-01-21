@@ -1,7 +1,7 @@
 import * as t from 'io-ts'
 import * as FilledString from './core/FilledString'
 
-const RecordRuntime = t.type({ value: FilledString.runtimeType })
+const RecordRuntime = t.type({ value: FilledString.IOType })
 export type Record = t.TypeOf<typeof RecordRuntime>
 
 const tokenRecordRuntime = new t.Type<Record, string, string>(
@@ -11,6 +11,6 @@ const tokenRecordRuntime = new t.Type<Record, string, string>(
   a => a.value
 )
 
-export const IOType = FilledString.runtimeType.pipe(tokenRecordRuntime)
+export const IOType = FilledString.IOType.pipe(tokenRecordRuntime)
 
 export const create = IOType.decode
