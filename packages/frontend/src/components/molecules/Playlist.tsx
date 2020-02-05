@@ -4,10 +4,11 @@ import { makeStyles } from '@material-ui/styles'
 import CardContent from '@material-ui/core/CardContent'
 import TypoGraphy from '@material-ui/core/Typography'
 import PlaylistPicture from 'components/molecules/PlaylistPicture'
-import { Playlist } from '@partial-tube/domain/lib/PlaylistCollection'
+// import { Playlist } from '@partial-tube/domain/lib/PlaylistCollection'
 
 type Props = {
-  playList: Playlist.Type
+  // playList: Playlist.Type
+  playList: any // just for now.
 }
 
 const useStyles = makeStyles(() => ({
