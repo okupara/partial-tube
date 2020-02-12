@@ -1,17 +1,24 @@
 {
-  "hosting": {
-    "public": "./packages/frontend/hosting",
-    "rewrites": [{
-      "source": "/graphql",
-      "function": "graphql"
-    }],
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+  "functions": {
+    "source": "dist/functions",
+    "predeploy": [
+      "npm run lint-functions",
+      "npm run lint-app",
+      "npm run typecheck-app",
+      "npm run build-functions",
+      "npm run build-app",
+      "npm run copy-deps",
+      "npm run install-deps"
     ]
   },
-  "functions": {
-    "source": "./packages/backend"
+  "hosting": {
+    "public": "dist/public",
+    "rewrites": [
+      {
+        "source": "**/**",
+        "function": "nextApp"
+      }
+    ],
+    "predeploy": "npm run build-public"
   }
 }
