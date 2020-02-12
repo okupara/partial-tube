@@ -18,9 +18,12 @@
     "typecheck-app": "tsc --project src/app",
     "lint-functions": "tslint --project src/functions",
     "copy-deps": "cpx \"*{package.json,package-lock.json,yarn.lock}\" \"dist/functions\" -C",
-    "install-deps": "cd \"dist/functions\" && npm i"
+    "install-deps": "cd \"dist/functions\" && npm i",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@storybook/preset-typescript": "^1.2.0",
     "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
     "next": "latest",
@@ -28,13 +31,21 @@
     "react-dom": "^16.12.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@storybook/addon-actions": "^5.3.13",
+    "@storybook/addon-links": "^5.3.13",
+    "@storybook/addons": "^5.3.13",
+    "@storybook/react": "^5.3.13",
     "@types/node": "^13.7.1",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "babel-loader": "^8.0.6",
     "cpx": "^1.5.0",
     "cross-env": "^7.0.0",
     "firebase-tools": "^7.12.1",
+    "react-docgen-typescript-loader": "^3.6.0",
     "rimraf": "^3.0.2",
+    "ts-loader": "^6.2.1",
     "tslint": "^5.11.0",
     "tslint-react": "^3.6.0",
     "typescript": "^3.7.5"
