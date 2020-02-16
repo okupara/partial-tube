@@ -10,7 +10,7 @@ unAuthenticated.story = {
 }
 
 export const authenticated = () =>
-    <AppHeader component={<Avatar size="sm" name="Kola Tioluwani" />} />
+    <AppHeader component={<Avatar size="md" name="Kola Tioluwani" />} />
 
 authenticated.story = {
     name: "authenticated"
