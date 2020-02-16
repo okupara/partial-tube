@@ -1,21 +1,19 @@
-import React from "react";
+import React from "react"
 import AppHeader from "../src/app/components/AppHeader"
-import {Button, Avatar} from "@chakra-ui/core"
+import { Button, Avatar } from "@chakra-ui/core"
 
-export const unAuthenticated = () => 
-    <AppHeader component={<Button>Login</Button>} />
+export const unAuthenticated = () => <AppHeader component={<Button>Login</Button>} />
 
 unAuthenticated.story = {
-    name: "un-authenticated"
+  name: "un-authenticated",
 }
 
-export const authenticated = () =>
-    <AppHeader component={<Avatar size="md" name="Kola Tioluwani" />} />
+export const authenticated = () => <AppHeader component={<Avatar size="md" name="Kola Tioluwani" />} />
 
 authenticated.story = {
-    name: "authenticated"
+  name: "authenticated",
 }
 
 export default {
-    title: "AppHeader"
+  title: "AppHeader",
 }

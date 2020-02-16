@@ -1,10 +1,14 @@
 import React from "react"
-import Header from './Header'
+import Header from "./Header"
 
-const App = ({ children }: { children?: any }) => (
+type AppProps = {
+  children?: React.ReactNode
+}
+
+const App: React.FC<AppProps> = props => (
   <main>
     <Header />
-    {children}
+    {props.children}
   </main>
 )
 
