@@ -23,7 +23,11 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@chakra-ui/core": "^0.5.2",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27",
     "@storybook/preset-typescript": "^1.2.0",
+    "emotion-theming": "^10.0.27",
     "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
     "next": "latest",
