@@ -1,7 +1,4 @@
-import App from '../components/App'
+import React from "react"
 
-export default () => (
-  <App>
-    <p>About Page</p>
-  </App>
-)
+const About = () => <p>About Page</p>
+export default About
