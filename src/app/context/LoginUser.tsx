@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import * as User from "../../modles/User"
+import * as User from "../../models/User"
 
 type NullableUser = null | User.Model
 type UserContextValue = [NullableUser, (user: User.Model) => void]
