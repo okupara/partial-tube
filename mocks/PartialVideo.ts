@@ -10,4 +10,11 @@ export const mocks: ReadonlyArray<RequiredProps> = [
     end: 80,
     comment: "testststs",
   },
+  {
+    title: "ホラーすぎる彼女です",
+    youtubeId: "w4A1CHEpqvw",
+    start: 80,
+    end: 120,
+    comment: "testststs",
+  },
 ]
