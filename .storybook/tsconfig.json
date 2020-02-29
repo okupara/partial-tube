@@ -11,7 +11,7 @@
     "rootDirs": ["../stories", "../src"],
     "baseUrl": "../src",
     "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -22,6 +22,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true
+  },
+  "files": ["../src/app/types/youtube.d.ts"],
+  "typeAcquisition": {
+    "enable": true
   },
   "include": ["../stories/**/*", "../src/app/components/**/*"],
   "exclude": ["../node_modules", "../build", "../scripts"]
