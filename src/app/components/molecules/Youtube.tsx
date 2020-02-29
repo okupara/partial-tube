@@ -44,7 +44,8 @@ export type ReturnUseYoutube = {
 const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
   const refDiv = useRef<HTMLDivElement | null>(null)
   const [playerState, setPlayerState] = useState<YT.PlayerState>(-1)
-  let player: YT.Player | null = null
+  const playerRef = useRef<YT.Player | null>(null)
+
   useEffect(() => {
     ;(async () => {
       for (let i = 0; i < 4; i++) {
@@ -55,7 +56,7 @@ const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
         console.error("maybe offline??")
       } else {
         if (refDiv.current) {
-          player = new YT.Player(refDiv.current, {
+          playerRef.current = new YT.Player(refDiv.current, {
             videoId: props.videoId,
             events: {
               onReady() {
@@ -72,7 +73,7 @@ const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
   }, [])
   return {
     refDiv,
-    player: player,
+    player: playerRef.current,
     playerState,
     readyYoutube: flags.loadedApi,
   }
@@ -84,13 +85,14 @@ type Props = {
   videoId: string
 }
 const Youtube: React.FC<Props> = ({ videoId }) => {
-  const { refDiv, playerState, readyYoutube } = useYoutube({ videoId })
+  const { refDiv, playerState, readyYoutube, player } = useYoutube({ videoId })
+  const [currentTime, setCurrentTime] = useState(0)
   useEffect(() => {
     if (readyYoutube) {
       switch (playerState) {
         case YT.PlayerState.PLAYING:
           const timerId = setInterval(() => {
-            console.log("11")
+            setCurrentTime(player?.getCurrentTime() || 0)
           }, 100)
           return () => clearInterval(timerId)
         default:
@@ -100,6 +102,11 @@ const Youtube: React.FC<Props> = ({ videoId }) => {
     }
   }, [readyYoutube, playerState])
 
-  return <div ref={refDiv} />
+  return (
+    <div>
+      <div>{currentTime}</div>
+      <div ref={refDiv} />
+    </div>
+  )
 }
 export default Youtube
