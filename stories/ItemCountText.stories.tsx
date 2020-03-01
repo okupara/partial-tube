@@ -16,6 +16,6 @@ ItemCntTextZero.story = {
 }
 
 export default {
-  title: "Text",
+  title: "Text/count",
   decorators: [Margin],
 }

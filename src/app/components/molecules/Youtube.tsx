@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, MutableRefObject } from "react"
+import { useEffect, useRef, useState, MutableRefObject } from "react"
 
 /*
   loading script 
@@ -41,7 +41,7 @@ export type ReturnUseYoutube = {
   playerState: YT.PlayerState
   readyYoutube: boolean
 }
-const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
+export const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
   const refDiv = useRef<HTMLDivElement | null>(null)
   const [playerState, setPlayerState] = useState<YT.PlayerState>(-1)
   const playerRef = useRef<YT.Player | null>(null)
@@ -78,35 +78,3 @@ const useYoutube = (props: UseYoutubeProps): ReturnUseYoutube => {
     readyYoutube: flags.loadedApi,
   }
 }
-
-/* view */
-
-type Props = {
-  videoId: string
-}
-const Youtube: React.FC<Props> = ({ videoId }) => {
-  const { refDiv, playerState, readyYoutube, player } = useYoutube({ videoId })
-  const [currentTime, setCurrentTime] = useState(0)
-  useEffect(() => {
-    if (readyYoutube) {
-      switch (playerState) {
-        case YT.PlayerState.PLAYING:
-          const timerId = setInterval(() => {
-            setCurrentTime(player?.getCurrentTime() || 0)
-          }, 100)
-          return () => clearInterval(timerId)
-        default:
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          return () => {}
-      }
-    }
-  }, [readyYoutube, playerState])
-
-  return (
-    <div>
-      <div>{currentTime}</div>
-      <div ref={refDiv} />
-    </div>
-  )
-}
-export default Youtube
