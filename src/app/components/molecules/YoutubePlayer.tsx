@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, MutableRefObject, useCallback } from "react"
+import { Flex } from "@chakra-ui/core"
 
 /*
   loading script 
@@ -135,5 +136,9 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
     }
   }, [playerState])
 
-  return <div ref={refDiv} />
+  return (
+    <Flex backgroundColor="#000" justifyContent="center">
+      <div ref={refDiv} />
+    </Flex>
+  )
 }

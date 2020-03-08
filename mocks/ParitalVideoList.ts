@@ -13,7 +13,7 @@ export const partialVideList: PartialVideoListProps["partialVideoList"] = [
     youtubeId: "iaqgyA9PZ08",
     start: 120,
     end: 128,
-    comment: "testest",
+    comment: "",
   },
   {
     title: "TK da 黒ぶちと戦ってみた",

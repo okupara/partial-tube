@@ -1,5 +1,5 @@
 import React from "react"
-import { Flex, Box } from "@chakra-ui/core"
+import { Flex, Box, Text } from "@chakra-ui/core"
 import { PartialVideoList, Props as PartialVideoListProps } from "../molecules/PartialVideoCardList"
 import { PlayerController } from "../molecules/PlayerController"
 import { DescriptionBox } from "../molecules/DescriptionBox"
@@ -10,7 +10,6 @@ type Props = PartialVideoListProps
 export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) => {
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const changeCurrent = (fn: (current: number) => number) => setCurrentIndex(fn)
-  console.log("CURRENT", currentIndex)
 
   return {
     currentPartialVideo: list[currentIndex],
@@ -25,7 +24,6 @@ export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) 
 
 export const Player: React.FC<Props> = props => {
   const { currentPartialVideo, ...dispatch } = usePlayerQueue(props.partialVideoList)
-  console.log("KAWA", currentPartialVideo)
 
   return (
     <Flex flexDirection="column">
@@ -37,11 +35,16 @@ export const Player: React.FC<Props> = props => {
           onEndVideo={() => dispatch.next()}
         />
       </Box>
-      <Flex>
+      <Box mt={4}>
+        <Text as="h2" fontWeight="bold" fontSize="2xl">
+          {currentPartialVideo.title}
+        </Text>
+      </Box>
+      <Flex my={6}>
         <Box>
           <PlayerController />
         </Box>
-        <Box>
+        <Box ml={6}>
           <DescriptionBox text={currentPartialVideo.comment} />
         </Box>
       </Flex>
