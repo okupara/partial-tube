@@ -64,12 +64,6 @@ const useLoadingScript = () => {
   return status
 }
 
-// type LoadVideoParam = {
-//   videoId: string
-//   start: number
-//   end: number
-// }
-
 type YTPlayerStatus = "NOT_LOADED_PLAYER" | "LOADED_PLAYER"
 const useYTPlayer = () => {
   const [status, setStatus] = useState<YTPlayerStatus>("NOT_LOADED_PLAYER")
@@ -114,8 +108,6 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
   const res = useYTPlayer()
   const refDiv = useRef<HTMLDivElement | null>(null)
   const [playerState, setPlayerState] = useState(-1)
-  // const res = useVideoPlayer()
-  console.log("RENDER", "CHIGAUWA", videoId, start, end)
 
   useEffect(() => {
     if (loadingScriptStatus === "LOADED_SCRIPT" && refDiv.current) {
@@ -124,7 +116,6 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
       })
     }
   }, [loadingScriptStatus])
-  console.log(playerState)
 
   useEffect(() => {
     if (res.status === "LOADED_PLAYER") {
@@ -133,11 +124,11 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
   }, [res.status, videoId, start, end])
 
   useEffect(() => {
-    console.log("FFF", res.player?.getVideoLoadedFraction())
     if (
       res.status === "LOADED_PLAYER" &&
       playerState === YT.PlayerState.ENDED &&
-      // this is a hack for preventing to skip a video that is the same with previous one.
+      // youtube api skips a video if the videoId is the same with previous one.
+      // this is a hack to prevent it.
       triedLoadingVideo(res.player?.getVideoLoadedFraction())
     ) {
       onEndVideo?.()
