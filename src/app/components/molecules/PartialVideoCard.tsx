@@ -16,14 +16,18 @@ export type Props = {
 const PartialVideoCard: React.FC<Props> = props => (
   <Card>
     <Flex>
-      <Box>
+      <Box position="relative">
         <YoutubeImage youtubeId={props.youtubeId} />
+        <Box position="absolute" bottom={0} backgroundColor="rgb(0, 0, 0, 0.7)" width="100%">
+          <TimeRangeText color="#fff" start={props.start} end={props.end}>
+            00:20 - 01:20
+          </TimeRangeText>
+        </Box>
       </Box>
       <Flex flexDirection="column" ml={4}>
         <Heading size="md" as="h3">
           {props.title}
         </Heading>
-        <TimeRangeText start={props.start} end={props.end} />
         <Text>{props.comment}</Text>
       </Flex>
     </Flex>

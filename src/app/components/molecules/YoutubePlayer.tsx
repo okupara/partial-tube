@@ -119,7 +119,7 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
 
   useEffect(() => {
     if (res.status === "LOADED_PLAYER") {
-      res.player?.loadVideoById({ videoId, startSeconds: start, endSeconds: end })
+      // res.player?.loadVideoById({ videoId, startSeconds: start, endSeconds: end })
     }
   }, [res.status, videoId, start, end])
 
