@@ -606,6 +606,8 @@ declare namespace YT {
      * Video ID.
      */
     videoId: string
+    startSeconds: number
+    endSeconds: number
   }
 
   /**

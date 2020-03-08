@@ -1,5 +1,5 @@
 import React from "react"
-import PartialVideoCardList from "../src/app/components/organisms/PartialVideoCardList"
+import PartialVideoCardList from "../src/app/components/molecules/PartialVideoCardList"
 import PartialVideoCard from "../src/app/components/molecules/PartialVideoCard"
 import { Margin } from "./MarginDecorator"
 import { mocks } from "../mocks/PartialVideo"
