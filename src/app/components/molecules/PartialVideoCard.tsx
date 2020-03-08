@@ -1,8 +1,9 @@
 import React from "react"
-import { Box, Flex, Text, Heading } from "@chakra-ui/core"
+import { Box, Flex, Heading } from "@chakra-ui/core"
 import YoutubeImage from "../molecules/YoutubeImage"
 import TimeRangeText from "../molecules/TimeRangeText"
 import Card from "../atomic/Card"
+import CommentIconText from "../molecules/CommentIconText"
 
 export type Props = {
   title: string
@@ -28,7 +29,7 @@ const PartialVideoCard: React.FC<Props> = props => (
         <Heading size="md" as="h3">
           {props.title}
         </Heading>
-        <Text>{props.comment}</Text>
+        <CommentIconText text={props.comment} />
       </Flex>
     </Flex>
   </Card>
