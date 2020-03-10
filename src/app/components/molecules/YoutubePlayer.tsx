@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, MutableRefObject, useCallback } from "react"
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  MutableRefObject,
+  useCallback,
+} from "react"
 import { Flex } from "@chakra-ui/core"
 
 /*
@@ -30,7 +36,8 @@ const loadIframeApiScript = () => {
 }
 loadIframeApiScript()
 
-const delay = (duration: number) => new Promise(res => setTimeout(() => res(), duration))
+const delay = (duration: number) =>
+  new Promise(res => setTimeout(() => res(), duration))
 
 export type UseYoutubeProps = {
   videoId?: string
@@ -43,7 +50,11 @@ export type ReturnUseYoutube = {
   loadVideoId: (videoId: string) => void
 }
 
-const YtScriptLoadings = ["LOADING_SCRIPT", "LOADED_SCRIPT", "LOADING_SCRIPT_ERROR"] as const
+const YtScriptLoadings = [
+  "LOADING_SCRIPT",
+  "LOADED_SCRIPT",
+  "LOADING_SCRIPT_ERROR",
+] as const
 type YTScriptLoading = typeof YtScriptLoadings[number]
 
 const useLoadingScript = () => {
@@ -69,16 +80,19 @@ type YTPlayerStatus = "NOT_LOADED_PLAYER" | "LOADED_PLAYER"
 const useYTPlayer = () => {
   const [status, setStatus] = useState<YTPlayerStatus>("NOT_LOADED_PLAYER")
   const playerRef = useRef<YT.Player | null>(null)
-  const init = useCallback((div: HTMLDivElement, callback: YT.Events["onStateChange"]) => {
-    playerRef.current = new YT.Player(div, {
-      events: {
-        onReady() {
-          setStatus("LOADED_PLAYER")
+  const init = useCallback(
+    (div: HTMLDivElement, callback: YT.Events["onStateChange"]) => {
+      playerRef.current = new YT.Player(div, {
+        events: {
+          onReady() {
+            setStatus("LOADED_PLAYER")
+          },
+          onStateChange: callback,
         },
-        onStateChange: callback,
-      },
-    })
-  }, [])
+      })
+    },
+    [],
+  )
   return {
     status,
     init,
@@ -142,3 +156,5 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
     </Flex>
   )
 }
+
+export default YoutubePlayer

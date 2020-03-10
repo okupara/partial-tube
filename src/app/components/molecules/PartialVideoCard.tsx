@@ -1,15 +1,14 @@
 import React from "react"
-import { Box, Flex, Heading } from "@chakra-ui/core"
-import YoutubeImage from "../molecules/YoutubeImage"
-import TimeRangeText from "../molecules/TimeRangeText"
+import { Flex, Heading } from "@chakra-ui/core"
 import Card from "../atomic/Card"
 import CommentIconText from "../molecules/CommentIconText"
+import PartialVideoThumb from "../molecules/PartialVideoThumb"
 
 export type Props = {
   title: string
   start: number
   end: number
-  youtubeId: string
+  videoId: string
   comment: string
   mb?: number
 }
@@ -17,14 +16,19 @@ export type Props = {
 const PartialVideoCard: React.FC<Props> = props => (
   <Card>
     <Flex>
-      <Box position="relative">
-        <YoutubeImage youtubeId={props.youtubeId} />
+      <PartialVideoThumb
+        videoId={props.videoId}
+        imageWidth={200}
+        start={props.start}
+        end={props.end}
+        timeFontSize="md"
+      />
+      {/* <Box position="relative">
+        <YoutubeImage youtubeImageSize="mqdefault" width={200} videoId={props.videoId} />
         <Box position="absolute" bottom={0} backgroundColor="rgb(0, 0, 0, 0.7)" width="100%">
-          <TimeRangeText color="#fff" start={props.start} end={props.end}>
-            00:20 - 01:20
-          </TimeRangeText>
+          <TimeRangeText color="#fff" start={props.start} end={props.end} />
         </Box>
-      </Box>
+      </Box> */}
       <Flex flexDirection="column" ml={4}>
         <Heading size="md" as="h3">
           {props.title}

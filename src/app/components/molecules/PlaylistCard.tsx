@@ -17,7 +17,7 @@ const PartialVideoCard: React.FC<Props> = props => (
   <Card>
     <Flex>
       <Box>
-        <YoutubeImage youtubeId={props.firstVideoId} />
+        <YoutubeImage youtubeImageSize="mqdefault" width={200} videoId={props.firstVideoId} />
       </Box>
       <Flex flexDirection="column" ml={4}>
         <Heading size="md" as="h3">

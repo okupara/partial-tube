@@ -7,33 +7,11 @@ type Props = {
   end: number
   color?: FlexProps["color"]
   textAlign?: FlexProps["textAlign"]
+  fontSize?: FlexProps["fontSize"]
 }
 
-type SizeElement = {
-  fontSize: number
-  centerPadding: number
-}
-type Sizes = "sm" | "md" | "lg"
-
-const Size: { [key in Sizes]: SizeElement } = {
-  sm: {
-    fontSize: 1,
-    centerPadding: 1,
-  },
-  md: {
-    fontSize: 2,
-    centerPadding: 2,
-  },
-  lg: {
-    fontSize: 3,
-    centerPadding: 3,
-  },
-}
-
-console.log(Size)
-
-const TimeRangeText: React.FC<Props> = ({ start, end, ...props }) => (
-  <Flex {...props} justifyContent="center">
+const TimeRangeText: React.FC<Props> = ({ start, end, fontSize, ...props }) => (
+  <Flex {...props} justifyContent="center" fontSize={fontSize}>
     <TimeText sec={start} />
     <Text px={1}>-</Text>
     <TimeText sec={end} />
