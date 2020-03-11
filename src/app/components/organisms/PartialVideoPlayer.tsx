@@ -15,9 +15,11 @@ export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) 
   return {
     currentPartialVideo: list[currentIndex],
     next() {
+      if (currentIndex >= list.length - 1) return
       changeCurrent(current => current + 1)
     },
     prev() {
+      if (currentIndex === 0) return
       changeCurrent(current => current - 1)
     },
   }
