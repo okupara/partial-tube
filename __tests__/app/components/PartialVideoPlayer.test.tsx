@@ -20,4 +20,19 @@ describe("PartialVideoPlayer", () => {
     // nothing changes because it reaches the end of the elements
     expect(result.current.currentPartialVideo).toStrictEqual(partialVideList[2])
   })
+  it("should returns the first one when prev() calls too much", () => {
+    const { result } = renderHook(() => usePlayerQueue(partialVideList))
+    for (let i = 0; i < 2; i++) {
+      act(() => {
+        result.current.next()
+      })
+    }
+    expect(result.current.currentPartialVideo).toStrictEqual(partialVideList[2])
+    for (let i = 0; i < 4; i++) {
+      act(() => {
+        result.current.prev()
+      })
+    }
+    expect(result.current.currentPartialVideo).toStrictEqual(partialVideList[0])
+  })
 })
