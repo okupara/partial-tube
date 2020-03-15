@@ -1,6 +1,6 @@
 import React from "react"
 import { Flex, FlexProps, Text } from "@chakra-ui/core"
-import TimeText from "./TimeText"
+import { TimeText } from "./TimeText"
 
 type Props = {
   start: number

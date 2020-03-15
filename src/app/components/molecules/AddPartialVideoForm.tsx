@@ -20,7 +20,7 @@ const TimeValue = ({ time }: TimeValueProps) =>
     <Text>{secToTime(time)}</Text>
   )
 
-const AddPartialVideoForm = ({ currentTime }: Props) => {
+export const AddPartialVideoForm = ({ currentTime }: Props) => {
   const [start, setStart] = React.useState<Time>(null)
   const [end, setEnd] = React.useState<Time>(null)
   return (
@@ -65,5 +65,3 @@ const AddPartialVideoForm = ({ currentTime }: Props) => {
     </Flex>
   )
 }
-
-export default AddPartialVideoForm

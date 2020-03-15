@@ -1,11 +1,11 @@
 import React from "react"
-import { Text } from "@chakra-ui/core"
+import { Text, BoxProps } from "@chakra-ui/core"
 import { secToTime } from "../../ui-domain/Time"
 
 type Props = {
   sec: number
-}
+} & BoxProps
 
-const TimeText = ({ sec }: Props) => <Text>{secToTime(sec)}</Text>
-
-export default TimeText
+export const TimeText = ({ sec, ...props }: Props) => (
+  <Text {...props}>{secToTime(sec)}</Text>
+)
