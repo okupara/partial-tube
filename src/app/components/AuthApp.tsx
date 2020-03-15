@@ -4,8 +4,8 @@ import {
   useLoginUserContext,
   isLoggedIn,
 } from "../context/LoginUser"
-import Authenticated from "./Authenticated"
-import UnAuthenticated from "./UnAuthenticated"
+import { Authenticated } from "./Authenticated"
+import { UnAuthenticated } from "./UnAuthenticated"
 
 type Props = {
   children: React.ReactNode

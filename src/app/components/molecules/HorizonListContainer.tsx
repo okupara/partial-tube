@@ -1,6 +1,6 @@
 import React from "react"
 import { Box, Flex } from "@chakra-ui/core"
-import StackList from "../atomic/StackList"
+import StackList from "../atoms/StackList"
 
 type Props<T> = {
   titleView: () => React.ReactNode

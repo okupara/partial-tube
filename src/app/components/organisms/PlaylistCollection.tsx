@@ -1,5 +1,5 @@
 import React from "react"
-import StackList from "../atomic/StackList"
+import StackList from "../atoms/StackList"
 import PlaylistCard, { Props as PLProps } from "../molecules/PlaylistCard"
 
 type Props = {
@@ -7,7 +7,10 @@ type Props = {
 }
 
 const PlaylistCollection: React.FC<Props> = props => (
-  <StackList list={props.playlistCollection} component={p => <PlaylistCard {...p} />} />
+  <StackList
+    list={props.playlistCollection}
+    component={p => <PlaylistCard {...p} />}
+  />
 )
 
 export default PlaylistCollection

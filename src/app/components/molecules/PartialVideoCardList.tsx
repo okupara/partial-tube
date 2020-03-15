@@ -1,5 +1,5 @@
 import React from "react"
-import StackList from "../atomic/StackList"
+import StackList from "../atoms/StackList"
 import PartialVideoCard, { Props as PVProps } from "../molecules/PartialVideoCard"
 
 export type Props = {
@@ -7,7 +7,11 @@ export type Props = {
 }
 
 export const PartialVideoList: React.FC<Props> = ({ partialVideoList }) => (
-  <StackList spacing={8} list={partialVideoList} component={p => <PartialVideoCard {...p} />} />
+  <StackList
+    spacing={8}
+    list={partialVideoList}
+    component={p => <PartialVideoCard {...p} />}
+  />
 )
 
 export default PartialVideoList

@@ -1,5 +1,5 @@
 import React from "react"
-import { Margin } from "./MarginDecorator"
+import { MarginDecorator } from "./Decorators"
 import { DescriptionBox } from "../src/app/components/molecules/DescriptionBox"
 
 const foo = "aaaa\nbarrrrr"
@@ -15,9 +15,11 @@ momoo
 `
 
 export const normal = () => <DescriptionBox text={foo} />
-export const withSize = () => <DescriptionBox text={longSentence} maxHeight="100px" />
+export const withSize = () => (
+  <DescriptionBox text={longSentence} maxHeight="100px" />
+)
 
 export default {
   title: "DescriptionBox",
-  decorators: [Margin],
+  decorators: [MarginDecorator],
 }

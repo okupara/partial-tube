@@ -1,7 +1,7 @@
 import React from "react"
 import { Flex, Box } from "@chakra-ui/core"
 import CommentIconText from "./CommentIconText"
-import PartialVideoThumb from "./PartialVideoThumb"
+import { PartialVideoThumb } from "./PartialVideoThumb"
 
 export type Props = {
   videoId: string

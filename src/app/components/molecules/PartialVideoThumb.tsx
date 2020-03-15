@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, BoxProps } from "@chakra-ui/core"
 import TimeRangeText from "./TimeRangeText"
-import YoutubeImage from "./YoutubeImage"
+import { YoutubeImage } from "./YoutubeImage"
 
 type Props = {
   start: number
@@ -11,7 +11,7 @@ type Props = {
   timeFontSize: BoxProps["fontSize"]
 }
 
-const PartialVideoThumb = ({
+export const PartialVideoThumb = ({
   start,
   end,
   videoId,
@@ -34,5 +34,3 @@ const PartialVideoThumb = ({
     </Box>
   </Box>
 )
-
-export default PartialVideoThumb

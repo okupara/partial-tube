@@ -8,8 +8,8 @@ type Props = {
   user: User.Model
 }
 
-const Aunthenticated: React.FC<Props> = props => (
-  <AppHeader component={<UserAvatar name={props.user.name} />}>{props.children}</AppHeader>
+export const Authenticated: React.FC<Props> = props => (
+  <AppHeader component={<UserAvatar name={props.user.name} />}>
+    {props.children}
+  </AppHeader>
 )
-
-export default Aunthenticated

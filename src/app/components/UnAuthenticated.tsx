@@ -1,13 +1,13 @@
 import React from "react"
 import AppHeader from "./organisms/AppHeader"
-import LoginButton from "./molecules/LoginButton"
+import { Button } from "@chakra-ui/core"
 
 type Props = {
   children?: React.ReactNode
 }
 
-const UnAuthenticated: React.FC<Props> = props => (
-  <AppHeader component={<LoginButton />}>{props.children}</AppHeader>
+export const UnAuthenticated: React.FC<Props> = props => (
+  <AppHeader component={<Button variant="ghost">Sign In</Button>}>
+    {props.children}
+  </AppHeader>
 )
-
-export default UnAuthenticated
