@@ -14,6 +14,6 @@ const determineContent = (cnt: number) => {
   return `${cnt} items`
 }
 
-const ItemCountText: React.FC<Props> = props => <Text>{determineContent(props.cnt)}</Text>
-
-export default ItemCountText
+export const ItemCountText: React.FC<Props> = props => (
+  <Text>{determineContent(props.cnt)}</Text>
+)

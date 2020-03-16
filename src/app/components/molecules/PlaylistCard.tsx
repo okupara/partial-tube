@@ -1,9 +1,9 @@
 import React from "react"
 import { Box, Flex, Text, Heading } from "@chakra-ui/core"
 import { YoutubeImage } from "../molecules/YoutubeImage"
-import Card from "../atoms/Card"
-import ItemCountText from "../molecules/ItemCountText"
-import DateText from "../molecules/DateText"
+import { Card } from "../atoms/Card"
+import { ItemCountText } from "../molecules/ItemCountText"
+import { DateText } from "../molecules/DateText"
 
 export type Props = {
   title: string
@@ -13,7 +13,7 @@ export type Props = {
   updated: Date
 }
 
-const PartialVideoCard: React.FC<Props> = props => (
+export const PlaylistCard: React.FC<Props> = props => (
   <Card>
     <Flex>
       <Box>
@@ -41,4 +41,3 @@ const PartialVideoCard: React.FC<Props> = props => (
     </Flex>
   </Card>
 )
-export default PartialVideoCard

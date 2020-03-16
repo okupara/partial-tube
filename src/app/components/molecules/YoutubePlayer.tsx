@@ -156,5 +156,3 @@ export const YoutubePlayer: React.FC<YoutubePlayerProps> = ({
     </Flex>
   )
 }
-
-export default YoutubePlayer

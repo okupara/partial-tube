@@ -21,5 +21,3 @@ export const CommentIconText: React.FC<Props> = props => {
     </Text>
   )
 }
-
-export default CommentIconText

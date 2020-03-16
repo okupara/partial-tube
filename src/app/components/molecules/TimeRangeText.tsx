@@ -10,12 +10,15 @@ type Props = {
   fontSize?: FlexProps["fontSize"]
 }
 
-const TimeRangeText: React.FC<Props> = ({ start, end, fontSize, ...props }) => (
+export const TimeRangeText: React.FC<Props> = ({
+  start,
+  end,
+  fontSize,
+  ...props
+}) => (
   <Flex {...props} justifyContent="center" fontSize={fontSize}>
     <TimeText sec={start} />
     <Text px={1}>-</Text>
     <TimeText sec={end} />
   </Flex>
 )
-
-export default TimeRangeText

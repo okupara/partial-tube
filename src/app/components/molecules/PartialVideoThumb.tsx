@@ -1,6 +1,6 @@
 import React from "react"
 import { Box, BoxProps } from "@chakra-ui/core"
-import TimeRangeText from "./TimeRangeText"
+import { TimeRangeText } from "./TimeRangeText"
 import { YoutubeImage } from "./YoutubeImage"
 
 type Props = {

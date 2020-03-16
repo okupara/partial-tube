@@ -33,5 +33,3 @@ export const PlayerController = () => (
     </Flex>
   </Flex>
 )
-
-export default PlayerController

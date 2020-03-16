@@ -22,5 +22,3 @@ export const DescriptionBox: React.FC<Props> = ({ text, maxHeight }) =>
   ) : (
     <Box>{replaceNewLine(text)}</Box>
   )
-
-export default DescriptionBox

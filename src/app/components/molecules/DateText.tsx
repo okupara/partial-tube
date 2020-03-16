@@ -11,6 +11,4 @@ const convert = (date: Date) =>
     date.getDate(),
   )}`
 
-const DateText: React.FC<Props> = props => <Text>{convert(props.date)}</Text>
-
-export default DateText
+export const DateText: React.FC<Props> = props => <Text>{convert(props.date)}</Text>

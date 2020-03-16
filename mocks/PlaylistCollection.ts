@@ -1,4 +1,4 @@
-import PlaylistCard from "../src/app/components/molecules/PlaylistCard"
+import { PlaylistCard } from "../src/app/components/molecules/PlaylistCard"
 
 type RequiredProps = Parameters<typeof PlaylistCard>[0]
 

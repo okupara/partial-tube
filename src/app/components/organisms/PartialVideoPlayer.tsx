@@ -1,10 +1,10 @@
 import React from "react"
 import { Flex, Box, Text } from "@chakra-ui/core"
 import { Props as PartialVideoListProps } from "../molecules/PartialVideoCardList"
-import PlayerController from "../molecules/PlayerController"
-import DescriptionBox from "../molecules/DescriptionBox"
-import YoutubePlayer from "../molecules/YoutubePlayer"
-import TinyPartialVideoCardList from "../molecules/TinyPartialVideoCardList"
+import { PlayerController } from "../molecules/PlayerController"
+import { DescriptionBox } from "../molecules/DescriptionBox"
+import { YoutubePlayer } from "../molecules/YoutubePlayer"
+import { TinyPartialVideoCardList } from "../molecules/TinyPartialVideoCardList"
 
 type Props = PartialVideoListProps
 

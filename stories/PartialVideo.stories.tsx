@@ -1,10 +1,10 @@
 import React from "react"
-import PartialVideoCardList from "../src/app/components/molecules/PartialVideoCardList"
-import PartialVideoCard from "../src/app/components/molecules/PartialVideoCard"
+import { PartialVideoCardList } from "../src/app/components/molecules/PartialVideoCardList"
+import { PartialVideoCard } from "../src/app/components/molecules/PartialVideoCard"
 import { MarginDecorator } from "./Decorators"
 import { partialVideList, longList } from "../mocks/ParitalVideoList"
-import TinyPartialVideoCard from "../src/app/components/molecules/TinyPartialVideoCard"
-import TinyPartialVideoCardList from "../src/app/components/molecules/TinyPartialVideoCardList"
+import { TinyPartialVideoCard } from "../src/app/components/molecules/TinyPartialVideoCard"
+import { TinyPartialVideoCardList } from "../src/app/components/molecules/TinyPartialVideoCardList"
 
 export const partialVideoCard = () => <PartialVideoCard {...partialVideList[0]} />
 export const videoCardList = () => (

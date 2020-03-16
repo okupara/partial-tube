@@ -2,7 +2,7 @@ import React from "react"
 import { MarginDecorator } from "./Decorators"
 import { TimeText } from "../src/app/components/molecules/TimeText"
 import { Stack, Box } from "@chakra-ui/core"
-import TimeRangeText from "../src/app/components/molecules/TimeRangeText"
+import { TimeRangeText } from "../src/app/components/molecules/TimeRangeText"
 
 export const timeText = () => (
   <Stack spacing={8} direction="row">

@@ -1,66 +1,43 @@
 import React from "react"
-import { Flex, Text, Box, Button, Icon } from "@chakra-ui/core"
-import { secToTime } from "../../ui-domain/Time"
+import { Flex, Box, Button, Textarea } from "@chakra-ui/core"
+import { VideoTimeField } from "./VideoTimeField"
 
 type Props = {
   currentTime: number
+  onAdd?: () => void
 }
 
-type Time = null | number
-
-type TimeValueProps = {
-  time: Time
-}
-const TimeValue = ({ time }: TimeValueProps) =>
-  time === null ? (
-    <Text color="gray.500" as="i">
-      Not selected
-    </Text>
-  ) : (
-    <Text>{secToTime(time)}</Text>
-  )
-
-export const AddPartialVideoForm = ({ currentTime }: Props) => {
-  const [start, setStart] = React.useState<Time>(null)
-  const [end, setEnd] = React.useState<Time>(null)
+export const AddPartialVideoForm = ({ onAdd }: Props) => {
+  const [start, setStart] = React.useState<null | number>(null)
+  const [end, setEnd] = React.useState<null | number>(null)
   return (
     <Flex flexDirection="column">
       <Flex flexDirection="row">
-        <Flex flexDirection="column">
-          <Flex flexDirection="row">
-            <Text>Start:</Text>
-            <Box pl={2}>
-              <TimeValue time={start} />
-            </Box>
-          </Flex>
-          <Box>
-            <Button onClick={() => setStart(currentTime)}>
-              <Icon name="link" />
-              01:11
-            </Button>
-          </Box>
-        </Flex>
-        <Box mx={4}>
-          <Text>-</Text>
+        <Box>
+          <VideoTimeField
+            title="start"
+            currentTime={300}
+            selectedSec={start}
+            onTimeSet={() => setStart(300)}
+          />
         </Box>
-        <Flex flexDirection="column">
-          <Flex flexDirection="row">
-            <Text>Start:</Text>
-            <Box pl={2}>
-              <TimeValue time={end} />
-            </Box>
-          </Flex>
-          <Box>
-            <Button onClick={() => setEnd(currentTime)}>
-              <Icon name="link" />
-              01:11
-            </Button>
-          </Box>
-        </Flex>
-
+        <Box ml={4}>
+          <VideoTimeField
+            title="end"
+            currentTime={300}
+            selectedSec={end}
+            onTimeSet={() => setEnd(300)}
+          />
+        </Box>
         <Box ml="auto">
           <Button>PREVIEW</Button>
         </Box>
+      </Flex>
+      <Box mt={5}>
+        <Textarea height={10} placeholder="put some comments..." />
+      </Box>
+      <Flex mt={5} alignItems="center" justifyContent="center">
+        <Button onClick={onAdd}>ADD</Button>
       </Flex>
     </Flex>
   )

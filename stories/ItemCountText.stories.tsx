@@ -1,6 +1,6 @@
 import React from "react"
 import { MarginDecorator } from "./Decorators"
-import ItemCountText from "../src/app/components/molecules/ItemCountText"
+import { ItemCountText } from "../src/app/components/molecules/ItemCountText"
 
 export const ItemCntTextAbove2 = () => <ItemCountText cnt={2}>hello</ItemCountText>
 ItemCntTextAbove2.story = {

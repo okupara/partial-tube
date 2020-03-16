@@ -5,6 +5,6 @@ import { AddPartialVideoForm } from "../src/app/components/molecules/AddPartialV
 export const addPartialForm = () => <AddPartialVideoForm currentTime={180} />
 
 export default {
-  title: "PartialVideo/AddForm",
+  title: "PartialVideo",
   decorators: [MarginDecorator],
 }

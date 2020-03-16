@@ -1,6 +1,6 @@
 import React from "react"
 import AppHeader from "./organisms/AppHeader"
-import UserAvatar from "./molecules/UserAvatar"
+import { UserAvatar } from "./molecules/UserAvatar"
 import * as User from "../../models/User"
 
 type Props = {

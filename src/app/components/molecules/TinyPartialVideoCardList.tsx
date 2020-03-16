@@ -1,13 +1,13 @@
 import React from "react"
 import { Text } from "@chakra-ui/core"
-import HorizonListContainer from "./HorizonListContainer"
-import TinyPartialVideoCard, { Props as TCProps } from "./TinyPartialVideoCard"
+import { HorizonListContainer } from "./HorizonListContainer"
+import { TinyPartialVideoCard, Props as TCProps } from "./TinyPartialVideoCard"
 
 type Props = {
   partialVideoList: ReadonlyArray<TCProps>
 }
 
-const TinyPartialVideoCardList = ({ partialVideoList }: Props) => {
+export const TinyPartialVideoCardList = ({ partialVideoList }: Props) => {
   return (
     <HorizonListContainer
       list={partialVideoList}
@@ -27,5 +27,3 @@ const TinyPartialVideoCardList = ({ partialVideoList }: Props) => {
     />
   )
 }
-
-export default TinyPartialVideoCardList

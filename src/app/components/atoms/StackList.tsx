@@ -10,7 +10,7 @@ type Props<T> = {
   direction?: Direction
 }
 
-const List = <T extends {}>(props: Props<T>) => (
+export const StackList = <T extends {}>(props: Props<T>) => (
   <Stack spacing={4} direction={props.direction}>
     {props.list.map((c: T, i) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,5 +21,3 @@ const List = <T extends {}>(props: Props<T>) => (
     })}
   </Stack>
 )
-
-export default List

@@ -1,7 +1,7 @@
 import React from "react"
 import { Flex, Heading } from "@chakra-ui/core"
-import Card from "../atoms/Card"
-import CommentIconText from "../molecules/CommentIconText"
+import { Card } from "../atoms/Card"
+import { CommentIconText } from "../molecules/CommentIconText"
 import { PartialVideoThumb } from "../molecules/PartialVideoThumb"
 
 export type Props = {
@@ -13,7 +13,7 @@ export type Props = {
   mb?: number
 }
 
-const PartialVideoCard: React.FC<Props> = props => (
+export const PartialVideoCard: React.FC<Props> = props => (
   <Card>
     <Flex>
       <PartialVideoThumb
@@ -32,4 +32,3 @@ const PartialVideoCard: React.FC<Props> = props => (
     </Flex>
   </Card>
 )
-export default PartialVideoCard

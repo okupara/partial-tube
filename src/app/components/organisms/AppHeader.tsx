@@ -22,7 +22,12 @@ const AppHeader: React.FC<Props> = props => (
         PartialTube
       </Heading>
     </Flex>
-    <Flex justifyContent="center" alignItems="center" lineHeight="16" direction="row">
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      lineHeight="16"
+      direction="row"
+    >
       {props.component}
     </Flex>
   </Flex>
