@@ -28,6 +28,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "@storybook/preset-typescript": "^1.2.2",
+    "@xstate/react": "^1.0.0-rc.3",
     "emotion-theming": "^10.0.27",
     "eslint-plugin-react": "^7.19.0",
     "firebase-admin": "^8.9.2",
@@ -35,7 +36,8 @@
     "io-ts": "^2.1.2",
     "next": "latest",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "xstate": "^4.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
@@ -70,7 +72,7 @@
     "react-test-renderer": "^16.13.0",
     "rimraf": "^3.0.2",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.7.5"
   },
   "jest": {
     "transform": {

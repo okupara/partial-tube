@@ -3,7 +3,7 @@ import { Flex, Box, Text } from "@chakra-ui/core"
 import { Props as PartialVideoListProps } from "../molecules/PartialVideoCardList"
 import { PlayerController } from "../molecules/PlayerController"
 import { DescriptionBox } from "../molecules/DescriptionBox"
-import { YoutubePlayer } from "../molecules/YoutubePlayer"
+// import { YoutubePlayer } from "../molecules/YoutubePlayer"
 import { TinyPartialVideoCardList } from "../molecules/TinyPartialVideoCardList"
 
 type Props = PartialVideoListProps
@@ -26,7 +26,9 @@ export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) 
 }
 
 export const Player: React.FC<Props> = props => {
-  const { currentPartialVideo, ...dispatch } = usePlayerQueue(props.partialVideoList)
+  const { currentPartialVideo /*, ...dispatch*/ } = usePlayerQueue(
+    props.partialVideoList,
+  )
 
   return (
     <Flex
@@ -38,12 +40,12 @@ export const Player: React.FC<Props> = props => {
       pb="170px"
     >
       <Box height="360px">
-        <YoutubePlayer
+        {/* <YoutubePlayer
           videoId={currentPartialVideo.videoId}
           start={currentPartialVideo.start}
           end={currentPartialVideo.end}
           onEndVideo={() => dispatch.next()}
-        />
+        /> */}
       </Box>
       <Box pt={1} pl={2}>
         <Text as="h2" fontWeight="bold" fontSize="xl">
