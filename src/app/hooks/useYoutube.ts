@@ -115,7 +115,7 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
           src: "createYoutube",
           onDone: {
             target: "readyPlay",
-            actions: assign((_, aa) => ({ player: aa.data })),
+            actions: assign((_, mountedEvent) => ({ player: mountedEvent.data })),
           },
         },
       },
