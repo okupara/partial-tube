@@ -73,7 +73,7 @@ type MachineSchema = {
     loadingScript: {}
     loadedScript: {}
     initializingYoutube: {}
-    idle: {}
+    readyPlay: {}
     playingVideo: {}
     ended: {}
   }
@@ -119,7 +119,7 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
           },
         },
       },
-      idle: {
+      readyPlay: {
         on: {
           LOAD_VIDEO: {
             actions: ["loadVideo"],
