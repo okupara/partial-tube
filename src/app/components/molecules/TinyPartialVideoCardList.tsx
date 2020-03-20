@@ -1,21 +1,17 @@
 import React from "react"
-import { Text } from "@chakra-ui/core"
 import { HorizonListContainer } from "./HorizonListContainer"
 import { TinyPartialVideoCard, Props as TCProps } from "./TinyPartialVideoCard"
 
 type Props = {
   partialVideoList: ReadonlyArray<TCProps>
+  titleView: () => React.ReactNode
 }
 
-export const TinyPartialVideoCardList = ({ partialVideoList }: Props) => {
+export const TinyPartialVideoCardList = ({ partialVideoList, titleView }: Props) => {
   return (
     <HorizonListContainer
       list={partialVideoList}
-      titleView={() => (
-        <Text fontSize="sm" fontWeight="bold">
-          Video List
-        </Text>
-      )}
+      titleView={() => titleView()}
       elementView={pv => (
         <TinyPartialVideoCard
           videoId={pv.videoId}

@@ -28,7 +28,7 @@ export const PlaylistCard: React.FC<Props> = props => (
           {props.title}
         </Heading>
         <Flex>
-          <ItemCountText cnt={props.cnt} />
+          <ItemCountText count={props.cnt} />
           <Flex ml={4}>
             <Text>Last added :</Text>
             <Box ml={2}>

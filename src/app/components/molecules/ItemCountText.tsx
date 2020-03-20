@@ -1,19 +1,21 @@
 import React from "react"
-import { Text } from "@chakra-ui/core"
+import { Text, BoxProps } from "@chakra-ui/core"
 
 type Props = {
-  cnt: number
+  count: number
+  fontSize?: BoxProps["fontSize"]
+  fontWeight?: BoxProps["fontWeight"]
 }
 
-const determineContent = (cnt: number) => {
-  if (cnt === 0) {
+const determineContent = (count: number) => {
+  if (count === 0) {
     return "No items"
-  } else if (cnt === 1) {
-    return `${cnt} item`
+  } else if (count === 1) {
+    return `${count} item`
   }
-  return `${cnt} items`
+  return `${count} items`
 }
 
-export const ItemCountText: React.FC<Props> = props => (
-  <Text>{determineContent(props.cnt)}</Text>
+export const ItemCountText = ({ count, ...props }: Props) => (
+  <Text {...props}>{determineContent(count)}</Text>
 )

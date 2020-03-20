@@ -83,7 +83,7 @@ type MachineContext = {
 
 type LoadVideoEvent = {
   type: "LOAD_VIDEO"
-  partialVideo: { videoId: string; start: number; end: number }
+  video: { videoId: string; start: number; end: number } | string
 }
 
 type MachineEvents =
@@ -91,6 +91,7 @@ type MachineEvents =
   | { type: "PLAY_VIDEO" }
   | { type: "MOUNT_YOUTUBE" }
   | { type: "END_VIDEO" }
+  | { type: "BE_READY" }
 
 export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEvents>(
   {
@@ -127,6 +128,7 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
         },
       },
       playingVideo: {
+        // activities: ["consolee"],
         on: {
           LOAD_VIDEO: {
             actions: ["loadVideo"],
@@ -136,25 +138,32 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
       },
       ended: {
         on: {
-          LOAD_VIDEO: {
-            actions: ["loadVideo"],
-          },
-          PLAY_VIDEO: "playingVideo",
+          BE_READY: "readyPlay",
         },
       },
     },
   },
   {
+    // activities: {
+    //   consolee: ctx => {
+    //     console.log("START")
+    //     return () => console.log("END")
+    //   },
+    // },
     actions: {
       // I haven't figured out the way to avoid using "any" here...
       // putting "LoadVideoEvent" occured an type error.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      loadVideo: (ctx, { partialVideo }: any) => {
-        ctx.player.loadVideoById({
-          videoId: partialVideo.videoId,
-          startSeconds: partialVideo.start,
-          endSeconds: partialVideo.end,
-        })
+      loadVideo: (ctx, { video }: any) => {
+        if (typeof video === "string") {
+          ctx.player.loadVideoById(video)
+        } else {
+          ctx.player.loadVideoById({
+            videoId: video.videoId,
+            startSeconds: video.start,
+            endSeconds: video.end,
+          })
+        }
       },
     },
   },

@@ -69,7 +69,14 @@ export const Player: React.FC<Props> = props => {
         </Box>
       </Flex>
       <Box position="absolute" bottom={0} width="100%">
-        <TinyPartialVideoCardList partialVideoList={props.partialVideoList} />
+        <TinyPartialVideoCardList
+          titleView={() => (
+            <Text fontSize="sm" fontWeight="bold">
+              Video List
+            </Text>
+          )}
+          partialVideoList={props.partialVideoList}
+        />
       </Box>
     </Flex>
   )
