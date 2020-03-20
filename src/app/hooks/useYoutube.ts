@@ -36,7 +36,6 @@ const delay = (duration: number) =>
 
 const loadingScript = async () => {
   for (let i = 0; i < 84; i++) {
-    console.log("%$Y", window.YT)
     await delay(60)
     if (flags.loadedApi) {
       console.log("loading succeeded")
@@ -54,7 +53,6 @@ const loadYoutube = (
   onStateChange: YT.Events["onStateChange"],
 ) =>
   new Promise(resolve => {
-    console.log("called!!")
     if (element === null) {
       throw new Error("HTMLElement Error")
     }
@@ -123,6 +121,7 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
         on: {
           LOAD_VIDEO: {
             actions: ["loadVideo"],
+            target: "playingVideo",
           },
           PLAY_VIDEO: "playingVideo",
         },
@@ -150,7 +149,7 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
       // I haven't figured out the way to avoid using "any" here...
       // putting "LoadVideoEvent" occured an type error.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      loadVdeo: (ctx, { partialVideo }: any) => {
+      loadVideo: (ctx, { partialVideo }: any) => {
         ctx.player.loadVideoById({
           videoId: partialVideo.videoId,
           startSeconds: partialVideo.start,
@@ -186,7 +185,7 @@ export const useYoutube = () => {
   })
   // why loading script and mounting youtube are split is,
   // - want to start loading script immediately (@TODO consider what's the best way)
-  // - want to mount youtube when DOM for components this hook use is ready
+  // - want to mount youtube when DOM for components that use this hook is ready
   useLayoutEffect(() => {
     if (youtubeState.matches("loadedScript")) {
       dispatch({ type: "MOUNT_YOUTUBE" })

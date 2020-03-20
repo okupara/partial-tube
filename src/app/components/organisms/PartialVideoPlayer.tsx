@@ -1,14 +1,22 @@
 import React from "react"
 import { Flex, Box, Text } from "@chakra-ui/core"
-import { Props as PartialVideoListProps } from "../molecules/PartialVideoCardList"
 import { PlayerController } from "../molecules/PlayerController"
 import { DescriptionBox } from "../molecules/DescriptionBox"
-// import { YoutubePlayer } from "../molecules/YoutubePlayer"
+import { YoutubePlayer, VideoProps } from "../molecules/YoutubePlayer"
 import { TinyPartialVideoCardList } from "../molecules/TinyPartialVideoCardList"
+import { Props as TCProps } from "../molecules/TinyPartialVideoCard"
 
-type Props = PartialVideoListProps
+// @TODO: improve this, it's hard to understand now.
+//        maybe the definition of the PartialVideo model should be here.
+type ListProps = ReadonlyArray<
+  TCProps & Pick<VideoProps, "partialVideoId"> & { title: string }
+>
 
-export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) => {
+type Props = {
+  partialVideoList: ListProps
+}
+
+export const usePlayerQueue = (list: ListProps) => {
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const changeCurrent = (fn: (current: number) => number) => setCurrentIndex(fn)
 
@@ -26,9 +34,8 @@ export const usePlayerQueue = (list: PartialVideoListProps["partialVideoList"]) 
 }
 
 export const Player: React.FC<Props> = props => {
-  const { currentPartialVideo /*, ...dispatch*/ } = usePlayerQueue(
-    props.partialVideoList,
-  )
+  const { currentPartialVideo, ...dispatch } = usePlayerQueue(props.partialVideoList)
+  console.log("CUR", currentPartialVideo)
 
   return (
     <Flex
@@ -40,12 +47,13 @@ export const Player: React.FC<Props> = props => {
       pb="170px"
     >
       <Box height="360px">
-        {/* <YoutubePlayer
+        <YoutubePlayer
+          partialVideoId={currentPartialVideo.partialVideoId}
           videoId={currentPartialVideo.videoId}
           start={currentPartialVideo.start}
           end={currentPartialVideo.end}
-          onEndVideo={() => dispatch.next()}
-        /> */}
+          onEnd={() => dispatch.next()}
+        />
       </Box>
       <Box pt={1} pl={2}>
         <Text as="h2" fontWeight="bold" fontSize="xl">
