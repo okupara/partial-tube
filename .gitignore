@@ -13,3 +13,4 @@ firebase-debug.log
 firebase.dev.config.json
 youtube.config.json
 packages/domain/lib/
+now.json
