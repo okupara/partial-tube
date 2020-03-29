@@ -1,5 +1,5 @@
 import React from "react"
-import AppHeader from "./organisms/AppHeader"
+import AppHeader from "./AppHeader"
 import { Button } from "@chakra-ui/core"
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   login?: () => void
 }
 
-export const UnAuthenticated: React.FC<Props> = props => (
+export const UnAuthenticated: React.FC<Props> = (props) => (
   <React.Fragment>
     <AppHeader
       component={

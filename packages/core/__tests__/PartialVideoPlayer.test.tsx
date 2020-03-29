@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks"
-import { usePlayerQueue } from "../src/components/organisms/PartialVideoPlayer"
+import { usePlayerQueue } from "../src/layouts/PartialVideoPlayer"
 import { partialVideList } from "../__mocks__/ParitalVideoList"
 
 describe("PartialVideoPlayer", () => {
