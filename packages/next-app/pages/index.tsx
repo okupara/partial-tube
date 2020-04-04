@@ -1,7 +1,8 @@
-import { AppTest } from "../containers/AppTest"
-
+// import { AppTest } from "../containers/AppTest"
+import { withAuth } from "../compositions/withAuth"
+// import { useLoginUser } from "@partial-tube/core/lib/contexts/LoginUser"
 const Index = () => {
-  return <AppTest />
+  return <div>hello</div>
 }
 
-export default Index
+export default withAuth(Index)

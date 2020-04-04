@@ -9,7 +9,7 @@ type Props = {
 }
 
 export const Authenticated: React.FC<Props> = (props) => (
-  <AppHeader component={<UserAvatar name={props.user.name} />}>
+  <AppHeader component={<UserAvatar name={props.user.name || "*"} />}>
     {props.children}
   </AppHeader>
 )

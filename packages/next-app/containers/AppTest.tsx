@@ -1,4 +1,8 @@
 import React from "react"
-import { UnAuthenticated } from "@partial-tube/core/lib/components/UnAuthenticated"
+import { useLoginUser } from "@partial-tube/core/lib/contexts/LoginUser"
 
-export const AppTest = () => <UnAuthenticated>test</UnAuthenticated>
+export const AppTest = () => {
+  const user = useLoginUser()
+  console.log(user)
+  return <div>APP TEST</div>
+}

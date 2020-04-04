@@ -9,6 +9,8 @@
     "pack:core": "cd packages/core && yarn pack",
     "dev:app": "lerna exec --scope=@partial-tube/next-app \"yarn dev:now\"",
     "clean:app": "lerna exec --scope=@partial-tube/next-app \"yarn clean\"",
+    "clean:core": "lerna exec --scope=@partial-tube/core \"yarn clean\"",
+    "prebuild:core": "yarn clean:core",
     "build:core": "lerna exec --scope=@partial-tube/core \"yarn build\"",
     "typecheck:app": "lerna exec --scope=@partial-tube/next-app \"yarn typecheck\"",
     "storybook:core": "lerna exec --scope=@partial-tube/core \"yarn storybook\"",
