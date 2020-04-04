@@ -1,15 +1,14 @@
-// @TODO: can we consider tree shaking?
 import { useEffect, useRef } from "react"
 import getConfig from "next/config"
 import firebase from "firebase"
-import { Machine, assign } from "xstate"
+import { Machine } from "xstate"
 import { useMachine } from "@xstate/react"
+import { useLoginUser } from "@partial-tube/core/lib/contexts/LoginUser"
 import * as User from "@partial-tube/core/lib/models/User"
+import fetch from "isomorphic-unfetch"
 
 type Mode = "browser" | "server"
-type MachineContext = {
-  user: User.Model
-}
+type MachineContext = {}
 
 type MachineSchema = {
   states: {
@@ -20,29 +19,25 @@ type MachineSchema = {
 }
 export type StateTypes = keyof MachineSchema["states"]
 
-type MachineEvents =
-  | { type: "NOT_DETECTED_USER" }
-  | { type: "DETECTED_USER"; user: User.Model }
+type MachineEvents = { type: "NOT_DETECTED_USER" } | { type: "DETECTED_USER" }
 
-export const AuthMachine = Machine<MachineContext, MachineSchema, MachineEvents>({
-  id: "FBAuthMachine",
-  initial: "loading",
-  states: {
-    loading: {
-      on: {
-        NOT_DETECTED_USER: "notLoggedIn",
-        DETECTED_USER: {
-          target: "loggedIn",
-          actions: assign((_, userEvent) => ({ user: userEvent.user })),
+export const initAuthMachine = (initState: StateTypes) =>
+  Machine<MachineContext, MachineSchema, MachineEvents>({
+    id: "FBAuthMachine",
+    initial: initState,
+    states: {
+      loading: {
+        on: {
+          NOT_DETECTED_USER: "notLoggedIn",
+          DETECTED_USER: "loggedIn",
         },
       },
+      loggedIn: {},
+      notLoggedIn: {},
     },
-    loggedIn: {},
-    notLoggedIn: {},
-  },
-})
+  })
 
-type HooksReturnType = {
+export type HooksReturnType = {
   user: User.Model | null
   state: StateTypes | null
   login: () => void
@@ -61,13 +56,19 @@ export const useFirebaseAuth = (): HooksReturnType => {
 }
 
 function createEmpty() {
-  return { login() {}, user: null, state: null }
+  const userContext = useLoginUser()
+  const state: StateTypes = userContext.user ? "loggedIn" : "loading"
+  return { login() {}, user: userContext.user, state }
 }
 
 function createAuth() {
   const mountedRef = useRef<boolean>(true)
   const providerRef = useRef<firebase.auth.GoogleAuthProvider | null>(null)
-  const [machine, dispatchMachine] = useMachine(AuthMachine)
+  const userContext = useLoginUser()
+
+  const [machine, dispatchMachine] = useMachine(
+    initAuthMachine(userContext.user ? "loggedIn" : "loading"),
+  )
 
   const { publicRuntimeConfig } = getConfig()
   console.log(publicRuntimeConfig)
@@ -89,8 +90,16 @@ function createAuth() {
         } else {
           dispatchMachine({
             type: "DETECTED_USER",
-            user: { id: user.uid, avatarUrl: user.photoURL, name: user.displayName },
           })
+          if (userContext.user === null) {
+            userContext.setUser({
+              id: user.uid,
+              avatarUrl: user.photoURL,
+              name: user.displayName,
+            })
+          }
+          // doing nothing for now when error happens...(just shows errors on the console)
+          activeSession(user)
         }
       },
       (error) => {
@@ -117,10 +126,31 @@ function createAuth() {
   }, [])
 
   return {
-    user: machine.context.user,
+    user: userContext.user,
     state: machine.value as StateTypes,
     login() {
       firebase.auth().signInWithRedirect(providerRef.current!)
     },
   }
+}
+
+async function activeSession(fbUser: firebase.User) {
+  const token = await fbUser.getIdToken()
+  if (!token) throw new Error("Token is unexpectedly undefined")
+
+  const res = await postLogin(token)
+  if (!res.result) throw new Error("The server-response is unexpectedly 'false'")
+}
+
+type LoginResponse = {
+  result: boolean
+}
+function postLogin(token: string): Promise<LoginResponse> {
+  return fetch("/api/login", {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    method: "POST",
+    body: JSON.stringify({ token }),
+  }).then((response) => response.json())
 }

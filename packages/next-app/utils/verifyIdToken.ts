@@ -9,7 +9,7 @@ export const verifyIdToken = (token: string) => {
         projectId: serverRuntimeConfig.projectId,
         clientEmail: serverRuntimeConfig.clientEmail,
         // https://stackoverflow.com/a/41044630/1332513
-        privateKey: serverRuntimeConfig.firebasePrivateKey.replace(/\\n/g, "\n"),
+        privateKey: serverRuntimeConfig.privateKey.replace(/\\n/g, "\n"),
       }),
       databaseURL: process.env.FIREBASE_DATABASE_URL,
     })

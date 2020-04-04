@@ -14,9 +14,8 @@ const UserContext = React.createContext<ContextValue | null>(null)
 export const LoginUserProvider: React.FC<Props> = ({ children, value }) => (
   <UserContext.Provider value={value}>{children}</UserContext.Provider>
 )
-export function initUser() {
-  console.log("INIT C", typeof window)
-  const [user, setUser] = React.useState<NullableUser>(null)
+export function initUser(defaultUser?: User.Model) {
+  const [user, setUser] = React.useState<NullableUser>(defaultUser || null)
   return {
     user,
     setUser,

@@ -1,6 +1,8 @@
 import getConfig from "next/config"
 import cookieSession from "cookie-session"
+import { NextApiRequest, NextApiResponse } from "next"
 
+// NextApi* types don't match as arguments for cookie-session...
 export const addSession = (req: any, res: any) => {
   // @TODO: improve type safety
   const { serverRuntimeConfig } = getConfig()
@@ -18,7 +20,10 @@ export const addSession = (req: any, res: any) => {
   includeSession(req, res, () => {})
 }
 
-export default (handler: any) => (req: any, res: any) => {
+export const addSessionMiddleWare = (handler: any) => (
+  req: NextApiRequest,
+  res: NextApiResponse,
+) => {
   try {
     addSession(req, res)
   } catch (e) {

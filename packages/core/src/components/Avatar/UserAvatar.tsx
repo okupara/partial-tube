@@ -6,6 +6,7 @@ type Props = {
   thumbnailUrl?: string
 }
 
-export const UserAvatar: React.FC<Props> = props => (
-  <Avatar name={props.name} src={props.thumbnailUrl} size="md" />
-)
+export const UserAvatar: React.FC<Props> = (props) => {
+  console.log("AVATAR", props)
+  return <Avatar name={props.name} src={props.thumbnailUrl} size="md" />
+}
