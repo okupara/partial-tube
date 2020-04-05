@@ -45,13 +45,19 @@ export const withAuth = (
   withAuthComponent.getInitialProps = async (ctx: NextPageContext) => {
     const { req, res } = ctx
     console.log("SSR in withAuth!!!!!")
+
     if (typeof window === "undefined" && typeof req !== "undefined") {
       addSession(req, res)
       const actualReq = (req as unknown) as RequestWithSession
       const authUser = actualReq.session?.user
       console.log("SSR I W----", authUser)
 
+      let pageComponentProps = {}
+      if (PageComponent.getInitialProps) {
+        pageComponentProps = await PageComponent.getInitialProps(ctx)
+      }
       return {
+        ...pageComponentProps,
         authUser: authUser ? authUser : null,
       }
     }

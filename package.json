@@ -14,6 +14,7 @@
     "prebuild:core": "yarn clean:core",
     "build:core": "lerna exec --scope=@partial-tube/core \"yarn build\"",
     "typecheck:app": "lerna exec --scope=@partial-tube/next-app \"yarn typecheck\"",
+    "typecheck:core": "lerna exec --scope=@partial-tube/core \"yarn typecheck\"",
     "clean": "lerna clean"
   },
   "devDependencies": {

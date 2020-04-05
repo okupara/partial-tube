@@ -1,0 +1,21 @@
+import React from "react"
+import { UserDcorator } from "./Decorators"
+import { Playlist } from "../src/layouts/Playlist"
+import { partialVideListMock } from "../__mocks__/ParitalVideoList"
+
+export const playlist = () => (
+  <Playlist
+    playlists={partialVideListMock}
+    title="aaaaaaaaa"
+    lastUpdate={new Date()}
+    numOfVids={10}
+    comment="comentemememem"
+    totalPlaySec={30}
+    onClickCard={(id) => console.log(`${id} clicked`)}
+  />
+)
+
+export default {
+  title: "Layouts",
+  decorators: [UserDcorator],
+}

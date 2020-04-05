@@ -31,5 +31,7 @@ module.exports = {
     clientEmail: process.env.CLIENT_EMAIL,
     projectId: process.env.PROJECT_ID,
     databaseUrl: process.env.DATABASE_URL,
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
   },
 }

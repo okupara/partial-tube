@@ -10,6 +10,7 @@ type Props = {
 }
 
 export const NeedsLogin: React.FC<Props> = ({ fbAuth, children }) => {
+  console.log("CHILDREN", children)
   const userContext = useLoginUser()
   if (fbAuth.state === "notLoggedIn") {
     return <NeedLogin login={fbAuth.login} />

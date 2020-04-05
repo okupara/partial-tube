@@ -5,16 +5,18 @@ import { CommentIconText } from "../Text/CommentIconText"
 import { PartialVideoThumb } from "../Thumbnail/PartialVideoThumb"
 
 export type Props = {
+  id: string
   title: string
   start: number
   end: number
   videoId: string
   comment: string
   mb?: number
+  onClickCard?: (id: string) => void // to move the update page
 }
 
 export const PartialVideoCard: React.FC<Props> = (props) => (
-  <Card>
+  <Card onClick={() => props.onClickCard?.(props.id)}>
     <Flex>
       <PartialVideoThumb
         videoId={props.videoId}

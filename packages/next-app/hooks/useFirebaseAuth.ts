@@ -74,12 +74,14 @@ function createAuth() {
   console.log(publicRuntimeConfig)
 
   useEffect(() => {
-    firebase.initializeApp({
-      apiKey: publicRuntimeConfig.apiKey,
-      authDomain: publicRuntimeConfig.authDomain,
-      databaseUrl: publicRuntimeConfig.databaseUrl,
-      projectId: publicRuntimeConfig.projectId,
-    })
+    if (firebase.apps.length === 0) {
+      firebase.initializeApp({
+        apiKey: publicRuntimeConfig.apiKey,
+        authDomain: publicRuntimeConfig.authDomain,
+        databaseUrl: publicRuntimeConfig.databaseUrl,
+        projectId: publicRuntimeConfig.projectId,
+      })
+    }
     providerRef.current = new firebase.auth.GoogleAuthProvider()
     firebase.auth().onAuthStateChanged(
       (user) => {

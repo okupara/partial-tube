@@ -6,15 +6,17 @@ import { ItemCountText } from "../Text/ItemCountText"
 import { DateText } from "../Text/DateText"
 
 export type Props = {
+  id: string
   title: string
   comment: string
   cnt: number
   firstVideoId: string
   updated: Date
+  onClickCard?: (id: string) => void
 }
 
 export const PlaylistCard: React.FC<Props> = (props) => (
-  <Card>
+  <Card onClick={() => props.onClickCard?.(props.id)}>
     <Flex>
       <Box>
         <YoutubeImage
