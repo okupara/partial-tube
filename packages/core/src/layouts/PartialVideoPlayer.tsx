@@ -5,10 +5,12 @@ import { DescriptionBox } from "../components/Text/DescriptionBox"
 import { YoutubePlayer, VideoProps } from "../components/YoutubePlayer"
 import { TinyPartialVideoCardList } from "../components/List/TinyPartialVideoCardList"
 import { Props as TCProps } from "../components/Card/TinyPartialVideoCard"
+import { Authenticated } from "../components/Authenticated"
+import { useLoginUser } from "../contexts/LoginUser"
 
 // @TODO: improve this, it's hard to understand now.
 //        maybe the definition of the PartialVideo model should be here.
-type ListProps = ReadonlyArray<
+export type ListProps = ReadonlyArray<
   TCProps & Pick<VideoProps, "partialVideoId"> & { title: string }
 >
 
@@ -35,50 +37,56 @@ export const usePlayerQueue = (list: ListProps) => {
 
 export const Player: React.FC<Props> = (props) => {
   const { currentPartialVideo, ...dispatch } = usePlayerQueue(props.partialVideoList)
-  console.log("CUR", currentPartialVideo)
+  const userContext = useLoginUser()
+  if (!userContext.user) {
+    throw new Error("Unexpectedly, user is null")
+  }
 
   return (
-    <Flex
-      flexDirection="column"
-      height="100%"
-      minHeight="100vh"
-      position="relative"
-      boxSizing="border-box"
-      pb="170px"
-    >
-      <Box height="360px">
-        <YoutubePlayer
-          partialVideoId={currentPartialVideo.partialVideoId}
-          videoId={currentPartialVideo.videoId}
-          start={currentPartialVideo.start}
-          end={currentPartialVideo.end}
-          onEnd={() => dispatch.next()}
-        />
-      </Box>
-      <Box pt={1} pl={2}>
-        <Text as="h2" fontWeight="bold" fontSize="xl">
-          {currentPartialVideo.title}
-        </Text>
-      </Box>
-      <Flex pt={3} flexDirection="column">
-        <Box px={3}>
-          <PlayerController />
+    <Authenticated user={userContext.user}>
+      <Flex
+        mt={24}
+        flexDirection="column"
+        height="100%"
+        minHeight="100vh"
+        position="relative"
+        boxSizing="border-box"
+        pb="170px"
+      >
+        <Box height="360px">
+          <YoutubePlayer
+            partialVideoId={currentPartialVideo.partialVideoId}
+            videoId={currentPartialVideo.videoId}
+            start={currentPartialVideo.start}
+            end={currentPartialVideo.end}
+            onEnd={() => dispatch.next()}
+          />
         </Box>
-        <Box px={4} pt={4}>
-          <DescriptionBox text={currentPartialVideo.comment} />
+        <Box pt={1} pl={2}>
+          <Text as="h2" fontWeight="bold" fontSize="xl">
+            {currentPartialVideo.title}
+          </Text>
+        </Box>
+        <Flex pt={3} flexDirection="column">
+          <Box px={3}>
+            <PlayerController />
+          </Box>
+          <Box px={4} pt={4}>
+            <DescriptionBox text={currentPartialVideo.comment} />
+          </Box>
+        </Flex>
+        <Box position="absolute" bottom={0} width="100%">
+          <TinyPartialVideoCardList
+            titleView={() => (
+              <Text fontSize="sm" fontWeight="bold">
+                Video List
+              </Text>
+            )}
+            partialVideoList={props.partialVideoList}
+          />
         </Box>
       </Flex>
-      <Box position="absolute" bottom={0} width="100%">
-        <TinyPartialVideoCardList
-          titleView={() => (
-            <Text fontSize="sm" fontWeight="bold">
-              Video List
-            </Text>
-          )}
-          partialVideoList={props.partialVideoList}
-        />
-      </Box>
-    </Flex>
+    </Authenticated>
   )
 }
 

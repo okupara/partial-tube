@@ -5,6 +5,7 @@ import { initFirebase } from "../utils/initFirebase"
 import firebase from "firebase"
 import { NextPageContext } from "next"
 import { addSession } from "../middlewares/addSession"
+import { Videos } from "@partial-tube/core/lib/layouts/Videos"
 
 type Props = {
   fbAuth: HooksReturnType

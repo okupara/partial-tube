@@ -14,8 +14,12 @@ import {
 
 type Props = {
   onClickCard?: (id: string) => void
-  playlists: ReadonlyArray<PartialVideoProps>
+  onClickPlay?: (id: string) => void
+  onPlay?: (playlistId: string) => void
+  videos: ReadonlyArray<PartialVideoProps>
 } & HeaderProps
+
+export type PlaylistProps = Pick<Props, "videos"> & Omit<HeaderProps, "onClickPlay">
 
 export const Playlist = (props: Props) => {
   const userContext = useLoginUser()
@@ -26,16 +30,18 @@ export const Playlist = (props: Props) => {
       <Flex flexDirection="column" mt={24} px={6}>
         <Box>
           <PlaylistHeader
+            id={props.id}
             title={props.title}
             totalPlaySec={props.totalPlaySec}
             lastUpdate={props.lastUpdate}
             comment={props.comment}
             numOfVids={props.numOfVids}
+            onClickPlay={props.onClickPlay}
           />
         </Box>
         <Box mt={6}>
           <StackList
-            list={props.playlists}
+            list={props.videos}
             component={(p) => (
               <PartialVideoCard onClickCard={props.onClickCard} {...p} />
             )}
@@ -44,5 +50,4 @@ export const Playlist = (props: Props) => {
       </Flex>
     </Authenticated>
   )
-  return
 }

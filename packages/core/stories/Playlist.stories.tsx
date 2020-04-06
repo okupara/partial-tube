@@ -5,7 +5,9 @@ import { partialVideListMock } from "../__mocks__/ParitalVideoList"
 
 export const playlist = () => (
   <Playlist
-    playlists={partialVideListMock}
+    id="123455"
+    onClickPlay={(id) => console.log(id)}
+    videos={partialVideListMock}
     title="aaaaaaaaa"
     lastUpdate={new Date()}
     numOfVids={10}

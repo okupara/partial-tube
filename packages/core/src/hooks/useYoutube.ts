@@ -29,10 +29,12 @@ const loadIframeApiScript = () => {
     flags.loadedApi = true
   }
 }
-loadIframeApiScript()
+if (typeof window !== "undefined") {
+  loadIframeApiScript()
+}
 
 const delay = (duration: number) =>
-  new Promise(res => setTimeout(() => res(), duration))
+  new Promise((res) => setTimeout(() => res(), duration))
 
 const loadingScript = async () => {
   for (let i = 0; i < 84; i++) {
@@ -52,7 +54,7 @@ const loadYoutube = (
   element: HTMLDivElement | null,
   onStateChange: YT.Events["onStateChange"],
 ) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     if (element === null) {
       throw new Error("HTMLElement Error")
     }
@@ -179,7 +181,7 @@ export const useYoutube = () => {
   const [youtubeState, dispatch] = useMachine(youtubeMachine, {
     services: {
       createYoutube: () =>
-        loadYoutube(divRef.current, ev => {
+        loadYoutube(divRef.current, (ev) => {
           if (ev.data === YT.PlayerState.PLAYING) {
             dispatch({ type: "PLAY_VIDEO" })
           }
