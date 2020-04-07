@@ -29,7 +29,7 @@ export const AddPartialVideos = ({ addedPartialVideoList }: Props) => {
     <Flex flexDirection="column">
       <Box>
         <YoutubePlayer
-          partialVideoId="kjsdkfjaksdjf"
+          id="kjsdkfjaksdjf"
           videoId="mQSbaGNzNzc"
           onPlayerTimer={(sec) => setCurrentTime(sec)}
         />

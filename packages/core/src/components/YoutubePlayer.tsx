@@ -2,7 +2,7 @@ import React from "react"
 import { useYoutube } from "../hooks/useYoutube"
 
 export type VideoProps = {
-  partialVideoId: string
+  id: string
   videoId: string
   start?: number
   end?: number
@@ -13,7 +13,7 @@ type Props = {
 } & VideoProps
 
 export const YoutubePlayer = ({
-  partialVideoId,
+  id,
   videoId,
   start,
   end,
@@ -24,10 +24,10 @@ export const YoutubePlayer = ({
   const previousId = React.useRef<string | undefined>()
 
   const shouldLoad = React.useCallback(() => {
-    const ret = previousId.current !== partialVideoId
-    previousId.current = partialVideoId
+    const ret = previousId.current !== id
+    previousId.current = id
     return ret
-  }, [partialVideoId])
+  }, [id])
 
   React.useEffect(() => {
     if (res.youtubeState.matches("readyPlay") && shouldLoad() === true) {

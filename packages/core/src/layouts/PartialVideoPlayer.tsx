@@ -11,7 +11,7 @@ import { useLoginUser } from "../contexts/LoginUser"
 // @TODO: improve this, it's hard to understand now.
 //        maybe the definition of the PartialVideo model should be here.
 export type ListProps = ReadonlyArray<
-  TCProps & Pick<VideoProps, "partialVideoId"> & { title: string }
+  TCProps & Pick<VideoProps, "id"> & { title: string }
 >
 
 type Props = {
@@ -55,7 +55,7 @@ export const Player: React.FC<Props> = (props) => {
       >
         <Box height="360px">
           <YoutubePlayer
-            partialVideoId={currentPartialVideo.partialVideoId}
+            id={currentPartialVideo.id}
             videoId={currentPartialVideo.videoId}
             start={currentPartialVideo.start}
             end={currentPartialVideo.end}

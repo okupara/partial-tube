@@ -10,7 +10,7 @@ const YoutubeComponent = () => {
         onEnd={() => {
           console.log("hello")
         }}
-        partialVideoId="kjsdkfjaksdjf"
+        id="kjsdkfjaksdjf"
         videoId="mQSbaGNzNzc"
         onPlayerTimer={(sec) => setTime(sec)}
       />
@@ -26,7 +26,7 @@ export const youtubePlayerWithRange = () => (
     onEnd={() => {
       console.log("HELLO")
     }}
-    partialVideoId="kjsdkfjaksdjf"
+    id="kjsdkfjaksdjf"
     videoId="mQSbaGNzNzc"
     start={300}
     end={308}

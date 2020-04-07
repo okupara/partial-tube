@@ -1,7 +1,6 @@
 export const partialVideListMock = [
   {
-    id: "12345",
-    partialVideoId: "sdkfjksajlksjdfa1",
+    id: "sdkfjksajlksjdfa1",
     title: "オタク IN THA HOOD : 呂布カルマ",
     videoId: "iaqgyA9PZ08",
     start: 20,
@@ -9,8 +8,7 @@ export const partialVideListMock = [
     comment: "testest",
   },
   {
-    id: "12346",
-    partialVideoId: "dasghrrrrrrdsdhdfff",
+    id: "dasghrrrrrrdsdhdfff",
     title: "オタク IN THA HOOD : 呂布カルマ",
     videoId: "iaqgyA9PZ08",
     start: 120,
@@ -18,8 +16,7 @@ export const partialVideListMock = [
     comment: "",
   },
   {
-    id: "12347",
-    partialVideoId: "sdk3jks34a2lksjdfa1",
+    id: "sdk3jks34a2lksjdfa1",
     title: "TK da 黒ぶちと戦ってみた",
     videoId: "g0avWKtqZng",
     start: 120,
@@ -30,8 +27,7 @@ export const partialVideListMock = [
 
 export const longListMock = [
   {
-    id: "12348",
-    partialVideoId: "shrlajkjksa2lksjdfa1",
+    id: "shrlajkjksa2lksjdfa1",
     title: "BLACKPINK - ‘블핑하우스 (BLACKPINK HOUSE)’ EP.12-2",
     videoId: "mQSbaGNzNzc",
     start: 20,
@@ -39,8 +35,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12349",
-    partialVideoId: "s34mjkjksa2lksjdfa1",
+    id: "s34mjkjksa2lksjdfa1",
     title: "BLACKPINK - ‘블핑하우스 (BLACKPINK HOUSE)’ EP.12-2",
     videoId: "mQSbaGNzNzc",
     start: 90,
@@ -48,8 +43,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12350",
-    partialVideoId: "sdkdajkjksa2lksjdfa1",
+    id: "sdkdajkjksa2lksjdfa1",
     title: "BLACKPINK - ‘블핑하우스 (BLACKPINK HOUSE)’ EP.9-1",
     videoId: "LK4UWnImijY",
     start: 300,
@@ -57,8 +51,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12351",
-    partialVideoId: "rdkddssawksa2c09jdfa1",
+    id: "rdkddssawksa2c09jdfa1",
     title:
       "AND STILL!!! MY BEST TEMPO FOR THAT BOUNCE VIBE USING THE MPC STUDIO BLACK",
     videoId: "pNF1lTGhDQ4",
@@ -67,8 +60,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12352",
-    partialVideoId: "swjk3jksa2q2kkfa1",
+    id: "swjk3jksa2q2kkfa1",
     title:
       "Brian Setzer Orchestra - Rock This Town - 7/25/1999 - Woodstock 99 East Stage (Official)",
     videoId: "LgKh8x-kpFI",
@@ -77,8 +69,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12353",
-    partialVideoId: "srd29ajkd3xks6jkzd4a1",
+    id: "srd29ajkd3xks6jkzd4a1",
     title: "Les Paul & Mary Ford Absolutely Live",
     videoId: "awjTKeS9Wvo",
     start: 300,
@@ -86,8 +77,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12354",
-    partialVideoId: "tirkapgh732934oknvvwq",
+    id: "tirkapgh732934oknvvwq",
     title: "Les Paul & Mary Ford Show: World Is Waiting For The Sunrise",
     videoId: "7iGXP_UBog4",
     start: 60,
@@ -95,8 +85,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12355",
-    partialVideoId: "jahgv3dfws049",
+    id: "jahgv3dfws049",
     title: "Les Paul & Chet Atkins 1978-07-05 NYC NBC Today Show Pt1",
     videoId: "xut3N2O42Ho",
     start: 250,
@@ -104,8 +93,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12356",
-    partialVideoId: "ajg8mnjkryigbv4x",
+    id: "ajg8mnjkryigbv4x",
     title: "Chet Atkins - Mr. Sandman (TV 1954)",
     videoId: "n-c66SJPuUI",
     start: 70,
@@ -113,8 +101,7 @@ export const longListMock = [
     comment: "testest",
   },
   {
-    id: "12357",
-    partialVideoId: "ud9iohmj,mlturgewoo9",
+    id: "ud9iohmj,mlturgewoo9",
     title: "Sammy Davis Jr. on drums & vibes",
     videoId: "USxvJFfKXrE",
     start: 70,
