@@ -6,11 +6,11 @@ import { CommentIconText } from "../Text/CommentIconText"
 import { TimeText } from "../Text/TimeText"
 
 export type Props = {
-  numOfVids: number
+  numOfVideos: number
   title: string
   lastUpdate: Date
   comment: string
-  totalPlaySec: number
+  totalSec: number
   onClickPlay?: (id: string) => void
   id: string
 }
@@ -34,14 +34,14 @@ export const PlaylistHeader = (props: Props) => (
     </Flex>
     <Flex ml={2} mt={2}>
       <Box>
-        <ItemCountText count={props.numOfVids} />
+        <ItemCountText count={props.numOfVideos} />
       </Box>
 
       <Box ml={5}>
         <Text>total: </Text>
       </Box>
       <Box ml={2}>
-        <TimeText sec={props.totalPlaySec} />
+        <TimeText sec={props.totalSec} />
       </Box>
 
       <Box ml={5}>

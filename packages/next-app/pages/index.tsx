@@ -1,60 +1,38 @@
-import getConfig from "next/config"
 import { withAuth } from "../compositions/withAuth"
+import { withApollo } from "../compositions/withApollo"
 import { NeedsLogin } from "../containers/NeedsLogin"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
+import { useQuery } from "@apollo/react-hooks"
+import gql from "graphql-tag"
 
 type Props = {
   fbAuth: HooksReturnType
-  a: number
 }
 
+const query = gql`
+  query Playlist($pid: String!) {
+    playlist(id: $pid) {
+      id
+      title
+    }
+  }
+`
+
 const Index = (props: Props) => {
+  const { loading, data, error } = useQuery(query, {
+    variables: { pid: "TCclKmMNUiPZHC7GJmsG" },
+  })
+  if (data) {
+    console.log("SUCCESS", data)
+  }
+
   return (
     <NeedsLogin fbAuth={props.fbAuth}>
-      <div style={{ marginTop: "220px" }}>are?????{props.a}</div>
+      {loading && <div>loading</div>}
+      {data && <div style={{ marginTop: "220px" }}>are?????</div>}
+      {error && <div>error</div>}
     </NeedsLogin>
   )
 }
 
-Index.getInitialProps = async () => {
-  console.log("SSR in Index.tsx", typeof window === "undefined")
-  const { serverRuntimeConfig } = getConfig()
-
-  // totally freaked me out that importing firebase-admin occurs unreasonable errors...
-  //
-  // const admin = require("firebase-admin")
-  // admin.initializeApp({
-  //   credential: admin.credential.cert({
-  //     projectId: serverRuntimeConfig.projectId,
-  //     clientEmail: serverRuntimeConfig.clientEmail,
-  //     // https://stackoverflow.com/a/41044630/1332513
-  //     privateKey: serverRuntimeConfig.privateKey.replace(/\\n/g, "\n"),
-  //   }),
-  //   databaseURL: process.env.FIREBASE_DATABASE_URL,
-  // })
-  // const db = admin.firestore()
-
-  const firebase: FirebaseType = require("firebase")
-  if (firebase.apps.length === 0) {
-    firebase.initializeApp({
-      apiKey: serverRuntimeConfig.apiKey,
-      authDomain: serverRuntimeConfig.authDomain,
-      databaseUrl: serverRuntimeConfig.databaseUrl,
-      projectId: serverRuntimeConfig.projectId,
-    })
-  }
-
-  // const db: FireStoreType = firebase.firestore()
-  // const snapshots = await db.collection("playlists").get()
-  // const records = snapshots.docs.map((elem) => elem.data())
-  // console.log("--------------OK", records)
-
-  // await db.collection("playlists").add({
-  //   uid: "hogehogeaaa",
-  //   title: "test3333333",
-  // })
-
-  return { a: 1 }
-}
-
-export default withAuth(Index)
+export default withApollo(withAuth(Index))

@@ -24,8 +24,7 @@
     "build": "next build",
     "start": "next start",
     "clean": "rimraf ./.next",
-    "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@apollo/react-components": "^3.1.3",

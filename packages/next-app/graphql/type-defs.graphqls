@@ -4,6 +4,28 @@ type User {
   status: String!
 }
 
+type PartialVideo {
+  id: ID!
+  start: Int!
+  end: Int!
+  comment: String
+  title: String!
+  uid: String!
+  videoId: String!
+  created: Int!
+}
+
+type Playlist {
+  id: ID!
+  numOfVideos: Int!
+  title: String!
+  comment: String
+  created: Int!
+  totalSec: Int!
+  videos: [PartialVideo]!
+}
+
 type Query {
   viewer: User!
+  playlist(id: ID): Playlist
 }

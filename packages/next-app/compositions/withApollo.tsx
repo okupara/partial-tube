@@ -19,7 +19,7 @@ let globalApolloClient: TApolloClient
 
 export const withApollo = (PageComponent: NextPage, { ssr = true } = {}) => {
   const WithApollo = ({ apolloClient, apolloState, ...pageProps }: InitialProps) => {
-    const client = apolloClient || initApolloClient(apolloState)
+    const client = apolloClient || initApolloClient({ initialState: apolloState })
     return (
       <ApolloProvider client={client}>
         <PageComponent {...pageProps} />
@@ -40,7 +40,7 @@ export const withApollo = (PageComponent: NextPage, { ssr = true } = {}) => {
     WithApollo.getInitialProps = async (ctx: WithApolloPageContext) => {
       const { AppTree } = ctx
 
-      const apolloClient = (ctx.apolloClient = initApolloClient())
+      const apolloClient = (ctx.apolloClient = initApolloClient({ context: ctx }))
 
       let pageProps = {}
       if (PageComponent.getInitialProps) {
@@ -81,33 +81,42 @@ export const withApollo = (PageComponent: NextPage, { ssr = true } = {}) => {
   return WithApollo
 }
 
-function initApolloClient(initialState?: any) {
+type InitApolloParam = {
+  initialState?: any
+  context?: any
+}
+
+// function initApolloClient(initialState?: any) {
+function initApolloClient(param?: InitApolloParam) {
   if (isOnServer()) {
-    createApolloClient(initialState)
+    return createApolloClient(param)
   }
 
   // Reuse client on the client side
   if (!globalApolloClient) {
-    globalApolloClient = createApolloClient(initialState)
+    globalApolloClient = createApolloClient(param)
   }
 
   return globalApolloClient
 }
 
-function createApolloClient(initialState = {}) {
-  const cache = new InMemoryCache().restore(initialState)
+function createApolloClient(param?: InitApolloParam) {
+  const cache = new InMemoryCache().restore(
+    param?.initialState ? param.initialState : {},
+  )
+
   return new ApolloClient({
     ssrMode: isOnServer(),
-    link: createIsomorphLink(),
+    link: createIsomorphLink(param?.context),
     cache,
   })
 }
 
-function createIsomorphLink() {
+function createIsomorphLink(context?: any) {
   if (isOnServer()) {
     const { SchemaLink } = require("apollo-link-schema")
     const { schema } = require("../graphql/schema")
-    return new SchemaLink({ schema })
+    return new SchemaLink({ schema, context })
   } else {
     const { HttpLink } = require("apollo-link-http")
     return new HttpLink({

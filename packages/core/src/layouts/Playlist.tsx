@@ -32,10 +32,10 @@ export const Playlist = (props: Props) => {
           <PlaylistHeader
             id={props.id}
             title={props.title}
-            totalPlaySec={props.totalPlaySec}
+            totalSec={props.totalSec}
             lastUpdate={props.lastUpdate}
             comment={props.comment}
-            numOfVids={props.numOfVids}
+            numOfVideos={props.numOfVideos}
             onClickPlay={props.onClickPlay}
           />
         </Box>
