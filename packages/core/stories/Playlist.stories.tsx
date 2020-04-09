@@ -10,9 +10,9 @@ export const playlist = () => (
     videos={partialVideListMock}
     title="aaaaaaaaa"
     lastUpdate={new Date()}
-    numOfVids={10}
+    numOfVideos={10}
     comment="comentemememem"
-    totalPlaySec={30}
+    totalSec={30}
     onClickCard={(id) => console.log(`${id} clicked`)}
   />
 )

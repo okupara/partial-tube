@@ -26,5 +26,4 @@ export const Playlists = (props: Props) => {
       </Box>
     </Authenticated>
   )
-  return
 }

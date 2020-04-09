@@ -1,8 +1,6 @@
-import { PlaylistCard } from "../src/components/Card/PlaylistCard"
+import { Props } from "../src/components/Card/PlaylistCard"
 
-type RequiredProps = Parameters<typeof PlaylistCard>[0]
-
-export const playlistsMock: ReadonlyArray<RequiredProps> = [
+export const playlistsMock: ReadonlyArray<Props> = [
   {
     id: "12345",
     title: "hello",
