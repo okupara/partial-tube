@@ -3,7 +3,7 @@ import { MarginDecorator } from "../Decorators"
 import { PlaylistOption } from "../../src/components/Parts/PlaylistOption"
 
 export const playlistOption = () => (
-  <PlaylistOption name="testtestste" permission="public" />
+  <PlaylistOption id="12345" name="testtestste" permission="public" added={false} />
 )
 
 export default {

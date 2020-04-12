@@ -10,35 +10,19 @@ import {
   Stack,
   Button,
 } from "@chakra-ui/core"
-import { PlaylistOption, Props as OptionProps } from "./PlaylistOption"
+// import { PlaylistOption, Props as OptionProps } from "./PlaylistOption"
 import { Separator } from "./Separator"
-// import gql from "graphql-tag"
 
-// export const query = gql`
-//   query Playlist($pid: String!) {
-//     playlist(pid: $pid) {
-//       id
-//       name
-//       permission
-//     }
-//   }
-// `
 export type Props = {
-  playlists: ReadonlyArray<OptionProps>
+  optionsView: () => React.ReactNode[]
 }
 
-export const PlaylistSelect = ({ playlists }: Props) => {
+export const PlaylistSelect = ({ optionsView }: Props) => {
   const inputRef = React.useRef<HTMLInputElement | null>(null)
   return (
     <Flex flexDirection="column">
       <Box>
-        <Stack spacing={2}>
-          {playlists.map((option, i) => (
-            <Box key={i}>
-              <PlaylistOption key={i} {...option} />
-            </Box>
-          ))}
-        </Stack>
+        <Stack spacing={2}>{optionsView()}</Stack>
       </Box>
       <Separator mt={4} />
       <Box mt={4}>
