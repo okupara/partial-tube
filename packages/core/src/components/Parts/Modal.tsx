@@ -13,7 +13,7 @@ type Props = {
   content?: () => JSX.Element
   footer?: () => JSX.Element
   title?: string
-  onClose?: () => () => void
+  onClose?: () => void
   isOpen?: boolean
 }
 

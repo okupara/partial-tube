@@ -1,10 +1,15 @@
 import React from "react"
 import { AddPartialVideos } from "../src/layouts/AddPartialVideos"
-import { UserDcorator } from "./Decorators"
+import { UserDecorator } from "./Decorators"
+import { MockApolloProvider } from "./ApolloHelper"
 
-export const addPartialVideo = () => <AddPartialVideos videoId="mQSbaGNzNzc" />
+export const addPartialVideo = () => (
+  <MockApolloProvider>
+    <AddPartialVideos videoId="mQSbaGNzNzc" />
+  </MockApolloProvider>
+)
 
 export default {
   title: "Layouts",
-  decorators: [UserDcorator],
+  decorators: [UserDecorator],
 }

@@ -1,8 +1,6 @@
 import React from "react"
 import { Checkbox, Flex, Box, Icon } from "@chakra-ui/core"
 
-export type Permission = "public" | "private"
-
 export type DataProps = {
   added: boolean
   id: string

@@ -6,7 +6,7 @@ export const MarginDecorator = (storyfn: () => React.FC<{}>) => (
   <Box m={4}>{storyfn()}</Box>
 )
 
-export const UserDcorator = (storyfn: () => React.FC<{}>) => (
+export const UserDecorator = (storyfn: () => React.FC<{}>) => (
   <LoginUserProvider
     value={initUser({
       id: "hogehoge",

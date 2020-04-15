@@ -986,3 +986,10 @@ declare namespace YT {
     destroy(): void
   }
 }
+
+declare type Permission = "public" | "private"
+declare type GQLPlaylist = {
+  id: string
+  name: string
+  permission: "public" | "private"
+}

@@ -1,5 +1,5 @@
 import React from "react"
-import { UserDcorator } from "./Decorators"
+import { UserDecorator } from "./Decorators"
 import { Playlist } from "../src/layouts/Playlist"
 import { partialVideListMock } from "../__mocks__/ParitalVideoList"
 
@@ -19,5 +19,5 @@ export const playlist = () => (
 
 export default {
   title: "Layouts",
-  decorators: [UserDcorator],
+  decorators: [UserDecorator],
 }
