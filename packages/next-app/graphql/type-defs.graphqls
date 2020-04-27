@@ -25,7 +25,24 @@ type Playlist {
   videos: [PartialVideo]!
 }
 
+input PlaylistInput {
+  name: String!
+  permission: String!
+  comment: String
+}
+
+type YouTubeVideo {
+  id: ID!
+  title: String!
+  description: String
+}
+
 type Query {
   viewer: User!
   playlist(id: ID): Playlist
+  youtubeVideo(videoID: String): YouTubeVideo
+}
+
+type Mutation {
+  addPlaylist(playlist: PlaylistInput): Playlist
 }

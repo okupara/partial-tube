@@ -1,5 +1,5 @@
 import React from "react"
-import { Box } from "@chakra-ui/core"
+import { Box, Button } from "@chakra-ui/core"
 import { Modal } from "../components/Parts/Modal"
 import { PlaylistSelect } from "../components/Parts/PlaylistSelect"
 import { PlaylistOption } from "../components/Parts/PlaylistOption"
@@ -31,25 +31,26 @@ export const AddPlalystModal = ({
     updatePlaylistFn,
   })
   return (
-    <>
-      {data ? (
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          title="Save to..."
-          content={() => (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Save to..."
+      content={() => (
+        <>
+          <MiniNewPlaylistForm onClickAddPlaylist={onAdd} />
+          <Box my={8}>
             <PlaylistSelect>
-              {data.ids.map((id) => (
+              {data?.ids.map((id) => (
                 <Box key={id}>
                   <PlaylistOption onChange={onChange} {...data.body[id]} />
                 </Box>
               ))}
             </PlaylistSelect>
-          )}
-          footer={() => <MiniNewPlaylistForm onClickAddPlaylist={onAdd} />}
-        />
-      ) : null}
-    </>
+          </Box>
+        </>
+      )}
+      footer={() => <Button onClick={onClose}>close</Button>}
+    />
   )
 }
 

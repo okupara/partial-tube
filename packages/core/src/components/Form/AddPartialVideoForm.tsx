@@ -68,7 +68,6 @@ export const useModal = () => {
 export const AddPartialVideoForm = ({ onAdd, currentTime }: Props) => {
   const inpuState = useFormState()
   const modal = useModal()
-  console.log(modal)
   const { selectedPlaylists, onClickDelete, updateRecord } = useAddPartialVideoForm()
   const userContext = useLoginUser()
 

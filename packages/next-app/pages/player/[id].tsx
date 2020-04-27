@@ -32,7 +32,6 @@ const query = gql`
 
 const Player = (props: Props) => {
   const { data } = useQuery(query, { variables: { pid: props.id } })
-  console.log("DATA-------", data)
   const videos: ListProps = data?.playlist?.videos
   return (
     <NeedsLogin fbAuth={props.fbAuth}>

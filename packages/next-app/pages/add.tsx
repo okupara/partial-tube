@@ -1,5 +1,5 @@
 import { withAuth } from "../compositions/withAuth"
-// import { withApollo } from "../compositions/withApollo"
+import { withApollo } from "../compositions/withApollo"
 import { NeedsLogin } from "../containers/NeedsLogin"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
 
@@ -15,5 +15,4 @@ const Add = (props: Props) => {
   )
 }
 
-// export default withApollo(withAuth(Index))
-export default withAuth(Add)
+export default withApollo(withAuth(Add))

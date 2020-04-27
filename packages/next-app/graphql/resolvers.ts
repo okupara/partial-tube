@@ -1,4 +1,4 @@
-import { QueryResolvers } from "./type-defs.graphqls"
+import { QueryResolvers, MutationResolvers } from "./type-defs.graphqls"
 import { NextPageContext } from "next"
 import { addSession } from "../middlewares/addSession"
 import { initFirebase } from "../utils/initFirebase"
@@ -8,7 +8,7 @@ const Query: Required<QueryResolvers> = {
   async viewer() {
     return { id: String(1), name: "John Smith", status: "cached" }
   },
-  async playlist(_, args, ctx: NextPageContext) {
+  async playlist(_: any, args: any, ctx: NextPageContext) {
     const { req, res } = ctx
     addSession(req, res)
     const actualReq = (req as unknown) as RequestWithSession
@@ -59,4 +59,19 @@ const Query: Required<QueryResolvers> = {
   },
 }
 
-export default { Query }
+const Mutation: Required<MutationResolvers> = {
+  async addPlaylist(_, args) {
+    console.log(args)
+    return {
+      id: "jajaj",
+      numOfVideos: 20,
+      title: "hoge",
+      comment: "",
+      created: 111,
+      totalSec: 111,
+      videos: [],
+    }
+  },
+}
+
+export default { Query, Mutation }
