@@ -5,7 +5,7 @@ import { MockApolloProvider } from "./ApolloHelper"
 
 export const addPartialVideo = () => (
   <MockApolloProvider>
-    <AddPartialVideos videoId="mQSbaGNzNzc" />
+    <AddPartialVideos />
   </MockApolloProvider>
 )
 

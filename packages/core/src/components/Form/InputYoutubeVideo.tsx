@@ -3,8 +3,8 @@ import { FormControl, FormLabel, Input, Text } from "@chakra-ui/core"
 
 type Props = {
   text: string
-  isInvalid?: boolean
   onChange?: (text: string) => void
+  errorMessage?: string | null
 }
 
 const onChangeHandler = (fn: Props["onChange"]) => (
@@ -13,20 +13,23 @@ const onChangeHandler = (fn: Props["onChange"]) => (
   fn?.(e.currentTarget.value)
 }
 
-export const InputYoutubeVideo = ({ text, onChange, isInvalid }: Props) => (
-  <FormControl isRequired>
-    <FormLabel htmlFor="fname">YouTube URL</FormLabel>
-    <Input
-      isInvalid={isInvalid}
-      id="fname"
-      placeholder="YouTube URL"
-      value={text}
-      onChange={onChangeHandler(onChange)}
-    />
-    {isInvalid && (
-      <Text mt={2} color="red.500" fontSize="md">
-        Couldn't detect YouTube video id.
-      </Text>
-    )}
-  </FormControl>
-)
+export const InputYoutubeVideo = ({ text, onChange, errorMessage }: Props) => {
+  const isInvalid = !!errorMessage
+  return (
+    <FormControl isRequired>
+      <FormLabel htmlFor="fname">YouTube URL</FormLabel>
+      <Input
+        isInvalid={!!errorMessage}
+        id="fname"
+        placeholder="YouTube URL"
+        value={text}
+        onChange={onChangeHandler(onChange)}
+      />
+      {isInvalid && (
+        <Text mt={2} color="red.500" fontSize="md">
+          {errorMessage}
+        </Text>
+      )}
+    </FormControl>
+  )
+}

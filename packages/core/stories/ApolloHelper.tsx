@@ -18,8 +18,14 @@ const typeDefs = `
     name: String!
     permission: String!
   }
+  type YoutubeVideo {
+    id: String!
+    title: String!
+    description: String
+  }
   type Query {
     playlist (uid: String!): [Playlist]!
+    youtubeVideo (videoId: String!): YoutubeVideo
   }
   type Mutation {
     addPlaylist (playlist: PlaylistInput): Playlist
@@ -33,6 +39,13 @@ const mocks = {
   Mutation: () => ({
     addPlaylist: (_: any, { playlist }: { playlist: GQLPaylistInput }) => {
       return { ...playlist, id: sideEffectId++ }
+    },
+    youtubeVideo: () => {
+      return {
+        id: "hohohoho",
+        title: "video title",
+        description: "video description",
+      }
     },
   }),
 }
@@ -56,4 +69,8 @@ export const MockApolloProvider: React.FC<{}> = ({ children }) => (
   >
     {children}
   </ApolloProvider>
+)
+
+export const ApolloMockDecorator = (styoryfn: () => React.FC<{}>) => (
+  <MockApolloProvider>{styoryfn()}</MockApolloProvider>
 )
