@@ -17,6 +17,7 @@
     "access": "public"
   },
   "scripts": {
+    "test": "jest",
     "codegen": "graphql-let",
     "predev:now": "yarn codegen",
     "dev:now": "now dev",
@@ -24,13 +25,22 @@
     "build": "next build",
     "start": "next start",
     "clean": "rimraf ./.next",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@apollo/react-components": "^3.1.3",
     "@apollo/react-hooks": "^3.1.3",
     "@apollo/react-ssr": "^3.1.3",
-    "@partial-tube/core": "^0.0.0",
+    "@chakra-ui/core": "^0.7.0",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "@storybook/addon-actions": "^5.3.18",
+    "@storybook/addon-links": "^5.3.18",
+    "@storybook/addons": "^5.3.18",
+    "@storybook/preset-typescript": "^3.0.0",
+    "@storybook/react": "^5.3.18",
     "@xstate/react": "^0.8.1",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
@@ -38,6 +48,7 @@
     "apollo-link-schema": "^1.2.4",
     "apollo-server-micro": "^2.11.0",
     "cookie-session": "^1.4.0",
+    "emotion-theming": "^10.0.27",
     "eslint": "^6.8.0",
     "firebase": "^7.13.1",
     "firebase-admin": "^8.10.0",
@@ -50,21 +61,44 @@
     "xstate": "^4.9.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
     "@graphql-codegen/cli": "^1.13.1",
     "@graphql-codegen/plugin-helpers": "^1.13.1",
     "@graphql-codegen/typescript": "^1.13.1",
     "@graphql-codegen/typescript-operations": "^1.13.1",
     "@graphql-codegen/typescript-react-apollo": "^1.13.1",
     "@graphql-codegen/typescript-resolvers": "^1.13.1",
+    "@testing-library/jest-dom": "^5.5.0",
+    "@testing-library/react": "^10.0.4",
+    "@testing-library/react-hooks": "^3.2.1",
     "@types/cookie-session": "^2.0.39",
-    "@types/node": "^12.12.31",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.4",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",
+    "@types/testing-library__jest-dom": "^5.0.3",
+    "babel-jest": "^26.0.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "graphql-let": "^0.9.3",
+    "jest": "^26.0.1",
     "prettier": "^2.0.2",
+    "react-test-renderer": "^16.13.1",
     "typescript": "^3.8.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(tsx|ts)$": "babel-jest"
+    },
+    "setupFiles": [
+      "<rootDir>/setup-test.js"
+    ],
+    "testMatch": [
+      "<rootDir>/__tests__/**/*.test.ts?(x)"
+    ]
   }
 }

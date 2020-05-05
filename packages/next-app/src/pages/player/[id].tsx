@@ -1,8 +1,5 @@
 import { NextPageContext } from "next"
-import {
-  ListProps,
-  Player as PlayerLayout,
-} from "@partial-tube/core/lib/layouts/PartialVideoPlayer"
+import { ListProps, Player as PlayerLayout } from "../../layouts/PartialVideoPlayer"
 import { HooksReturnType } from "../../hooks/useFirebaseAuth"
 import { NeedsLogin } from "../../containers/NeedsLogin"
 import { withAuth } from "../../compositions/withAuth"

@@ -1,9 +1,9 @@
 import React from "react"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
-import { NeedLogin } from "@partial-tube/core/lib/layouts/NeedLogin"
-import { InitializingApp } from "@partial-tube/core/lib/layouts/InitializingApp"
-import { Authenticated } from "@partial-tube/core/lib/components/Authenticated"
-import { useLoginUser } from "@partial-tube/core/lib/contexts/LoginUser"
+import { NeedLogin } from "../layouts/NeedLogin"
+import { InitializingApp } from "../layouts/InitializingApp"
+import { Authenticated } from "../components/Authenticated"
+import { useLoginUser } from "../contexts/LoginUser"
 
 type Props = {
   fbAuth: HooksReturnType

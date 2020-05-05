@@ -1,10 +1,7 @@
 import React from "react"
 import { useRouter } from "next/router"
 import { NextPageContext } from "next"
-import {
-  Playlist as LayoutPlaylist,
-  PlaylistProps,
-} from "@partial-tube/core/lib/layouts/Playlist"
+import { Playlist as LayoutPlaylist, PlaylistProps } from "../../layouts/Playlist"
 import { NeedsLogin } from "../../containers/NeedsLogin"
 import { HooksReturnType } from "../../hooks/useFirebaseAuth"
 import { withAuth } from "../../compositions/withAuth"

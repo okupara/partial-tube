@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { verifyIdToken } from "../../utils/verifyIdToken"
 import { addSessionMiddleWare } from "../../middlewares/addSession"
 import { cookieSessionRefreshMiddleware } from "../../middlewares/cookieSessionRefresh"
-import * as User from "@partial-tube/core/lib/models/User"
+import * as User from "../../models/User"
 
 type SessionNextApiRequest = NextApiRequest & {
   session: { user: User.Model; token: string }

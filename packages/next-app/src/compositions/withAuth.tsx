@@ -1,11 +1,8 @@
 import React, { ReactElement } from "react"
 import { NextComponentType, NextPageContext } from "next"
-import {
-  initUser,
-  LoginUserProvider,
-} from "@partial-tube/core/lib/contexts/LoginUser"
+import { initUser, LoginUserProvider } from "../contexts/LoginUser"
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth"
-import * as User from "@partial-tube/core/lib/models/User"
+import * as User from "../models/User"
 import { addSession } from "../middlewares/addSession"
 import { IncomingMessage } from "http"
 
@@ -22,13 +19,16 @@ export const withAuth = (
   // TODO: reconsider this type safety around "any" below, I got lots of errors so far...
   PageComponent: NextComponentType<NextPageContext, any, any>,
 ) => {
-  const withAuthComponent = ({ authUser, ...otherProps }: Props) => (
-    <LoginUserProvider value={authUser ? initUser(authUser) : initUser()}>
-      <AuthComponent>
-        <PageComponent {...otherProps} />
-      </AuthComponent>
-    </LoginUserProvider>
-  )
+  const withAuthComponent = ({ authUser, ...otherProps }: Props) => {
+    console.log("TEST---", authUser)
+    return (
+      <LoginUserProvider value={authUser ? initUser(authUser) : initUser()}>
+        <AuthComponent>
+          <PageComponent {...otherProps} />
+        </AuthComponent>
+      </LoginUserProvider>
+    )
+  }
 
   withAuthComponent.getInitialProps = async (ctx: NextPageContext) => {
     const { req, res } = ctx
@@ -49,7 +49,7 @@ export const withAuth = (
 
     return {
       ...pageComponentProps,
-      authUser: null,
+      authUser,
     }
   }
   return withAuthComponent

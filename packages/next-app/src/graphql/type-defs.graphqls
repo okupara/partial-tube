@@ -40,7 +40,6 @@ type YouTubeVideo {
 type Query {
   viewer: User!
   playlist(id: ID): Playlist
-  youtubeVideo(videoID: String): YouTubeVideo
 }
 
 type Mutation {
