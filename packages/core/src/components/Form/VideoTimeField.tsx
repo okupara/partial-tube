@@ -19,12 +19,7 @@ const displaySec = (selectedSec: Props["selectedSec"]) =>
     </Text>
   )
 
-export const VideoTimeField = ({
-  title,
-  currentTime,
-  selectedSec,
-  onTimeSet,
-}: Props) => {
+export const Component = ({ title, currentTime, selectedSec, onTimeSet }: Props) => {
   return (
     <Flex flexDirection="column">
       <Flex alignItems="center">
@@ -39,3 +34,5 @@ export const VideoTimeField = ({
     </Flex>
   )
 }
+
+export const VideoTimeField = React.memo(Component)

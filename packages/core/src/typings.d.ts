@@ -993,3 +993,32 @@ declare type GQLPlaylist = {
   name: string
   permission: "public" | "private"
 }
+
+type AddedPlaylists<T> = {
+  addedPlaylists: T
+}
+
+type SelectedPlaylists<T> = {
+  selectedPlaylists: T
+}
+
+type VideoInput = {
+  videoId: string
+  title: string
+  start: number
+  end: number
+  comment: string
+}
+
+declare namespace GQLPartialVideoForm {
+  type Playlist = {
+    id: string
+    name: string
+  }
+  type AddedPlaylists = {
+    addedPlaylists: ReadonlyArray<GQLPlaylist>
+  }
+  type SelectedPlaylists = {
+    seletectedPlaylists: ReadonlyArray<GQLPlaylist>
+  }
+}

@@ -17,7 +17,7 @@ type Props = {
   isOpen?: boolean
 }
 
-export const Modal = (props: Props) => (
+export const Component = (props: Props) => (
   <ChakraModal isOpen={props.isOpen} onClose={props.onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -28,3 +28,5 @@ export const Modal = (props: Props) => (
     </ModalContent>
   </ChakraModal>
 )
+
+export const Modal = React.memo(Component)

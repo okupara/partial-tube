@@ -6,7 +6,7 @@ import gql from "graphql-tag"
 import { useLazyQuery } from "@apollo/react-hooks"
 
 type Props = {
-  onGetVideoId?: (videoId: string) => void
+  onGetVideoId?: (obj: { videoId: string; title: string }) => void
 }
 
 const Component = (props: Props) => {
@@ -21,10 +21,10 @@ const Component = (props: Props) => {
   }
 
   React.useEffect(() => {
-    if (videoUrlState.existingVideoId) {
-      props.onGetVideoId?.(videoUrlState.existingVideoId)
+    if (videoUrlState.existingVideo.videoId) {
+      props.onGetVideoId?.(videoUrlState.existingVideo)
     }
-  }, [videoUrlState.existingVideoId])
+  }, [videoUrlState.existingVideo])
 
   return (
     <InputYoutubeVideo
@@ -54,7 +54,7 @@ const useVideoUrl = () => {
 
   React.useEffect(() => {
     if (resQuery.data && resQuery.data.youtubeVideo) {
-      send({ type: "ON_FETCH_DONE" })
+      send({ type: "ON_FETCH_DONE", title: resQuery.data.youtubeVideo.title })
     } else {
       send({ type: "ON_FETCH_ERROR" })
     }
@@ -72,7 +72,10 @@ const useVideoUrl = () => {
   return {
     isInvalidUrl,
     isNotExistingId,
-    existingVideoId: machine.context.existingVideoId,
+    existingVideo: {
+      videoId: machine.context.existingVideoId!,
+      title: machine.context.existingTitle!,
+    },
     text,
     setText,
   }
@@ -151,7 +154,10 @@ const videoIdMachine = Machine<
               ON_FETCH_ERROR: "notExistingId",
               ON_FETCH_DONE: {
                 target: "existingId",
-                actions: assign((ctx) => ({ existingVideoId: ctx.videoId })),
+                actions: assign((ctx, event: FetchDoneEvent) => ({
+                  existingVideoId: ctx.videoId,
+                  existingTitle: event.title,
+                })),
               },
             },
           },
@@ -182,11 +188,12 @@ type PutUrlEvent = {
   type: "ON_PUT_URL"
   videoId: string
 }
+type FetchDoneEvent = {
+  type: "ON_FETCH_DONE"
+  title: string
+}
 
-type YoutubeUrlEvents =
-  | PutUrlEvent
-  | { type: "ON_FETCH_ERROR" }
-  | { type: "ON_FETCH_DONE" }
+type YoutubeUrlEvents = PutUrlEvent | { type: "ON_FETCH_ERROR" } | FetchDoneEvent
 
 type YoutubeUrlSchema = {
   states: {
@@ -205,4 +212,5 @@ type YoutubeUrlSchema = {
 type YoutubeUrlContext = {
   videoId: string | null
   existingVideoId: string | null
+  existingTitle: string
 }

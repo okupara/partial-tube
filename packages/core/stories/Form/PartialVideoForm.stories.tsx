@@ -1,13 +1,16 @@
 import React from "react"
 import { UserDecorator, MarginDecorator } from "../Decorators"
-import { AddPartialVideoForm } from "../../src/components/Form/AddPartialVideoForm"
+import { PartialVideoForm } from "../../src/components/Form/PartialVideoForm"
 import { MockApolloProvider } from "../ApolloHelper"
 
-export const addPartialVideoForm = () => (
+export const partialVideoForm = () => (
   <MockApolloProvider>
-    <AddPartialVideoForm currentTime={200} onAdd={() => {}} />
+    <PartialVideoForm videoId="rKMSJ3qN93E" title="hogehoge" />
   </MockApolloProvider>
 )
+partialVideoForm.story = {
+  name: "PartialVideoForm",
+}
 
 export default {
   title: "Form",

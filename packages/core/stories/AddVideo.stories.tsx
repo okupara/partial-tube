@@ -1,11 +1,11 @@
 import React from "react"
-import { AddPartialVideos } from "../src/layouts/AddPartialVideos"
+import { AddVideo } from "../src/layouts/AddVideo"
 import { UserDecorator } from "./Decorators"
 import { MockApolloProvider } from "./ApolloHelper"
 
 export const addPartialVideo = () => (
   <MockApolloProvider>
-    <AddPartialVideos />
+    <AddVideo />
   </MockApolloProvider>
 )
 

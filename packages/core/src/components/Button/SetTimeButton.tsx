@@ -6,9 +6,11 @@ type Props = {
   sec: number
 } & Omit<ButtonProps, "children">
 
-export const SetTimeButton = ({ sec, ...props }: Props) => (
+const Component = ({ sec, ...props }: Props) => (
   <Button {...props}>
     <Icon name="link" />
     <TimeText ml={1} sec={sec} />
   </Button>
 )
+
+export const SetTimeButton = React.memo(Component)

@@ -10,14 +10,12 @@ import {
   Button,
   Collapse,
 } from "@chakra-ui/core"
+import gql from "graphql-tag"
 import { useIsOpen } from "../../hooks/useIsOpen"
+import { useMutation, useApolloClient } from "@apollo/react-hooks"
 
-type Props = {
-  onClickAddPlaylist: (text: string, permission: Permission) => void
-}
-
-export const MiniNewPlaylistForm = ({ onClickAddPlaylist }: Props) => {
-  const res = useMiniNewPlaylist(onClickAddPlaylist)
+export const Component = () => {
+  const res = useMiniNewPlaylist()
   const openState = useIsOpen()
   return (
     <Flex flexDirection="column" width="100%">
@@ -32,7 +30,7 @@ export const MiniNewPlaylistForm = ({ onClickAddPlaylist }: Props) => {
             <FormLabel fontSize="sm">Name</FormLabel>
             <Input
               size="sm"
-              value={res.text}
+              value={res.name}
               onChange={res.onChangeText}
               placeholder="Name"
             />
@@ -57,11 +55,22 @@ export const MiniNewPlaylistForm = ({ onClickAddPlaylist }: Props) => {
   )
 }
 
+export const MiniPlaylistForm = React.memo(Component)
+
 const DEFAULT_PERMISSION: Permission = "private"
 
-const useMiniNewPlaylist = (onClickAddPlaylistFn: Props["onClickAddPlaylist"]) => {
-  const [text, setText] = React.useState("")
+type MutationData = {
+  addPlaylist: GQLPlaylist
+}
+
+const useMiniNewPlaylist = () => {
+  const [name, setName] = React.useState("")
   const [permission, setPermission] = React.useState<Permission>(DEFAULT_PERMISSION)
+  const [executeAdd, res] = useMutation<MutationData>(addQuery)
+  const client = useApolloClient()
+  // just because no need to re-render
+  const addedPlaylistsRef = React.useRef<ReadonlyArray<GQLPlaylist>>([])
+
   const onChangePermission = React.useCallback(
     (ev: React.ChangeEvent<HTMLSelectElement>) => {
       setPermission(ev.target.value as Permission)
@@ -70,29 +79,42 @@ const useMiniNewPlaylist = (onClickAddPlaylistFn: Props["onClickAddPlaylist"]) =
   )
   const onChangeText = React.useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setText(ev.target.value)
+      setName(ev.target.value)
     },
-    [text],
+    [name],
   )
 
-  const reset = React.useCallback(() => {
-    setText("")
-    setPermission(DEFAULT_PERMISSION)
-  }, [])
+  React.useEffect(() => {
+    if (res.data) {
+      setName("")
+      setPermission(DEFAULT_PERMISSION)
+      addedPlaylistsRef.current = [
+        ...addedPlaylistsRef.current,
+        res.data.addPlaylist,
+      ]
+      client.writeData({ data: { addedPlaylists: addedPlaylistsRef.current } })
+    }
+  }, [res.data])
 
   const createOnClickAddPlaylist = () => {
-    onClickAddPlaylistFn?.(text, permission)
-    // TODO: change them to a correct behaviour after the integration for gql is done.
-    setText("")
-    setPermission(DEFAULT_PERMISSION)
+    executeAdd({ variables: { playlist: { name, permission } } })
   }
 
   return {
-    text,
+    name,
     permission,
     onChangePermission,
     onChangeText,
     createOnClickAddPlaylist,
-    reset,
   }
 }
+
+export const addQuery = gql`
+  mutation AddPlaylist($playlist: PlaylistInput!) {
+    addPlaylist(playlist: $playlist) {
+      id
+      name
+      permission
+    }
+  }
+`
