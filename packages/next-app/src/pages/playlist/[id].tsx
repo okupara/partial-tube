@@ -18,7 +18,7 @@ const query = gql`
   query Playlist($pid: String!) {
     playlist(id: $pid) {
       id
-      title
+      name
       comment
       numOfVideos
       totalSec

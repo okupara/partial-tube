@@ -2,6 +2,7 @@ import { withAuth } from "../compositions/withAuth"
 import { withApollo } from "../compositions/withApollo"
 import { NeedsLogin } from "../containers/NeedsLogin"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
+import { AddVideo } from "../layouts/AddVideo"
 
 type Props = {
   fbAuth: HooksReturnType
@@ -10,7 +11,7 @@ type Props = {
 const Add = (props: Props) => {
   return (
     <NeedsLogin fbAuth={props.fbAuth}>
-      <div>hello</div>
+      <AddVideo />
     </NeedsLogin>
   )
 }

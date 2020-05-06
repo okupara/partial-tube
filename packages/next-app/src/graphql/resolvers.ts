@@ -3,6 +3,7 @@ import { NextPageContext } from "next"
 import { addSession } from "../middlewares/addSession"
 import { initFirebase } from "../utils/initFirebase"
 import firebase from "firebase"
+import fetch from "isomorphic-unfetch"
 
 const Query: Required<QueryResolvers> = {
   async viewer() {
@@ -10,11 +11,12 @@ const Query: Required<QueryResolvers> = {
   },
   // TODO: stop using "any"....
   async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
+    console.log("ARGS", args)
     const { req, res } = ctx
     addSession(req, res)
     const actualReq = (req as unknown) as RequestWithSession
     // I will use this later...
-    console.log("TEST....", actualReq.session?.user, args)
+    console.log("TEST....mmn,,,,a", actualReq.session?.user, args)
 
     if (!args.id) {
       throw new Error("Playlist-id is not defined")
@@ -52,10 +54,29 @@ const Query: Required<QueryResolvers> = {
       comment: data.comment,
       created: new Date().getTime(),
       numOfVideos: data.numOfVideos,
-      title: data.title,
+      name: data.name,
       totalSec: data.totalSec,
       uid: data.uid,
       videos: subs ? subs : [],
+    }
+  },
+  async youtubeVideo(_, args, context) {
+    console.log("Youtuve Video Start ---", args, context)
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=AIzaSyBJQ9ISjT9u-Rgjss7TRqyhASRU6hAVYaI`,
+    )
+    const obj = await res.json()
+    console.log("OBJ", obj)
+    if (Array.isArray(obj.items) === false || obj.items.length === 0) {
+      return null
+    }
+    const result = obj.items[0].snippet
+    const id = obj.items[0].id
+
+    return {
+      id,
+      title: result.title,
+      comment: result.description,
     }
   },
 }
@@ -74,9 +95,33 @@ const Mutation: Required<MutationResolvers> = {
       videos: [],
     }
   },
-  async addVideo(_, args): Promise<any> {
-    console.log(args)
-    return {}
+  async addVideo(_, args, ctx: NextPageContext): Promise<any> {
+    const { req, res } = ctx
+    addSession(req, res)
+
+    const actualReq = (req as unknown) as RequestWithSession
+
+    const user = actualReq.session?.user
+    if (!user) {
+      new Error("Authentication is required.")
+    }
+    const video = args.video
+    if (!video) {
+      new Error("It needs to set a parameter for adding Video")
+    }
+    const db = firebase.firestore()
+    // still needs "!"...
+    // possible null or undefined might be a problem with generating types by graphql-let?
+    const resAddVideo = await db.collection("videos").add({
+      uid: user!.id, // hope TS detects user is not null after the nullable check above.
+      title: video!.title,
+      start: video!.start,
+      end: video!.end,
+      created: new Date(),
+    })
+    return {
+      id: resAddVideo.id,
+    }
   },
 }
 

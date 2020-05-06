@@ -10,10 +10,10 @@ type Props = {
 }
 
 const query = gql`
-  query Playlist($pid: String!) {
+  query Playlist($pid: ID!) {
     playlist(id: $pid) {
       id
-      title
+      name
     }
   }
 `

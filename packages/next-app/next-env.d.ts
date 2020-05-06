@@ -11,7 +11,7 @@ type FireStoreType = import("firebase").firestore.Firestore
 
 type RequestWithSession = import("http").IncomingMessage & {
   session?: {
-    user: User.Model
+    user: import("./src/models/User").Model
   }
 }
 

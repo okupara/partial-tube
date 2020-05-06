@@ -48,7 +48,7 @@ type YouTubeVideo {
 
 type Query {
   viewer: User!
-  playlist(id: ID): Playlist
+  playlist(id: ID!): Playlist
   youtubeVideo(videoId: String!): YouTubeVideo
 }
 

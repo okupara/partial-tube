@@ -109,6 +109,14 @@ function createApolloClient(param?: InitApolloParam) {
     ssrMode: isOnServer(),
     link: createIsomorphLink(param?.context),
     cache,
+    resolvers: {
+      Query: {
+        selectedPlaylists: () => {
+          console.log("CLIENT!!!!")
+          return {} as any
+        },
+      },
+    },
   })
 }
 
