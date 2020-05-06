@@ -5,53 +5,48 @@ import { playlistOptions } from "../__mocks__/PlaylistOptions"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { ApolloClient } from "apollo-client"
 import { InMemoryCache } from "apollo-cache-inmemory"
+import typeDefs from "../src/graphql/type-defs.graphqls"
 
-const typeDefs = `
-  type Playlist {
-    id: ID!
-    name: String!
-    comment: String
-    permission: String!
-  }
-  input PlaylistInput {
-    name: String!
-    permission: String!
-  }
-  input PlaylistSelect {
-    id: ID!
-    name: String!
-    permission: String!
-  }
-  type PartialVideo {
-    id: ID!
-    title: String!
-    start: Int!
-    end: Int!
-    comment: String
-  }
-  input VideoInput {
-    videoId: String!
-    title: String!
-    start: Float!
-    end: Float!
-    comment: String
-    playlists: [String]
-  }
-  type YoutubeVideo {
-    id: String!
-    title: String!
-    description: String
-  }
-  type Query {
-    playlist (uid: String!): [Playlist]!
-    youtubeVideo (videoId: String!): YoutubeVideo
-    partialVideos(uid: String!, videoId: String!): [PartialVideo]
-  }
-  type Mutation {
-    addPlaylist (playlist: PlaylistInput): Playlist
-    addVideo (video: VideoInput): PartialVideo
-  }
-`
+// const typeDefs = `
+//   type Playlist {
+//     id: ID!
+//     name: String!
+//     comment: String
+//     permission: String!
+//   }
+//   input PlaylistInput {
+//     name: String!
+//     permission: String!
+//   }
+//   type PartialVideo {
+//     id: ID!
+//     title: String!
+//     start: Int!
+//     end: Int!
+//     comment: String
+//   }
+//   input VideoInput {
+//     videoId: String!
+//     title: String!
+//     start: Float!
+//     end: Float!
+//     comment: String
+//     playlists: [String]
+//   }
+//   type YoutubeVideo {
+//     id: String!
+//     title: String!
+//     description: String
+//   }
+//   type Query {
+//     playlist (uid: String!): [Playlist]!
+//     youtubeVideo (videoId: String!): YoutubeVideo
+//   }
+//   type Mutation {
+//     addPlaylist (playlist: PlaylistInput): Playlist
+//     addVideo (video: VideoInput): PartialVideo
+//   }
+// `
 let sideEffectId = 13333
 const mocks = {
   Query: () => ({

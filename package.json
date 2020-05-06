@@ -10,6 +10,7 @@
     "clean:app": "lerna exec --scope=@partial-tube/next-app \"yarn clean\"",
     "typecheck:app": "lerna exec --scope=@partial-tube/next-app \"yarn typecheck\"",
     "storybook": "lerna exec --scope=@partial-tube/next-app \"yarn storybook\"",
+    "gen:gql": "lerna exec --scope=@partial-tube/next-app \"yarn codegen\"",
     "clean": "lerna clean"
   },
   "devDependencies": {

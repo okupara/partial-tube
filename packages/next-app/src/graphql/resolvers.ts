@@ -8,7 +8,8 @@ const Query: Required<QueryResolvers> = {
   async viewer() {
     return { id: String(1), name: "John Smith", status: "cached" }
   },
-  async playlist(_: any, args: any, ctx: NextPageContext) {
+  // TODO: stop using "any"....
+  async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
     const { req, res } = ctx
     addSession(req, res)
     const actualReq = (req as unknown) as RequestWithSession
@@ -60,17 +61,22 @@ const Query: Required<QueryResolvers> = {
 }
 
 const Mutation: Required<MutationResolvers> = {
-  async addPlaylist(_, args) {
+  async addPlaylist(_, args): Promise<any> {
     console.log(args)
     return {
       id: "jajaj",
       numOfVideos: 20,
-      title: "hoge",
+      name: "hoge",
       comment: "",
+      permission: "public",
       created: 111,
       totalSec: 111,
       videos: [],
     }
+  },
+  async addVideo(_, args): Promise<any> {
+    console.log(args)
+    return {}
   },
 }
 

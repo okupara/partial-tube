@@ -1,5 +1,13 @@
 const path = require("path")
 module.exports = {
+  webpackFinal: async (config, { configType }) => {
+    config.module.rules.push({
+      test: /\.graphqls$/,
+      exclude: /node_modules/,
+      loader: "graphql-tag/loader",
+    })
+    return config
+  },
   stories: ["../stories/**/*.stories.tsx"],
   addons: [
     {

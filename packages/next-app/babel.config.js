@@ -1,5 +1,3 @@
-console.log("aaaaa", process.env.NODE_ENV)
-
 module.exports = {
   env: {
     test: {
