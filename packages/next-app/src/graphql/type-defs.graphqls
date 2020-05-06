@@ -20,7 +20,7 @@ input VideoInput {
   start: Float!
   end: Float!
   comment: String
-  playlists: [String]
+  playlists: [String!]
 }
 
 type Playlist {
@@ -48,7 +48,8 @@ type YouTubeVideo {
 
 type Query {
   viewer: User!
-  playlist(id: ID!): Playlist
+  playlist(id: String!): Playlist
+  playlists: [Playlist]
   youtubeVideo(videoId: String!): YouTubeVideo
 }
 

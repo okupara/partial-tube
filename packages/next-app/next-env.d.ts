@@ -1012,11 +1012,15 @@ declare type GQLPlaylist = {
 }
 
 type AddedPlaylists<T> = {
-  addedPlaylists: T
+  addedPlaylists: ReadonlyArray<T>
 }
 
 type SelectedPlaylists<T> = {
-  selectedPlaylists: T
+  selectedPlaylists: ReadonlyArray<T>
+}
+
+type Playlists<T> = {
+  playlists: ReadonlyArray<T>
 }
 
 type VideoInput = {

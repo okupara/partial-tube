@@ -35,17 +35,13 @@ export const Component = ({ uid }: Props) => {
 }
 export const PlaylistsSelector = React.memo(Component) as typeof Component
 
-type QueryData = {
-  playlist: ReadonlyArray<GQLPlaylist>
-}
-type QueryLocalData = {
-  addedPlaylists: ReadonlyArray<GQLPlaylist>
-}
-type QuerySelected = SelectedPlaylists<ReadonlyArray<{ id: string }>>
+type QueryData = Playlists<GQLPlaylist>
+type QueryLocalData = AddedPlaylists<GQLPlaylist>
+type QuerySelected = SelectedPlaylists<{ id: string }>
 
 const query = gql`
-  query Playlist($uid: String!) {
-    playlist(uid: $uid) {
+  query {
+    playlists {
       id
       name
       permission
@@ -95,8 +91,9 @@ export const usePlaylists = (uid: string) => {
 
   React.useEffect(() => {
     if (res.data) {
+      console.log("playlists res", res.data)
       const addedPlaylistsLocal = resLocal.data ? resLocal.data.addedPlaylists : []
-      withNormalize([...addedPlaylistsLocal, ...res.data.playlist])
+      withNormalize([...addedPlaylistsLocal, ...res.data.playlists])
     }
   }, [res.data, resLocal.data])
 

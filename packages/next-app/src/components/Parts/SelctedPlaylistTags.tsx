@@ -13,7 +13,7 @@ const query = gql`
     }
   }
 `
-type QueryData = SelectedPlaylists<ReadonlyArray<GQLPlaylist>>
+type QueryData = SelectedPlaylists<GQLPlaylist>
 
 export const Component = () => {
   const { normalizedData } = useSelectedPlaylists()

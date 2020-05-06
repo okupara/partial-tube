@@ -15,7 +15,6 @@ type ActualDecodedUser = {
 }
 
 const handler = (req: SessionNextApiRequest, res: NextApiResponse) => {
-  console.log("LGOINGHAHNDKER")
   if (!req.body) {
     return res.status(400)
   }

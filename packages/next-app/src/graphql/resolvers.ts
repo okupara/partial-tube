@@ -5,19 +5,53 @@ import { initFirebase } from "../utils/initFirebase"
 import firebase from "firebase"
 import fetch from "isomorphic-unfetch"
 
+const extractUserSession = (ctx: NextPageContext) => {
+  const { req, res } = ctx
+  addSession(req, res)
+  const actualReq = (req as unknown) as RequestWithSession
+  const user = actualReq.session?.user
+  if (!user) {
+    throw new Error("Authentication is required.")
+  }
+  return user
+}
+
 const Query: Required<QueryResolvers> = {
   async viewer() {
     return { id: String(1), name: "John Smith", status: "cached" }
+  },
+  // TODO: Filter words, offsets
+  async playlists(_, __, ctx: NextPageContext): Promise<any> {
+    const user = extractUserSession(ctx)
+    initFirebase()
+    const db = firebase.firestore()
+    const playlistsSnapshot = await db
+      .collection("playlists")
+      .where("uid", "==", user.id)
+      .get()
+    if (playlistsSnapshot.empty) {
+      return []
+    }
+    return playlistsSnapshot.docs.map((item) => {
+      const data = item.data()
+      console.log(data)
+      return {
+        id: item.id,
+        name: data.name,
+        created: data.created.seconds,
+        numOfVideos: data.numOfVideos,
+        permission: data.permission,
+        totalSec: data.totalSec,
+        uid: data.uid,
+        updated: data.updated.seconds,
+      }
+    })
   },
   // TODO: stop using "any"....
   async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
     console.log("ARGS", args)
     const { req, res } = ctx
     addSession(req, res)
-    const actualReq = (req as unknown) as RequestWithSession
-    // I will use this later...
-    console.log("TEST....mmn,,,,a", actualReq.session?.user, args)
-
     if (!args.id) {
       throw new Error("Playlist-id is not defined")
     }
@@ -60,13 +94,11 @@ const Query: Required<QueryResolvers> = {
       videos: subs ? subs : [],
     }
   },
-  async youtubeVideo(_, args, context) {
-    console.log("Youtuve Video Start ---", args, context)
+  async youtubeVideo(_, args) {
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=AIzaSyBJQ9ISjT9u-Rgjss7TRqyhASRU6hAVYaI`,
     )
     const obj = await res.json()
-    console.log("OBJ", obj)
     if (Array.isArray(obj.items) === false || obj.items.length === 0) {
       return null
     }
@@ -82,16 +114,39 @@ const Query: Required<QueryResolvers> = {
 }
 
 const Mutation: Required<MutationResolvers> = {
-  async addPlaylist(_, args): Promise<any> {
-    console.log(args)
+  async addPlaylist(_, { playlist }, ctx: NextPageContext): Promise<any> {
+    console.log("START ADD PLAYLIST", playlist)
+    const { req, res } = ctx
+    addSession(req, res)
+    const actualReq = (req as unknown) as RequestWithSession
+    const user = actualReq.session?.user
+    if (!user) {
+      throw new Error("Authentication is required.")
+    }
+    if (!playlist) {
+      throw new Error("seems no parameters")
+    }
+    const db = firebase.firestore()
+    const now = new Date()
+    const resPlaylist = await db.collection("playlists").add({
+      uid: user!.id, // hope TS detects user is not null after the nullable check above.
+      name: playlist!.name,
+      comment: playlist!.comment ?? "",
+      permission: playlist!.permission,
+      numOfVideos: 0,
+      totalSec: 0,
+      created: now,
+      updated: now,
+    })
+
     return {
-      id: "jajaj",
-      numOfVideos: 20,
-      name: "hoge",
-      comment: "",
-      permission: "public",
-      created: 111,
-      totalSec: 111,
+      id: resPlaylist.id,
+      numOfVideos: 0,
+      name: playlist!.name,
+      comment: playlist!.comment,
+      permission: playlist!.permission,
+      created: now.getTime(),
+      totalSec: now.getTime(),
       videos: [],
     }
   },
@@ -103,22 +158,42 @@ const Mutation: Required<MutationResolvers> = {
 
     const user = actualReq.session?.user
     if (!user) {
-      new Error("Authentication is required.")
+      throw new Error("Authentication is required.")
     }
     const video = args.video
     if (!video) {
-      new Error("It needs to set a parameter for adding Video")
+      throw new Error("It needs to set a parameter for adding Video")
     }
     const db = firebase.firestore()
     // still needs "!"...
     // possible null or undefined might be a problem with generating types by graphql-let?
-    const resAddVideo = await db.collection("videos").add({
+    const videoCollection = db.collection("videos")
+    const resAddVideo = await videoCollection.add({
       uid: user!.id, // hope TS detects user is not null after the nullable check above.
       title: video!.title,
       start: video!.start,
       end: video!.end,
       created: new Date(),
     })
+    const refs = video.playlists?.map((el) => ({
+      playlist: db.collection("playlists").doc(el),
+    }))
+    if (refs && refs.length > 0) {
+      for (const it of refs) {
+        await videoCollection.doc(resAddVideo.id).collection("playlistrefs").add(it)
+        await it.playlist
+          .collection("videorefs")
+          .add({ video: videoCollection.doc(resAddVideo.id) })
+        await it.playlist.update(
+          "totalSec",
+          firebase.firestore.FieldValue.increment(video!.end - video!.start),
+        )
+        await it.playlist.update(
+          "numOfVideos",
+          firebase.firestore.FieldValue.increment(1),
+        )
+      }
+    }
     return {
       id: resAddVideo.id,
     }

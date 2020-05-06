@@ -6,6 +6,7 @@ import { SelectedPlaylistsFormControl } from "../Form/SelectedPlaylistsFormContr
 import { YoutubePlayer } from "../YoutubePlayer"
 import { useMutation } from "@apollo/react-hooks"
 import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
 
 type Props = {
   videoId: string
@@ -19,6 +20,7 @@ export const PartialVideoForm = ({ videoId, title }: Props) => {
   const [currentTime, setCurrentTime] = React.useState(0)
   const [executeAdd, resAdd] = useMutation(addQuery)
   const { showToast } = useDoneToast()
+  const { data } = useQuery<SelectedPlaylists<GQLPlaylist>>(query)
 
   if (!userContext.user) {
     throw new Error("Unexpectedly, user is null")
@@ -65,9 +67,19 @@ export const PartialVideoForm = ({ videoId, title }: Props) => {
       </Box>
       <Flex mt={5} alignItems="center" justifyContent="center">
         <Button
-          onClick={() =>
-            executeAdd({ variables: { video: { ...input, title, videoId } } })
-          }
+          onClick={() => {
+            const playlists = data ? data.selectedPlaylists : []
+            executeAdd({
+              variables: {
+                video: {
+                  ...input,
+                  title,
+                  videoId,
+                  playlists: playlists.map((el) => el.id),
+                },
+              },
+            })
+          }}
         >
           ADD
         </Button>
@@ -129,3 +141,13 @@ const useDoneToast = () => {
   }, [])
   return { showToast }
 }
+
+const query = gql`
+  query {
+    selectedPlaylists @client {
+      id
+      name
+      permission
+    }
+  }
+`
