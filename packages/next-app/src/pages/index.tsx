@@ -10,7 +10,7 @@ type Props = {
 }
 
 const query = gql`
-  query Playlist($pid: ID!) {
+  query Playlist($pid: String!) {
     playlist(id: $pid) {
       id
       name
@@ -20,7 +20,7 @@ const query = gql`
 
 const Index = (props: Props) => {
   const { loading, data, error } = useQuery(query, {
-    variables: { pid: "TCclKmMNUiPZHC7GJmsG" },
+    variables: { pid: "ih47t2IiBb7xmxAQ8JMs" },
   })
   if (data) {
     console.log("SUCCESS", data)

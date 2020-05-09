@@ -1,3 +1,5 @@
+scalar Date
+
 type User {
   id: ID!
   name: String!
@@ -6,8 +8,8 @@ type User {
 
 type PartialVideo {
   id: ID!
-  start: Int!
-  end: Int!
+  start: Float!
+  end: Float!
   comment: String
   title: String!
   uid: String!
@@ -29,8 +31,9 @@ type Playlist {
   name: String!
   comment: String
   permission: String!
-  created: Int!
-  totalSec: Int!
+  created: Date!
+  totalSec: Float!
+  firstVideoId: String
   videos: [PartialVideo]!
 }
 

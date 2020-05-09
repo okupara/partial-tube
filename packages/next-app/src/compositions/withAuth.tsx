@@ -20,7 +20,6 @@ export const withAuth = (
   PageComponent: NextComponentType<NextPageContext, any, any>,
 ) => {
   const withAuthComponent = ({ authUser, ...otherProps }: Props) => {
-    console.log("TEST---", authUser)
     return (
       <LoginUserProvider value={authUser ? initUser(authUser) : initUser()}>
         <AuthComponent>

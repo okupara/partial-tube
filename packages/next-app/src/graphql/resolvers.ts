@@ -4,6 +4,7 @@ import { addSession } from "../middlewares/addSession"
 import { initFirebase } from "../utils/initFirebase"
 import firebase from "firebase"
 import fetch from "isomorphic-unfetch"
+import { ScalarDate } from "./scalars"
 
 const extractUserSession = (ctx: NextPageContext) => {
   const { req, res } = ctx
@@ -34,22 +35,21 @@ const Query: Required<QueryResolvers> = {
     }
     return playlistsSnapshot.docs.map((item) => {
       const data = item.data()
-      console.log(data)
       return {
         id: item.id,
         name: data.name,
-        created: data.created.seconds,
+        created: data.created.toDate(),
         numOfVideos: data.numOfVideos,
         permission: data.permission,
         totalSec: data.totalSec,
+        firstVideoId: data.firstVideoId,
         uid: data.uid,
-        updated: data.updated.seconds,
+        updated: data.updated.toDate(),
       }
     })
   },
   // TODO: stop using "any"....
   async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
-    console.log("ARGS", args)
     const { req, res } = ctx
     addSession(req, res)
     if (!args.id) {
@@ -66,32 +66,40 @@ const Query: Required<QueryResolvers> = {
       throw new Error("This record does not exist")
     }
 
-    const subDocSnapshot = await ref.collection("partials").get()
-    const subs = subDocSnapshot.docs.map((elem) => {
-      const data = elem.data()
-      const created = new Date()
-      created.setTime(data.created.seconds)
-      return {
-        id: elem.id,
-        start: data.start,
-        end: data.end,
-        comment: data.comment,
-        uid: data.uid,
-        videoId: data.videoId,
-        title: data.title,
-        created: new Date().getTime(),
-      }
-    })
+    const snapshots = await db
+      .collection("playlists_videos")
+      .where("playlist", "==", ref)
+      .orderBy("created", "asc")
+      .get()
+
+    const videoRefs = snapshots.docs.map((el) => el.data().video)
+    let videos: any[] = []
+    for (const vid of videoRefs) {
+      const video = await vid.get()
+      const data = video.data()
+      videos = [
+        ...videos,
+        {
+          id: video.id,
+          start: data.start,
+          end: data.end,
+          comment: data.comment,
+          title: data.title,
+          videoId: data.videoId,
+          created: data.created.toDate(),
+        },
+      ]
+    }
 
     return {
       id: doc.id,
       comment: data.comment,
-      created: new Date().getTime(),
+      created: data.created.toDate(),
       numOfVideos: data.numOfVideos,
       name: data.name,
       totalSec: data.totalSec,
       uid: data.uid,
-      videos: subs ? subs : [],
+      videos,
     }
   },
   async youtubeVideo(_, args) {
@@ -127,7 +135,7 @@ const Mutation: Required<MutationResolvers> = {
       throw new Error("seems no parameters")
     }
     const db = firebase.firestore()
-    const now = new Date()
+    const now = firebase.firestore.Timestamp.fromDate(new Date())
     const resPlaylist = await db.collection("playlists").add({
       uid: user!.id, // hope TS detects user is not null after the nullable check above.
       name: playlist!.name,
@@ -135,6 +143,7 @@ const Mutation: Required<MutationResolvers> = {
       permission: playlist!.permission,
       numOfVideos: 0,
       totalSec: 0,
+      firstVideoId: "",
       created: now,
       updated: now,
     })
@@ -145,8 +154,8 @@ const Mutation: Required<MutationResolvers> = {
       name: playlist!.name,
       comment: playlist!.comment,
       permission: playlist!.permission,
-      created: now.getTime(),
-      totalSec: now.getTime(),
+      created: now,
+      totalSec: now,
       videos: [],
     }
   },
@@ -172,26 +181,36 @@ const Mutation: Required<MutationResolvers> = {
       uid: user!.id, // hope TS detects user is not null after the nullable check above.
       title: video!.title,
       start: video!.start,
+      videoId: video!.videoId,
+      comment: video!.comment,
       end: video!.end,
       created: new Date(),
     })
-    const refs = video.playlists?.map((el) => ({
-      playlist: db.collection("playlists").doc(el),
-    }))
+
+    const refs = video.playlists?.map((el) => db.collection("playlists").doc(el))
     if (refs && refs.length > 0) {
       for (const it of refs) {
-        await videoCollection.doc(resAddVideo.id).collection("playlistrefs").add(it)
-        await it.playlist
-          .collection("videorefs")
-          .add({ video: videoCollection.doc(resAddVideo.id) })
-        await it.playlist.update(
-          "totalSec",
-          firebase.firestore.FieldValue.increment(video!.end - video!.start),
-        )
-        await it.playlist.update(
-          "numOfVideos",
-          firebase.firestore.FieldValue.increment(1),
-        )
+        const first = await db
+          .collection("playlists_videos")
+          .where("playlist", "==", it)
+          .get()
+        console.log("FIRST", first.empty)
+        const updateFirstVideo = first.empty ? { firstVideoId: video!.videoId } : {}
+
+        await db.collection("playlists_videos").add({
+          video: videoCollection.doc(resAddVideo.id),
+          playlist: it,
+          created: new Date(),
+          updated: new Date(),
+        })
+
+        await it.update({
+          totalSec: firebase.firestore.FieldValue.increment(
+            video!.end - video!.start,
+          ),
+          numOfVideos: firebase.firestore.FieldValue.increment(1),
+          ...updateFirstVideo,
+        })
       }
     }
     return {
@@ -200,4 +219,4 @@ const Mutation: Required<MutationResolvers> = {
   },
 }
 
-export default { Query, Mutation }
+export default { Query, Mutation, Date: ScalarDate }

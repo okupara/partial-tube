@@ -3,15 +3,15 @@ import { Box, Flex, Text, Heading } from "@chakra-ui/core"
 import { YoutubeImage } from "../Thumbnail/YoutubeImage"
 import { Card } from "../Card/Card"
 import { ItemCountText } from "../Text/ItemCountText"
-import { DateText } from "../Text/DateText"
+import { TimestampText } from "../Text/TimestampText"
 
 export type Props = {
   id: string
-  title: string
-  comment: string
-  cnt: number
-  firstVideoId: string
-  updated: Date
+  name: string
+  comment?: string | null
+  numOfVideos: number
+  firstVideoId?: string | null
+  updated: number
   onClickCard?: (id: string) => void
 }
 
@@ -22,19 +22,19 @@ export const PlaylistCard: React.FC<Props> = (props) => (
         <YoutubeImage
           youtubeImageSize="mqdefault"
           width={200}
-          videoId={props.firstVideoId}
+          videoId={props.firstVideoId ?? "I think it should be something..."}
         />
       </Box>
       <Flex flexDirection="column" ml={4}>
         <Heading size="md" as="h3">
-          {props.title}
+          {props.name}
         </Heading>
         <Flex>
-          <ItemCountText count={props.cnt} />
+          <ItemCountText count={props.numOfVideos} />
           <Flex ml={4}>
             <Text>Last added :</Text>
             <Box ml={2}>
-              <DateText date={props.updated} />
+              <TimestampText time={props.updated} />
             </Box>
           </Flex>
         </Flex>

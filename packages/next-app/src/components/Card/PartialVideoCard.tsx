@@ -11,7 +11,6 @@ export type Props = {
   end: number
   videoId: string
   comment: string
-  mb?: number
   onClickCard?: (id: string) => void // to move the update page
 }
 

@@ -1023,6 +1023,10 @@ type Playlists<T> = {
   playlists: ReadonlyArray<T>
 }
 
+type Playlist<T> = {
+  playlist: T
+}
+
 type VideoInput = {
   videoId: string
   title: string
