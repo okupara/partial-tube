@@ -1,5 +1,6 @@
 import { QueryResolvers, MutationResolvers } from "./type-defs.graphqls"
 import { NextPageContext } from "next"
+import getConfig from "next/config"
 import { addSession } from "../middlewares/addSession"
 import { initFirebase } from "../utils/initFirebase"
 import firebase from "firebase"
@@ -37,7 +38,6 @@ const Query: Required<QueryResolvers> = {
 
     return snapshots.docs.map(item => {
       const data = item.data()
-      console.log("created", data.created)
       return {
         id: item.id,
         start: data.start,
@@ -131,8 +131,9 @@ const Query: Required<QueryResolvers> = {
     }
   },
   async youtubeVideo(_, args) {
+    const { serverRuntimeConfig } = getConfig()
     const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=AIzaSyBJQ9ISjT9u-Rgjss7TRqyhASRU6hAVYaI`,
+      `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=${serverRuntimeConfig.youtubeApiKey}`,
     )
     const obj = await res.json()
     if (Array.isArray(obj.items) === false || obj.items.length === 0) {
@@ -151,7 +152,6 @@ const Query: Required<QueryResolvers> = {
 
 const Mutation: Required<MutationResolvers> = {
   async addPlaylist(_, { playlist }, ctx: NextPageContext): Promise<any> {
-    console.log("START ADD PLAYLIST", playlist)
     const { req, res } = ctx
     addSession(req, res)
     const actualReq = (req as unknown) as RequestWithSession
@@ -222,7 +222,6 @@ const Mutation: Required<MutationResolvers> = {
           .collection("playlists_videos")
           .where("playlist", "==", it)
           .get()
-        console.log("FIRST", first.empty)
         const updateFirstVideo = first.empty ? { firstVideoId: video!.videoId } : {}
 
         await db.collection("playlists_videos").add({
