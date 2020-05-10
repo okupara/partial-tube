@@ -1027,6 +1027,10 @@ type Playlist<T> = {
   playlist: T
 }
 
+type QueryVideos<T> = {
+  videos: ReadonlyArray<T>
+}
+
 type VideoInput = {
   videoId: string
   title: string

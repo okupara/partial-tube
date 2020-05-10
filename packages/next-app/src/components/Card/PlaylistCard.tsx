@@ -15,10 +15,10 @@ export type Props = {
   onClickCard?: (id: string) => void
 }
 
-export const PlaylistCard: React.FC<Props> = (props) => (
+export const PlaylistCard: React.FC<Props> = props => (
   <Card onClick={() => props.onClickCard?.(props.id)}>
     <Flex>
-      <Box>
+      <Box width="200px">
         <YoutubeImage
           youtubeImageSize="mqdefault"
           videoId={props.firstVideoId ?? "I think it should be something..."}

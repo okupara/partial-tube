@@ -21,6 +21,34 @@ const Query: Required<QueryResolvers> = {
   async viewer() {
     return { id: String(1), name: "John Smith", status: "cached" }
   },
+  async videos(_, __, ctx: NextPageContext): Promise<any> {
+    initFirebase()
+    const db = firebase.firestore()
+    const user = extractUserSession(ctx)
+
+    const snapshots = await db
+      .collection("videos")
+      .where("uid", "==", user.id)
+      .orderBy("created", "desc")
+      .get()
+    if (snapshots.empty) {
+      return []
+    }
+
+    return snapshots.docs.map(item => {
+      const data = item.data()
+      console.log("created", data.created)
+      return {
+        id: item.id,
+        start: data.start,
+        end: data.end,
+        videoId: data.videoId,
+        title: data.title,
+        comment: data.comment,
+        created: data.created.toDate(),
+      }
+    })
+  },
   // TODO: Filter words, offsets
   async playlists(_, __, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
@@ -33,7 +61,7 @@ const Query: Required<QueryResolvers> = {
     if (playlistsSnapshot.empty) {
       return []
     }
-    return playlistsSnapshot.docs.map((item) => {
+    return playlistsSnapshot.docs.map(item => {
       const data = item.data()
       return {
         id: item.id,
@@ -72,7 +100,7 @@ const Query: Required<QueryResolvers> = {
       .orderBy("created", "asc")
       .get()
 
-    const videoRefs = snapshots.docs.map((el) => el.data().video)
+    const videoRefs = snapshots.docs.map(el => el.data().video)
     let videos: any[] = []
     for (const vid of videoRefs) {
       const video = await vid.get()
@@ -187,7 +215,7 @@ const Mutation: Required<MutationResolvers> = {
       created: new Date(),
     })
 
-    const refs = video.playlists?.map((el) => db.collection("playlists").doc(el))
+    const refs = video.playlists?.map(el => db.collection("playlists").doc(el))
     if (refs && refs.length > 0) {
       for (const it of refs) {
         const first = await db

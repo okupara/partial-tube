@@ -2,6 +2,7 @@ import React from "react"
 import { SchemaLink } from "apollo-link-schema"
 import { makeExecutableSchema, addMockFunctionsToSchema } from "graphql-tools"
 import { playlistMock } from "../__mocks__/Playlist"
+import { partialVideListMock } from "../__mocks__/ParitalVideoList"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { ApolloClient } from "apollo-client"
 import { InMemoryCache } from "apollo-cache-inmemory"
@@ -11,8 +12,10 @@ let sideEffectId = 13333
 const mocks = {
   Query: () => ({
     playlist: () => {
-      console.log(playlistMock)
       return playlistMock
+    },
+    videos: () => {
+      return partialVideListMock
     },
   }),
   Mutation: () => ({

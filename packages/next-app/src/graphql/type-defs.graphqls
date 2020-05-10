@@ -14,7 +14,7 @@ type PartialVideo {
   title: String!
   uid: String!
   videoId: String!
-  created: Int!
+  created: Date!
 }
 input VideoInput {
   videoId: String!
@@ -54,6 +54,7 @@ type Query {
   playlist(id: String!): Playlist
   playlists: [Playlist]
   youtubeVideo(videoId: String!): YouTubeVideo
+  videos: [PartialVideo!]
 }
 
 type Mutation {
