@@ -21,7 +21,6 @@ export const PlaylistCard: React.FC<Props> = (props) => (
       <Box>
         <YoutubeImage
           youtubeImageSize="mqdefault"
-          width={200}
           videoId={props.firstVideoId ?? "I think it should be something..."}
         />
       </Box>

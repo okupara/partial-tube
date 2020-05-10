@@ -7,23 +7,12 @@ type Props = {
   start: number
   end: number
   videoId: string
-  imageWidth: number
   timeFontSize: BoxProps["fontSize"]
 }
 
-export const PartialVideoThumb = ({
-  start,
-  end,
-  videoId,
-  imageWidth,
-  timeFontSize,
-}: Props) => (
-  <Box position="relative" width={imageWidth} borderRadius="md" overflow="hidden">
-    <YoutubeImage
-      youtubeImageSize="mqdefault"
-      width={imageWidth}
-      videoId={videoId}
-    />
+export const PartialVideoThumb = ({ start, end, videoId, timeFontSize }: Props) => (
+  <Box position="relative" borderRadius="md" overflow="hidden">
+    <YoutubeImage youtubeImageSize="mqdefault" videoId={videoId} />
     <Box
       position="absolute"
       bottom={0}

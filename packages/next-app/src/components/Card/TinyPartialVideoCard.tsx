@@ -5,24 +5,38 @@ import { PartialVideoThumb } from "../Thumbnail/PartialVideoThumb"
 
 export type Props = {
   videoId: string
-  comment: string
+  comment?: string | null
   start: number
   end: number
+  playing: boolean
 }
 
-export const TinyPartialVideoCard = ({ videoId, comment, start, end }: Props) => (
-  <Flex width="140px" flexDirection="column">
-    <Box>
-      <PartialVideoThumb
-        videoId={videoId}
-        start={start}
-        end={end}
-        imageWidth={140}
-        timeFontSize="sm"
-      />
-    </Box>
-    <Box>
-      <CommentIconText text={comment} fontSize="sm" />
-    </Box>
-  </Flex>
+export const TinyPartialVideoCard = ({
+  videoId,
+  comment,
+  start,
+  end,
+  playing,
+}: Props) => (
+  <Box>
+    <Flex
+      width="140px"
+      flexDirection="column"
+      backgroundColor={playing ? "gray.200" : "transparent"}
+      p={2}
+      borderRadius={playing ? 4 : 0}
+    >
+      <Box position="relative">
+        <PartialVideoThumb
+          videoId={videoId}
+          start={start}
+          end={end}
+          timeFontSize="sm"
+        />
+      </Box>
+      <Box>
+        <CommentIconText text={comment ?? ""} fontSize="sm" />
+      </Box>
+    </Flex>
+  </Box>
 )

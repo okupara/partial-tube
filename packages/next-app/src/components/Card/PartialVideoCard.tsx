@@ -29,7 +29,6 @@ export const PartialVideoCard = (props: Props) => (
       <Box gridArea="areaA">
         <PartialVideoThumb
           videoId={props.videoId}
-          imageWidth={200}
           start={props.start}
           end={props.end}
           timeFontSize="md"

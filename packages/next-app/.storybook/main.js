@@ -8,7 +8,7 @@ module.exports = {
     })
     return config
   },
-  stories: ["../stories/**/*.stories.tsx"],
+  stories: ["../stories/**/*.stories.tsx", "../stories/**/*.stories.mdx"],
   addons: [
     {
       name: "@storybook/preset-typescript",
@@ -25,6 +25,10 @@ module.exports = {
           path.resolve(__dirname, "../__mocks__"),
         ],
       },
+    },
+    {
+      name: "@storybook/addon-docs",
+      options: { configureJSX: true },
     },
   ],
 }

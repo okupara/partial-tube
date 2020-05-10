@@ -1,11 +1,11 @@
 import React from "react"
 import { UserDecorator } from "./Decorators"
 import { Player } from "../src/layouts/PartialVideoPlayer"
-import { partialVideListMock } from "../__mocks__/ParitalVideoList"
+import { ApolloMockDecorator } from "./ApolloHelper"
 
-export const player = () => <Player partialVideoList={partialVideListMock} />
+export const player = () => <Player playlistId="hohoho" />
 
 export default {
   title: "Layouts",
-  decorators: [UserDecorator],
+  decorators: [UserDecorator, ApolloMockDecorator],
 }

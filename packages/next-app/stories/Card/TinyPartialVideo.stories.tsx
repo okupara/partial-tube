@@ -1,10 +1,15 @@
-import React from "react"
+import * as React from "react"
 import { TinyPartialVideoCard } from "../../src/components/Card/TinyPartialVideoCard"
 import { MarginDecorator } from "../Decorators"
-import { partialVideListMock } from "../../__mocks__/ParitalVideoList"
 
 export const tinyPartialVideoCard = () => (
-  <TinyPartialVideoCard {...partialVideListMock[0]} />
+  <TinyPartialVideoCard
+    videoId="iaqgyA9PZ08"
+    comment="これhテストテスト"
+    start={10}
+    end={30}
+    playing
+  />
 )
 
 export default {
