@@ -10,7 +10,7 @@ type Props = {
 
 const Videos = (props: Props) => {
   return (
-    <NeedsLogin fbAuth={props.fbAuth}>
+    <NeedsLogin currentMenu="videos" fbAuth={props.fbAuth}>
       <LayoutVideos />
     </NeedsLogin>
   )

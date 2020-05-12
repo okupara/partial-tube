@@ -11,8 +11,9 @@ type Props = {
 
 const Component = (props: Props) => {
   const router = useRouter()
+
   return (
-    <NeedsLogin fbAuth={props.fbAuth}>
+    <NeedsLogin currentMenu="playlists" fbAuth={props.fbAuth}>
       <Playlists
         onClickCard={(id) => router.push("/playlist/[id]", `/playlist/${id}`)}
       />

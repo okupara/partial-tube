@@ -1,3 +1,33 @@
 {
-  "version": 2
+  "version": 2,
+  "env": {
+    "API_KEY": "apiKey from Firebase",
+    "AUTH_DOMAIN": "authDomain from Firebase",
+    "DATABASE_URL": "databaseUrl from Firebase",
+    "PROJECT_ID": "projectId from Firebase",
+    "STORAGE_BUCKET": "storageBucket from Firebase",
+    "MESSAGING_SENDER_ID": "messagingSenderId from Firebase",
+    "APP_ID": "appId from Firebase",
+    "MEASUREMENT_ID": "measuremntId from Firebase",
+    "SESSION_KEY_1": "session key, put your favorite random string",
+    "SESSION_KEY_2": "session key, put your favorite random string",
+    "CLIENT_EMAIL": "clientEmail from Firebase",
+    "PRIVATE_KEY": "privateKey from Firebase",
+    "YOUTUBE_API_KEY": "key from YouTube Data API"
+  },
+  "build": {
+    "API_KEY": "apiKey from Firebase",
+    "AUTH_DOMAIN": "authDomain from Firebase",
+    "DATABASE_URL": "databaseUrl from Firebase",
+    "PROJECT_ID": "projectId from Firebase",
+    "STORAGE_BUCKET": "storageBucket from Firebase",
+    "MESSAGING_SENDER_ID": "messagingSenderId from Firebase",
+    "APP_ID": "appId from Firebase",
+    "MEASUREMENT_ID": "measuremntId from Firebase",
+    "SESSION_KEY_1": "session key, put your favorite random string",
+    "SESSION_KEY_2": "session key, put your favorite random string",
+    "CLIENT_EMAIL": "clientEmail from Firebase",
+    "PRIVATE_KEY": "privateKey from Firebase",
+    "YOUTUBE_API_KEY": "key from YouTube Data API"
+  }
 }

@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react"
 import { NextComponentType, NextPageContext } from "next"
-import { initUser, LoginUserProvider } from "../contexts/LoginUser"
+// import { initUser, LoginUserProvider } from "../contexts/LoginUser"
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth"
 import * as User from "../models/User"
 import { addSession } from "../middlewares/addSession"
@@ -20,12 +20,13 @@ export const withAuth = (
   PageComponent: NextComponentType<NextPageContext, any, any>,
 ) => {
   const withAuthComponent = ({ authUser, ...otherProps }: Props) => {
+    console.log("RENDERING LoginProvider???", authUser)
     return (
-      <LoginUserProvider value={authUser ? initUser(authUser) : initUser()}>
-        <AuthComponent>
-          <PageComponent {...otherProps} />
-        </AuthComponent>
-      </LoginUserProvider>
+      // <LoginUserProvider value={authUser ? initUser(authUser) : initUser()}>
+      <AuthComponent>
+        <PageComponent {...otherProps} />
+      </AuthComponent>
+      // </LoginUserProvider>
     )
   }
 

@@ -71,9 +71,10 @@ function createAuth() {
   )
 
   const { publicRuntimeConfig } = getConfig()
-  console.log(publicRuntimeConfig)
+  console.log("LOGGG", userContext.user)
 
   useEffect(() => {
+    console.log("DO FIREBASE!!!!")
     if (firebase.apps.length === 0) {
       firebase.initializeApp({
         apiKey: publicRuntimeConfig.apiKey,

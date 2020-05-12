@@ -5,6 +5,7 @@ export const partialVideListMock = [
     videoId: "iaqgyA9PZ08",
     start: 20,
     end: 35,
+    created: new Date().getTime(),
     comment: "testest",
   },
   {
@@ -13,6 +14,7 @@ export const partialVideListMock = [
     videoId: "iaqgyA9PZ08",
     start: 120,
     end: 128,
+    created: new Date().getTime(),
     comment: "",
   },
   {
@@ -21,6 +23,7 @@ export const partialVideListMock = [
     videoId: "g0avWKtqZng",
     start: 120,
     end: 140,
+    created: new Date().getTime(),
     comment: "tetetetetetaaaaaa",
   },
 ]

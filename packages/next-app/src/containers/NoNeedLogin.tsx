@@ -1,7 +1,6 @@
 import React from "react"
 import { useRouter } from "next/router"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
-import { LetsLogin } from "../components/Parts/LetsLogin"
 import { InitializingApp } from "../layouts/InitializingApp"
 import { UnAuthenticated } from "../components/UnAuthenticated"
 import { Authenticated } from "../components/Authenticated"
@@ -25,7 +24,7 @@ export const NeedsLogin: React.FC<Props> = ({ fbAuth, children, currentMenu }) =
         onChangeMenu={moveNextUrl}
         login={fbAuth.login}
       >
-        <LetsLogin login={fbAuth.login} />
+        {children}
       </UnAuthenticated>
     )
   }

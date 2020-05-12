@@ -1,6 +1,4 @@
 import React from "react"
-import { useLoginUser } from "../contexts/LoginUser"
-import { Authenticated } from "../components/Authenticated"
 import { Box, Stack } from "@chakra-ui/core"
 import { Playlist } from "../graphql/type-defs.graphqls"
 import { PlaylistCard } from "../components/Card/PlaylistCard"
@@ -12,32 +10,28 @@ type Props = {
 }
 
 export const Playlists = (props: Props) => {
-  const userContext = useLoginUser()
   const { data } = useQuery<QueryData>(query)
 
-  if (!userContext.user) throw new Error("Unexpectedly, user is null")
   return (
-    <Authenticated user={userContext.user}>
-      <Box mt={24} px={6}>
-        {data && (
-          <Stack spacing={4}>
-            {data.playlists.map((el) => (
-              <Box key={el.id}>
-                <PlaylistCard
-                  onClickCard={props.onClickCard}
-                  id={el.id}
-                  name={el.name}
-                  comment={el.comment}
-                  updated={el.created}
-                  firstVideoId={el.firstVideoId}
-                  numOfVideos={el.numOfVideos}
-                />
-              </Box>
-            ))}
-          </Stack>
-        )}
-      </Box>
-    </Authenticated>
+    <Box px={6}>
+      {data && (
+        <Stack spacing={4}>
+          {data.playlists.map((el) => (
+            <Box key={el.id}>
+              <PlaylistCard
+                onClickCard={props.onClickCard}
+                id={el.id}
+                name={el.name}
+                comment={el.comment}
+                updated={el.created}
+                firstVideoId={el.firstVideoId}
+                numOfVideos={el.numOfVideos}
+              />
+            </Box>
+          ))}
+        </Stack>
+      )}
+    </Box>
   )
 }
 
