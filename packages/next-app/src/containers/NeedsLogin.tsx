@@ -17,6 +17,7 @@ export const NeedsLogin: React.FC<Props> = ({ fbAuth, children, currentMenu }) =
   const userContext = useLoginUser()
   const router = useRouter()
   const moveNextUrl = (value: string) => router.push(determineURL(value))
+  const moveToAdd = () => router.push("/video/add")
 
   if (fbAuth.state === "notLoggedIn") {
     return (
@@ -35,6 +36,7 @@ export const NeedsLogin: React.FC<Props> = ({ fbAuth, children, currentMenu }) =
         currentMenu={currentMenu}
         onChangeMenu={moveNextUrl}
         user={userContext.user}
+        onClickAdd={moveToAdd}
       >
         {children}
       </Authenticated>

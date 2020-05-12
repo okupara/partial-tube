@@ -5,7 +5,6 @@ import {
 } from "../graphql/type-defs.graphqls"
 import { StackList } from "../components/List/StackList"
 import { useLoginUser } from "../contexts/LoginUser"
-import { Authenticated } from "../components/Authenticated"
 import { Box, Flex } from "@chakra-ui/core"
 import { PartialVideoCard } from "../components/Card/PartialVideoCard"
 import { PlaylistHeader } from "../components/Parts/PlaylistHeader"
@@ -27,38 +26,36 @@ export const Playlist = (props: Props) => {
   const playlist = data ? data.playlist : null
 
   return (
-    <Authenticated user={userContext.user}>
-      {playlist && (
-        <Flex flexDirection="column" mt={24} px={6} pb={10}>
-          <Box>
-            <PlaylistHeader
-              id={playlist.id}
-              title={playlist.name}
-              totalSec={playlist.totalSec}
-              lastUpdate={new Date()}
-              comment={playlist.comment ?? ""}
-              numOfVideos={playlist.numOfVideos}
-              onClickPlay={props.onPlay}
-            />
-          </Box>
-          <Box mt={6}>
-            <StackList
-              list={playlist.videos}
-              component={(p) => (
-                <PartialVideoCard
-                  id={p.id}
-                  title={p.title}
-                  videoId={p.videoId}
-                  comment={p.comment ?? ""}
-                  start={p.start}
-                  end={p.end}
-                />
-              )}
-            />
-          </Box>
-        </Flex>
-      )}
-    </Authenticated>
+    playlist && (
+      <Flex flexDirection="column" px={6} pb={10}>
+        <Box>
+          <PlaylistHeader
+            id={playlist.id}
+            title={playlist.name}
+            totalSec={playlist.totalSec}
+            lastUpdate={new Date()}
+            comment={playlist.comment ?? ""}
+            numOfVideos={playlist.numOfVideos}
+            onClickPlay={props.onPlay}
+          />
+        </Box>
+        <Box mt={6}>
+          <StackList
+            list={playlist.videos}
+            component={(p) => (
+              <PartialVideoCard
+                id={p.id}
+                title={p.title}
+                videoId={p.videoId}
+                comment={p.comment ?? ""}
+                start={p.start}
+                end={p.end}
+              />
+            )}
+          />
+        </Box>
+      </Flex>
+    )
   )
 }
 

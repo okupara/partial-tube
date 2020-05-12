@@ -2,7 +2,7 @@ import React from "react"
 import { useRouter } from "next/router"
 import { NextPageContext } from "next"
 import { Playlist as LayoutPlaylist } from "../../layouts/Playlist"
-import { NeedsLogin } from "../../containers/NeedsLogin"
+import { NoNeedLogin } from "../../containers/NoNeedLogin"
 import { HooksReturnType } from "../../hooks/useFirebaseAuth"
 import { withAuth } from "../../compositions/withAuth"
 import { withApollo } from "../../compositions/withApollo"
@@ -17,12 +17,12 @@ export const Playlist = (props: Props) => {
   const { fbAuth } = props
 
   return (
-    <NeedsLogin fbAuth={fbAuth}>
+    <NoNeedLogin fbAuth={fbAuth}>
       <LayoutPlaylist
         playlistId={props.id}
         onPlay={(id) => router.push("/player/[id]", `/player/${id}`)}
       />
-    </NeedsLogin>
+    </NoNeedLogin>
   )
 }
 

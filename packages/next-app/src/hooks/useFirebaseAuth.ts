@@ -100,9 +100,9 @@ function createAuth() {
               avatarUrl: user.photoURL,
               name: user.displayName,
             })
+            // doing nothing for now when error happens...(just shows errors on the console)
+            activeSession(user)
           }
-          // doing nothing for now when error happens...(just shows errors on the console)
-          activeSession(user)
         }
       },
       (error) => {

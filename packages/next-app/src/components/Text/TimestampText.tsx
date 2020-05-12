@@ -7,10 +7,8 @@ type Props = {
 }
 
 const convert = (time: number) => {
-  console.log("CONVERT", time)
   const date = new Date()
   date.setTime(Math.floor(time))
-  console.log(date)
   return `${date.getFullYear()}/${fillZero(date.getMonth() + 1)}/${fillZero(
     date.getDate(),
   )}`
