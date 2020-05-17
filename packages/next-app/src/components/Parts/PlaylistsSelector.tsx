@@ -5,11 +5,8 @@ import gql from "graphql-tag"
 import { Flex, Box, Checkbox, Icon } from "@chakra-ui/core"
 import { useNormalizedData, map as normMap } from "../../utils/DataNormalizer"
 
-type Props = {
-  uid: string
-}
-export const Component = ({ uid }: Props) => {
-  const { items, updateSelectedPlaylists, selectedIds } = usePlaylists(uid)
+export const Component = () => {
+  const { items, updateSelectedPlaylists, selectedIds } = usePlaylistsSelector()
   return items ? (
     <Stack spacing={2}>
       {normMap(items, (item) => (
@@ -33,13 +30,13 @@ export const Component = ({ uid }: Props) => {
     </Stack>
   ) : null
 }
-export const PlaylistsSelector = React.memo(Component) as typeof Component
+export const PlaylistsSelector = React.memo(Component)
 
 type QueryData = Playlists<GQLPlaylist>
 type QueryLocalData = AddedPlaylists<GQLPlaylist>
 type QuerySelected = SelectedPlaylists<{ id: string }>
 
-const query = gql`
+const queryPlaylists = gql`
   query {
     playlists {
       id
@@ -64,65 +61,72 @@ const querySelectedPlaylists = gql`
     }
   }
 `
+export const useUsersPlaylists = () => {
+  const playlistsRes = useQuery<QueryData>(queryPlaylists)
+  const newPlaylistsRes = useQuery<QueryLocalData>(queryAddedPlaylists)
+  const normalizedState = useNormalizedData<GQLPlaylist>()
 
-export const usePlaylists = (uid: string) => {
-  const res = useQuery<QueryData>(query, { variables: { uid } })
-  const resLocal = useQuery<QueryLocalData>(queryAddedPlaylists)
-  const [executeSelectedGQL, resSelectedGQL] = useLazyQuery<QuerySelected>(
-    querySelectedPlaylists,
-  )
-  const client = useApolloClient()
+  React.useEffect(() => {
+    if (playlistsRes.data) {
+      const addedPlaylistsLocal = newPlaylistsRes.data
+        ? newPlaylistsRes.data.addedPlaylists
+        : []
+      normalizedState.withNormalize([
+        ...addedPlaylistsLocal,
+        ...playlistsRes.data.playlists,
+      ])
+    }
+  }, [playlistsRes.data, newPlaylistsRes.data])
+
+  return {
+    normalizedData: normalizedState.normalizedData,
+    itemsFromIds: normalizedState.itemsFromIds,
+  }
+}
+
+const usePlaylistsSelector = () => {
+  const { normalizedData, itemsFromIds } = useUsersPlaylists()
   const [selectedIds, setSelectedIds] = React.useState<ReadonlyArray<string> | null>(
     null,
   )
-  const { withNormalize, normalizedData, itemsFromIds } = useNormalizedData<
-    GQLPlaylist
-  >()
+  const [execute, selectedPlalystsRes] = useLazyQuery<QuerySelected>(
+    querySelectedPlaylists,
+  )
+  const client = useApolloClient()
 
   React.useEffect(() => {
-    executeSelectedGQL()
+    execute()
   }, [])
 
   React.useEffect(() => {
-    if (resSelectedGQL.data) {
-      setSelectedIds(resSelectedGQL.data.selectedPlaylists.map((el) => el.id))
+    if (selectedPlalystsRes.data) {
+      const entries = Array.from(
+        new Set([
+          ...(selectedIds ?? []),
+          ...selectedPlalystsRes.data.selectedPlaylists.map((item) => item.id),
+        ]),
+      )
+      setSelectedIds(entries)
     }
-  }, [resSelectedGQL.data])
-
-  React.useEffect(() => {
-    if (res.data) {
-      console.log("playlists res", res.data)
-      const addedPlaylistsLocal = resLocal.data ? resLocal.data.addedPlaylists : []
-      withNormalize([...addedPlaylistsLocal, ...res.data.playlists])
-    }
-  }, [res.data, resLocal.data])
-
-  React.useEffect(() => {
-    if (res.error) console.log(res.error)
-  }, [res.error])
+  }, [selectedPlalystsRes.data])
 
   const updateSelectedPlaylists = React.useCallback(
     (id: string, checked: boolean) => {
-      if (checked) {
-        setSelectedIds((previous) => (previous ? [...previous, id] : [id]))
-      } else {
-        setSelectedIds((previous) =>
-          previous ? [...previous.filter((s) => s !== id)] : previous,
-        )
-      }
-    },
-    [normalizedData],
-  )
+      const newSelectedIds = checked
+        ? [...(selectedIds ?? []), id]
+        : [...(selectedIds ?? []).filter((s) => s !== id)]
 
-  React.useEffect(() => {
-    if (selectedIds) {
-      client.writeData({ data: { selectedPlaylists: itemsFromIds(selectedIds) } })
-    }
-  }, [selectedIds])
+      setSelectedIds(newSelectedIds)
+      client.writeData({
+        data: { selectedPlaylists: itemsFromIds(newSelectedIds) },
+      })
+    },
+    [selectedIds, normalizedData],
+  )
 
   return {
     items: normalizedData,
+    selectedIds: selectedIds ? new Set(selectedIds) : new Set([]),
     updateSelectedPlaylists,
-    selectedIds: React.useMemo(() => new Set(selectedIds), [selectedIds]),
   }
 }

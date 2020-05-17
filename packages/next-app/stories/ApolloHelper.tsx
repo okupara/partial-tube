@@ -2,7 +2,8 @@ import React from "react"
 import { SchemaLink } from "apollo-link-schema"
 import { makeExecutableSchema, addMockFunctionsToSchema } from "graphql-tools"
 import { playlistMock } from "../__mocks__/Playlist"
-import { partialVideListMock } from "../__mocks__/ParitalVideoList"
+import { partialVideoListMock } from "../__mocks__/ParitalVideoList"
+import { playlistsMock } from "../__mocks__/PlaylistCollection"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { ApolloClient } from "apollo-client"
 import { InMemoryCache } from "apollo-cache-inmemory"
@@ -14,8 +15,14 @@ const mocks = {
     playlist: () => {
       return playlistMock
     },
+    playlists: () => {
+      return playlistsMock
+    },
     videos: () => {
-      return partialVideListMock
+      return partialVideoListMock
+    },
+    video: () => {
+      return partialVideoListMock[0]
     },
   }),
   Mutation: () => ({

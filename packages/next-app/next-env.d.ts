@@ -1030,6 +1030,9 @@ type Playlist<T> = {
 type QueryVideos<T> = {
   videos: ReadonlyArray<T>
 }
+type QueryVideo<T> = {
+  video: T
+}
 
 type VideoInput = {
   videoId: string
@@ -1039,18 +1042,21 @@ type VideoInput = {
   comment: string
 }
 
-declare namespace GQLPartialVideoForm {
-  type Playlist = {
-    id: string
-    name: string
-  }
-  type AddedPlaylists = {
-    addedPlaylists: ReadonlyArray<GQLPlaylist>
-  }
-  type SelectedPlaylists = {
-    seletectedPlaylists: ReadonlyArray<GQLPlaylist>
-  }
+declare namespace PagePlaylists {
+  type Playlist = import("./src/graphql/type-defs.graphqls").Playlist
 }
+// declare namespace GQLPartialVideoForm {
+//   type Playlist = {
+//     id: string
+//     name: string
+//   }
+//   type AddedPlaylists = {
+//     addedPlaylists: ReadonlyArray<GQLPlaylist>
+//   }
+//   type SelectedPlaylists = {
+//     seletectedPlaylists: ReadonlyArray<GQLPlaylist>
+//   }
+// }
 
 // from https://github.com/storybookjs/storybook/issues/8183
 // in a file called typings/addonDocs.d.ts

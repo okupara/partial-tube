@@ -48,7 +48,7 @@ export const itemsFromIds = <T extends Id>(
   ids: ReadonlyArray<Id["id"]>,
 ) =>
   ids.reduce<ReadonlyArray<T>>((p, c) => {
-    const d = { ...normlizedData.items[c] }
+    const d = normlizedData.items[c]
     if (d) {
       return [...p, d]
     }
@@ -77,7 +77,7 @@ export const useNormalizedData = <T extends Id>() => {
 
   return {
     normalizedData,
-    withNormalize,
     itemsFromIds: _itemsFromIds,
+    withNormalize,
   }
 }

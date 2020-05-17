@@ -1,41 +1,45 @@
 import React from "react"
 import { Flex, Box, Button, Textarea, useToast } from "@chakra-ui/core"
-import { useLoginUser } from "../../contexts/LoginUser"
 import { StartEndFormControl } from "../Form/StartEndFormControl"
 import { SelectedPlaylistsFormControl } from "../Form/SelectedPlaylistsFormControl"
 import { YoutubePlayer } from "../YoutubePlayer"
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation, useQuery, useApolloClient } from "@apollo/react-hooks"
 import gql from "graphql-tag"
-import { useQuery } from "@apollo/react-hooks"
 
 type Props = {
+  id?: string
   videoId: string
   title: string
+  start?: number | null
+  end?: number | null
+  comment?: string
+  playlists?: ReadonlyArray<GQLPlaylist>
   onAddVideo?: (video: Input) => void
 }
 
-export const PartialVideoForm = ({ videoId, title }: Props) => {
-  const userContext = useLoginUser()
-  const { input, ...inputDispatch } = useInput()
+export const PartialVideoForm = ({
+  id,
+  videoId,
+  title,
+  start,
+  end,
+  comment,
+  playlists,
+}: Props) => {
+  const { input, executeAdd, ...inputDispatch } = useVideoForm({
+    id,
+    videoId,
+    title,
+    start: start ?? null,
+    end: end ?? null,
+    comment: comment ?? "",
+    playlists,
+  })
   const [currentTime, setCurrentTime] = React.useState(0)
-  const [executeAdd, resAdd] = useMutation(addQuery)
-  const { showToast } = useDoneToast()
-  const { data } = useQuery<SelectedPlaylists<GQLPlaylist>>(query)
-
-  if (!userContext.user) {
-    throw new Error("Unexpectedly, user is null")
-  }
-
-  React.useEffect(() => {
-    if (resAdd.data) {
-      showToast()
-      inputDispatch.reset()
-    }
-  }, [resAdd.data])
 
   return (
     <Flex flexDirection="column">
-      <Box m="auto" mt={10}>
+      <Box m="auto">
         <YoutubePlayer
           id={videoId}
           videoId={videoId}
@@ -45,8 +49,8 @@ export const PartialVideoForm = ({ videoId, title }: Props) => {
       <Box mt={5}>
         <StartEndFormControl
           currentTime={currentTime}
-          endTime={input.end}
-          startTime={input.start}
+          endTime={input.end ?? null}
+          startTime={input.start ?? null}
           onSetEndTime={inputDispatch.setEnd}
           onSetStartTime={inputDispatch.setStart}
         />
@@ -57,50 +61,60 @@ export const PartialVideoForm = ({ videoId, title }: Props) => {
       <Box mt={5}>
         <Textarea
           value={input.comment}
-          onChange={React.useCallback(
-            (e: any) => inputDispatch.setComment(e.currentTarget.value),
-            [],
-          )}
+          onChange={(e: any) => inputDispatch.setComment(e.currentTarget.value)} // difficult to be typesafe with onChange on Textarea...
           height={10}
           placeholder="put some comments..."
         />
       </Box>
       <Flex mt={5} alignItems="center" justifyContent="center">
-        <Button
-          onClick={() => {
-            const playlists = data ? data.selectedPlaylists : []
-            executeAdd({
-              variables: {
-                video: {
-                  ...input,
-                  title,
-                  videoId,
-                  playlists: playlists.map((el) => el.id),
-                },
-              },
-            })
-          }}
-        >
-          ADD
-        </Button>
+        <Button onClick={() => executeAdd()}>SAVE</Button>
       </Flex>
     </Flex>
   )
 }
 
-export type Input = {
-  start: number | null
-  end: number | null
-  comment: string
-}
-const useInput = () => {
-  const [input, setInput] = React.useState<Input>({
-    start: null,
-    end: null,
-    comment: "",
+type Input = Omit<Props, "onAddVideo">
+type InputStateType = Omit<Input, "playlists">
+
+const useVideoForm = (initValues: Input) => {
+  const [input, setInput] = React.useState<InputStateType>({
+    id: initValues.id,
+    title: initValues.title,
+    start: initValues.start,
+    end: initValues.end,
+    comment: initValues.comment,
+    videoId: initValues.videoId,
   })
+  const [executeAdd, addRes] = useMutation(mutation)
+  const client = useApolloClient()
+  const selectedPlaylistsRes = useQuery<SelectedPlaylists<GQLPlaylist>>(query)
+  const selectedPlaylists = selectedPlaylistsRes.data?.selectedPlaylists
+  const { showToast } = useDoneToast()
+
+  React.useEffect(() => {
+    if (addRes.data) {
+      showToast()
+      setInput((state) =>
+        // In edit mode, only resets comment
+        state.id ? { ...state, comment: "" } : { ...state, start: null, end: null },
+      )
+    }
+  }, [addRes.data])
+  React.useEffect(() => {
+    client.writeData<SelectedPlaylists<GQLPlaylist>>({
+      data: { selectedPlaylists: initValues.playlists ?? [] },
+    })
+  }, [])
 
   return {
+    loadingAdd: addRes.loading,
+    executeAdd: React.useCallback(() => {
+      executeAdd({
+        variables: {
+          video: { ...input, playlists: selectedPlaylists?.map((item) => item.id) },
+        },
+      })
+    }, [input, selectedPlaylistsRes.data]),
     input,
     setStart: React.useCallback(
       (start: number) => setInput((s) => ({ ...s, start })),
@@ -113,20 +127,30 @@ const useInput = () => {
       (comment: string) => setInput((s) => ({ ...s, comment })),
       [input],
     ),
-    reset: React.useCallback(
-      () => setInput({ start: null, end: null, comment: "" }),
-      [],
+    setPlaylists: React.useCallback(
+      () => setInput((s) => ({ ...s, playlists: selectedPlaylists })),
+      [input, selectedPlaylistsRes.data],
     ),
   }
 }
 
-const addQuery = gql`
+const mutation = gql`
   mutation AddVideo($video: VideoInput!) {
-    addVideo(video: $video) {
+    video(video: $video) {
       id
     }
   }
 `
+const query = gql`
+  query {
+    selectedPlaylists @client {
+      id
+      name
+      permission
+    }
+  }
+`
+
 const useDoneToast = () => {
   const toast = useToast()
   const showToast = React.useCallback(() => {
@@ -141,13 +165,3 @@ const useDoneToast = () => {
   }, [])
   return { showToast }
 }
-
-const query = gql`
-  query {
-    selectedPlaylists @client {
-      id
-      name
-      permission
-    }
-  }
-`

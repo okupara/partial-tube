@@ -1,10 +1,10 @@
 import React from "react"
 import { PartialVideoCard } from "../../src/components/Card/PartialVideoCard"
 import { MarginDecorator } from "../Decorators"
-import { partialVideListMock } from "../../__mocks__/ParitalVideoList"
+import { partialVideoListMock } from "../../__mocks__/ParitalVideoList"
 
 export const partialVideoCard = () => (
-  <PartialVideoCard {...partialVideListMock[0]} />
+  <PartialVideoCard {...partialVideoListMock[0]} />
 )
 
 export default {

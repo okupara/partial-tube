@@ -71,7 +71,6 @@ function createAuth() {
   )
 
   const { publicRuntimeConfig } = getConfig()
-  console.log("LOGGG", userContext.user)
 
   useEffect(() => {
     console.log("DO FIREBASE!!!!")

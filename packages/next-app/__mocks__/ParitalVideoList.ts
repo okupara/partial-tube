@@ -1,4 +1,4 @@
-export const partialVideListMock = [
+export const partialVideoListMock = [
   {
     id: "sdkfjksajlksjdfa1",
     title: "オタク IN THA HOOD : 呂布カルマ",

@@ -52,6 +52,8 @@ export const Authenticated: React.FC<Props> = ({
         <UserAvatar name={user.name ?? "*"} />
       </Box>
     </AppHeader>
-    <Box pt={24}>{children}</Box>
+    <Box pt={32} pb={16}>
+      {children}
+    </Box>
   </React.Fragment>
 )

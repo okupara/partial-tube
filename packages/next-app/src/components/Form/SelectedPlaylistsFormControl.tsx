@@ -29,7 +29,7 @@ const Component = () => {
           <>
             <MiniPlaylistForm />
             <Box mt={6}>
-              <PlaylistsSelector uid="aaaa" />
+              <PlaylistsSelector />
             </Box>
           </>
         )}
