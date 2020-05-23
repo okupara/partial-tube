@@ -83,7 +83,7 @@ const useMiniNewPlaylist = () => {
     },
     [name],
   )
-
+  // TODO: Try when network is slow and what happens when user close this dialog in the case api haven't finished yet
   React.useEffect(() => {
     if (res.data) {
       setName("")
@@ -92,6 +92,7 @@ const useMiniNewPlaylist = () => {
         ...addedPlaylistsRef.current,
         res.data.addPlaylist,
       ]
+      console.log("TEST", addedPlaylistsRef.current)
       client.writeData({ data: { addedPlaylists: addedPlaylistsRef.current } })
     }
   }, [res.data])

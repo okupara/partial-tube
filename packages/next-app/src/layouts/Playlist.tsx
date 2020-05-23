@@ -44,6 +44,7 @@ export const Playlist = (props: Props) => {
             list={playlist.videos}
             component={(p) => (
               <PartialVideoCard
+                key={p.id}
                 id={p.id}
                 title={p.title}
                 videoId={p.videoId}

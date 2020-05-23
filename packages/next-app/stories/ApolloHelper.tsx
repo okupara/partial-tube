@@ -26,7 +26,7 @@ const mocks = {
     },
   }),
   Mutation: () => ({
-    addPlaylist: (_: any, { playlist }: { playlist: GQLPlaylist }) => {
+    playlist: (_: any, { playlist }: { playlist: GQLPlaylist }) => {
       return { ...playlist, id: sideEffectId++ }
     },
     addVideo: (_: any, { video }: { video: VideoInput }) => {

@@ -13,6 +13,7 @@ export type Props = {
   videoId: string
   comment?: string | null
   onClickEditMenu?: (id: string) => void
+  onClickDeleteMenu?: (id: string) => void
   onClickCard?: (id: string) => void // to move the update page
 }
 
@@ -23,12 +24,23 @@ const EditLabel = () => (
   </Flex>
 )
 
+const DeleteLabel = () => (
+  <Flex alignItems="center">
+    <Icon name="delete" />
+    <Text ml={1}>delete</Text>
+  </Flex>
+)
+
 const Component = (props: Props) => {
   const menus = React.useMemo(
     () => [
       {
         label: <EditLabel />,
         onSelect: () => props.onClickEditMenu?.(props.id),
+      },
+      {
+        label: <DeleteLabel />,
+        onSelect: () => props.onClickDeleteMenu?.(props.id),
       },
     ],
     [],

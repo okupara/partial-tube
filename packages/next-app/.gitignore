@@ -1,5 +1,4 @@
 .next/
 .now/
-__generated__/
 node_modules/
 now.json

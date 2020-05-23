@@ -1,16 +1,10 @@
-import { QueryResolvers, MutationResolvers, Playlist } from "./type-defs.graphqls"
+import { QueryResolvers, MutationResolvers } from "./type-defs.graphqls"
 import { NextPageContext } from "next"
 import getConfig from "next/config"
 import { addSession } from "../middlewares/addSession"
-import { initFirebase } from "../utils/initFirebase"
-import firebase from "firebase"
 import fetch from "isomorphic-unfetch"
 import { ScalarDate } from "./scalars"
 import * as helper from "./firestoreHelper"
-
-const PLAYLISTS = "playlists"
-const PLAYLISTS_VIDEOS = "playlists_videos"
-const VIDEOS = "videos"
 
 const extractUserSession = (ctx: NextPageContext) => {
   const { req, res } = ctx
@@ -27,163 +21,46 @@ const Query: Required<QueryResolvers> = {
   async viewer() {
     return { id: String(1), name: "John Smith", status: "cached" }
   },
-  async video(_, args, ctx: NextPageContext) {
-    initFirebase()
-    const db = firebase.firestore()
+  async video(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-
-    const videoDoc = db.collection("videos").doc(args.id)
-    const snapShotVideo = await videoDoc.get()
-    if (!snapShotVideo.exists) {
-      return null
-    }
-
-    const videoData = snapShotVideo.data()
-    if (!videoData || videoData.uid !== user.id) {
-      return null
-    }
-
-    const snapShotLinkRecords = await db
-      .collection("playlists_videos")
-      .where("video", "==", videoDoc)
-      .get()
-
-    const playlistDocs = snapShotLinkRecords.docs.map((el) => el.data().playlist)
-    let playlists: ReadonlyArray<Playlist> = []
-    for (const doc of playlistDocs) {
-      const p = await doc.get()
-      const data = p.data()
-      playlists = [
-        ...playlists,
-        {
-          id: p.id,
-          permission: data.permission,
-          totalSec: data.totalSec,
-          numOfVideos: data.numOfVideos,
-          created: data.created.toDate(),
-          name: data.name,
-          videos: [],
-        },
-      ]
-    }
-    console.log("PLAYLISTS", playlists)
-
-    return {
-      id: videoDoc.id,
-      videoId: videoData.videoId,
-      title: videoData.title,
-      start: videoData.start,
-      end: videoData.end,
-      comment: videoData.comment,
-      created: videoData.created.toDate(),
-      playlists: playlists as any, // hmmmm.... type errors...
-    }
+    const dao = new helper.FirestoreDao(user.id)
+    const video = await dao.getVideo(args.id)
+    console.log("VIDEO", video)
+    return video.data
   },
   async videos(_, __, ctx: NextPageContext): Promise<any> {
-    initFirebase()
-    const db = firebase.firestore()
     const user = extractUserSession(ctx)
-
-    const snapshots = await db
-      .collection("videos")
-      .where("uid", "==", user.id)
-      .orderBy("created", "desc")
-      .get()
-    if (snapshots.empty) {
-      return []
-    }
-
-    return snapshots.docs.map((item) => {
-      const data = item.data()
-      return {
-        id: item.id,
-        start: data.start,
-        end: data.end,
-        videoId: data.videoId,
-        title: data.title,
-        comment: data.comment,
-        created: data.created.toDate(),
-      }
-    })
+    const dao = new helper.FirestoreDao(user.id)
+    const videos = await dao.getVideos()
+    return videos
   },
   // TODO: Filter words, offsets
   async playlists(_, __, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    initFirebase()
-    const db = firebase.firestore()
-    const playlistsSnapshot = await db
-      .collection("playlists")
-      .where("uid", "==", user.id)
-      .get()
-    if (playlistsSnapshot.empty) {
-      return []
-    }
-    return playlistsSnapshot.docs.map((item) => {
-      const data = item.data()
-      return {
-        id: item.id,
-        name: data.name,
-        created: data.created.toDate(),
-        numOfVideos: data.numOfVideos,
-        permission: data.permission,
-        totalSec: data.totalSec,
-        firstVideoId: data.firstVideoId,
-        uid: data.uid,
-        updated: data.updated.toDate(),
-      }
-    })
+    const dao = new helper.FirestoreDao(user.id)
+    const results = await dao.getPlaylists()
+    console.log("RES", results)
+    return results
   },
   // TODO: stop using "any"....
   async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
-    const { req, res } = ctx
-    addSession(req, res)
-    if (!args.id) {
-      throw new Error("Playlist-id is not defined")
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user.id)
+    const result = await dao.getPlaylist(args.id)
+    if (!result) {
+      return null
     }
-
-    initFirebase()
-    const db = firebase.firestore()
-
-    const ref = db.collection("playlists").doc(args.id)
-    const doc = await ref.get()
-    const data = doc.data()
-    if (!doc.exists || !data) {
-      throw new Error("This record does not exist")
-    }
-
-    const snapshots = await db
-      .collection("playlists_videos")
-      .where("playlist", "==", ref)
-      .orderBy("created", "asc")
-      .get()
-
-    const videoRefs = snapshots.docs.map((el) => el.data().video)
-    let videos: any[] = []
-    for (const vid of videoRefs) {
-      const video = await vid.get()
-      const data = video.data()
-      videos = [
-        ...videos,
-        {
-          id: video.id,
-          start: data.start,
-          end: data.end,
-          comment: data.comment,
-          title: data.title,
-          videoId: data.videoId,
-          created: data.created.toDate(),
-        },
-      ]
-    }
+    const { playlist, videos, firstVideoId } = result
 
     return {
-      id: doc.id,
-      comment: data.comment,
-      created: data.created.toDate(),
-      numOfVideos: data.numOfVideos,
-      name: data.name,
-      totalSec: data.totalSec,
-      uid: data.uid,
+      id: playlist.id,
+      comment: playlist.comment,
+      created: playlist.created,
+      numOfVideos: playlist.numOfVideos,
+      name: playlist.name,
+      totalSec: playlist.totalSec,
+      uid: playlist.uid,
+      firstVideoId,
       videos,
     }
   },
@@ -209,143 +86,106 @@ const Query: Required<QueryResolvers> = {
 
 const Mutation: Required<MutationResolvers> = {
   async addPlaylist(_, { playlist }, ctx: NextPageContext): Promise<any> {
-    const { req, res } = ctx
-    addSession(req, res)
-    const actualReq = (req as unknown) as RequestWithSession
-    const user = actualReq.session?.user
-    if (!user) {
-      throw new Error("Authentication is required.")
-    }
-    if (!playlist) {
-      throw new Error("seems no parameters")
-    }
-    const db = firebase.firestore()
-    const now = firebase.firestore.Timestamp.fromDate(new Date())
-    const resPlaylist = await db.collection(PLAYLISTS).add({
-      uid: user!.id, // hope TS detects user is not null after the nullable check above.
-      name: playlist!.name,
-      comment: playlist!.comment ?? "",
-      permission: playlist!.permission,
-      numOfVideos: 0,
-      totalSec: 0,
-      firstVideoId: "",
-      created: now,
-      updated: now,
-    })
-
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user.id)
+    // TODO: reconsider to use "!"
+    const resPlaylist = await dao.addPlaylist(playlist!)
     return {
       id: resPlaylist.id,
       numOfVideos: 0,
       name: playlist!.name,
       comment: playlist!.comment,
       permission: playlist!.permission,
-      created: now,
-      totalSec: now,
+      created: new Date(), // because its accuracy wouldn't be important.
+      totalSec: 0, // also here
       videos: [],
     }
   },
+  async deleteVideo(_, args, ctx: NextPageContext): Promise<any> {
+    // also should be in a transaction, though...
+    const videoId = args.id
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user.id)
+    const linkedData = await dao.getPlaylistVideoLinksByVideo(videoId)
+    const video = await dao.getVideo(videoId)
+    for (const link of linkedData) {
+      // should be in a transaction...
+      // await dao.deleteVideoFromPlaylist(link.doc.id)
+      await dao.updatePlaylistWithNewInfo({
+        playlist: link.data.playlist,
+        totalSec: video.data.end - video.data.start,
+        type: "delete",
+      })
+    }
+    await dao.deleteVideo(videoId)
+    return args.id
+  },
   async video(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const db = firebase.firestore()
+    // const db = firebase.firestore()
     if (!args.video) {
       throw new Error("Coudn't find an appropriate parameter")
     }
     const video = args.video!
+    const dao = new helper.FirestoreDao(user.id)
+    console.log("request", video.playlists)
 
     if (video.id) {
-      // update
-      const videoRes = await helper.getVideoWithId(db, video.id)
-      if (!videoRes?.data) {
-        throw new Error("Couldn't get the Video data")
-      }
-      await videoRes.doc.update({
-        comment: video.comment,
-        start: video.start,
-        end: video.end,
-      })
+      const videoRes = await dao.getVideo(video.id)
+      await dao.updateVideo(videoRes.doc, video)
       const playlistsSet = new Set(video.playlists)
-      const playlistsRes = await helper.getPlaylistsByVideo(db, videoRes.doc)
+      const playlistsRes = await dao.getPlaylistsByVideo(videoRes.doc)
+
       let alreadyLinkedPlaylistIds: ReadonlyArray<string> = []
       if (playlistsRes !== null) {
         // TODO: this process should be with a transaction.
         for (const playlist of playlistsRes) {
-          const currentDuration = videoRes.data.end - videoRes.data.start
+          const currentDuration = videoRes.data.end - videoRes.data.end
           const newDuration = args.video.end - args.video.start
-          const currentTotalSec = playlist.data.totalSec
+          const currentTotalSec = playlist.totalSec
           const newTotalSec = currentTotalSec - currentDuration + newDuration
-          if (playlistsSet.has(playlist.data.id)) {
-            await playlist.doc.update({ totalSec: newTotalSec })
+          if (playlistsSet.has(playlist.id)) {
+            await dao.updatePlaylistTotalSec(playlist.id, newTotalSec)
           } else {
-            // delete
-            await db.collection(PLAYLISTS_VIDEOS).doc(playlist.data.id).delete()
-            await playlist.doc.update({
-              totalSec: currentTotalSec - currentDuration,
+            await dao.deleteVideoFromPlaylist({
+              playlist: playlist.id,
+              video: video.id,
             })
+            await dao.updatePlaylistTotalSec(
+              playlist.id,
+              currentTotalSec - currentDuration,
+            )
           }
-          alreadyLinkedPlaylistIds = [...alreadyLinkedPlaylistIds, playlist.data.id]
+          alreadyLinkedPlaylistIds = [...alreadyLinkedPlaylistIds, playlist.id]
         }
       }
       const alreadyLinkedPlaylistSet = new Set(alreadyLinkedPlaylistIds)
+      console.log("alreadyLinkedPlaylistSet", alreadyLinkedPlaylistSet)
       if (video.playlists) {
-        // adds playlists-video link document if the playlists argument includes new playlists
         for (const playlistId of video.playlists) {
-          console.log(alreadyLinkedPlaylistIds, playlistId)
           if (alreadyLinkedPlaylistSet.has(playlistId)) continue
-          const playlistDoc = db.collection(PLAYLISTS).doc(playlistId)
-          await db.collection(PLAYLISTS_VIDEOS).add({
-            video: db.collection(VIDEOS).doc(video.id),
-            playlist: db.collection(PLAYLISTS).doc(playlistId),
-            created: new Date(),
+          await dao.addVideoIntoPlaylist({
+            playlist: playlistId,
+            video: videoRes.doc,
           })
-          const playlistLink = await helper.getFirstLinkByPlaylist(db, playlistDoc)
-          const restUpdate =
-            playlistLink.size === 1 ? { firstVideoId: video.videoId } : {}
-          await playlistDoc.update({
-            totalSec: firebase.firestore.FieldValue.increment(
-              video.end - video.start,
-            ),
-            numOfVideos: firebase.firestore.FieldValue.increment(1),
-            ...restUpdate,
+          await dao.updatePlaylistWithNewInfo({
+            playlist: playlistId,
+            totalSec: video.end - video.start,
+            type: "add",
           })
         }
       }
 
       return { id: video.id }
     } else {
-      // add new one
-      const resAddVideo = await db.collection(VIDEOS).add({
-        uid: user!.id, // hope TS detects user is not null after the nullable check above.
-        title: video!.title,
-        start: video!.start,
-        videoId: video!.videoId,
-        comment: video!.comment,
-        end: video!.end,
-        created: new Date(),
-      })
+      const videoRes = await dao.addVideo(video)
 
       if (video.playlists) {
-        // const playlists = await helper.getPlaylistsByPlaylistIds(db, video.playlists)
         for (const playlistId of video.playlists) {
-          const playlistDoc = db.collection(PLAYLISTS).doc(playlistId)
-          await db.collection(PLAYLISTS_VIDEOS).add({
-            video: resAddVideo,
-            playlist: playlistDoc,
-            created: new Date(),
-          })
-
-          const playlistLink = await helper.getFirstLinkByPlaylist(db, playlistDoc)
-          const restUpdate =
-            playlistLink.size === 1 ? { firstVideoId: video.videoId } : {}
-          await playlistDoc.update({
-            totalSec: firebase.firestore.FieldValue.increment(
-              video.end - video.start,
-            ),
-            numOfVideos: firebase.firestore.FieldValue.increment(1),
-            ...restUpdate,
-          })
+          await dao.addVideoIntoPlaylist({ playlist: playlistId, video: videoRes })
         }
       }
-      return { id: resAddVideo.id }
+      return { id: videoRes.id }
     }
   },
 }

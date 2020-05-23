@@ -31,8 +31,10 @@ export const Card: React.FC<Props> = (props) => (
             <RoundButton />
           </MenuButton>
           <MenuList minWidth="120px" placement="bottom-end">
-            {props.menus.map((item) => (
-              <MenuItem onClick={() => item.onSelect()}>{item.label}</MenuItem>
+            {props.menus.map((item, i) => (
+              <MenuItem key={i} onClick={() => item.onSelect()}>
+                {item.label}
+              </MenuItem>
             ))}
           </MenuList>
         </Menu>
