@@ -14,7 +14,9 @@ const Component = (props: Props) => {
   const router = useRouter()
   // useQuery from any not page components seeems fails ssr and send requests to /graqphql...
   // maybe this is similar problem https://github.com/apollographql/react-apollo/issues/3500
-  const { data, error } = useQuery<QueryData>(query)
+  const { data, error } = useQuery<QueryData>(query, {
+    fetchPolicy: "cache-and-network",
+  })
   console.log(error)
 
   return (

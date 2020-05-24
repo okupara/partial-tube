@@ -12,7 +12,9 @@ type Props = {
 
 const Videos = (props: Props) => {
   const router = useRouter()
-  const { data } = useQuery<QueryVideos<GQLVideo>>(query)
+  const { data } = useQuery<QueryVideos<GQLVideo>>(query, {
+    fetchPolicy: "cache-and-network",
+  })
 
   return (
     <NeedsLogin currentMenu="videos" fbAuth={props.fbAuth}>
