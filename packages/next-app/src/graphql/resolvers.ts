@@ -101,22 +101,18 @@ const Mutation: Required<MutationResolvers> = {
       videos: [],
     }
   },
+  async deletePlaylist(_, args, ctx: NextPageContext): Promise<any> {
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user.id)
+    await dao.deletePlaylist(args.id)
+    return args.id
+  },
   async deleteVideo(_, args, ctx: NextPageContext): Promise<any> {
     // also should be in a transaction, though...
     const videoId = args.id
     const user = extractUserSession(ctx)
     const dao = new helper.FirestoreDao(user.id)
-    const linkedData = await dao.getPlaylistVideoLinksByVideo(videoId)
-    const video = await dao.getVideo(videoId)
-    for (const link of linkedData) {
-      // should be in a transaction...
-      // await dao.deleteVideoFromPlaylist(link.doc.id)
-      await dao.updatePlaylistWithNewInfo({
-        playlist: link.data.playlist,
-        totalSec: video.data.end - video.data.start,
-        type: "delete",
-      })
-    }
+    await dao.deleteVideoFromPlaylistGroup(videoId)
     await dao.deleteVideo(videoId)
     return args.id
   },
@@ -150,6 +146,7 @@ const Mutation: Required<MutationResolvers> = {
             await dao.deleteVideoFromPlaylist({
               playlist: playlist.id,
               video: video.id,
+              duration: video.end - video.start,
             })
             await dao.updatePlaylistTotalSec(
               playlist.id,

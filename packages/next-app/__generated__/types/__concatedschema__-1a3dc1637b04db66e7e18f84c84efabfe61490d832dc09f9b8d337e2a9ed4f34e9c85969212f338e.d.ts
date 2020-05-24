@@ -20,6 +20,7 @@ declare module '*.graphqls' {
       addPlaylist?: Maybe<Playlist>;
       video?: Maybe<PartialVideo>;
       deleteVideo: Scalars['String'];
+      deletePlaylist: Scalars['String'];
   };
   export type MutationAddPlaylistArgs = {
       playlist?: Maybe<PlaylistInput>;
@@ -28,6 +29,9 @@ declare module '*.graphqls' {
       video?: Maybe<VideoInput>;
   };
   export type MutationDeleteVideoArgs = {
+      id: Scalars['ID'];
+  };
+  export type MutationDeletePlaylistArgs = {
       id: Scalars['ID'];
   };
   export type PartialVideo = {
@@ -165,6 +169,7 @@ declare module '*.graphqls' {
       addPlaylist?: Resolver<Maybe<ResolversTypes['Playlist']>, ParentType, ContextType, RequireFields<MutationAddPlaylistArgs, never>>;
       video?: Resolver<Maybe<ResolversTypes['PartialVideo']>, ParentType, ContextType, RequireFields<MutationVideoArgs, never>>;
       deleteVideo?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteVideoArgs, 'id'>>;
+      deletePlaylist?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeletePlaylistArgs, 'id'>>;
   };
   export type PartialVideoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartialVideo'] = ResolversParentTypes['PartialVideo']> = {
       id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;

@@ -63,4 +63,5 @@ type Mutation {
   addPlaylist(playlist: PlaylistInput): Playlist
   video(video: VideoInput): PartialVideo
   deleteVideo(id: ID!): String!
+  deletePlaylist(id: ID!): String!
 }

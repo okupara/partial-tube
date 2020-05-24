@@ -1,9 +1,11 @@
 import React from "react"
-import { Heading, Flex, Icon, Text } from "@chakra-ui/core"
+import { Heading } from "@chakra-ui/core"
 import { Card } from "../Card/Card"
 import { CommentIconText } from "../Text/CommentIconText"
 import { PartialVideoThumb } from "../Thumbnail/PartialVideoThumb"
 import { GridImageTitleDesc } from "../../components/Frames/GridImageTitleDesc"
+import { DeleteLabel } from "../shared/DeleteLabel"
+import { EditLabel } from "../shared/EditLabel"
 
 export type Props = {
   id: string
@@ -16,20 +18,6 @@ export type Props = {
   onClickDeleteMenu?: (id: string) => void
   onClickCard?: (id: string) => void // to move the update page
 }
-
-const EditLabel = () => (
-  <Flex alignItems="center">
-    <Icon name="edit" />
-    <Text ml={1}>edit</Text>
-  </Flex>
-)
-
-const DeleteLabel = () => (
-  <Flex alignItems="center">
-    <Icon name="delete" />
-    <Text ml={1}>delete</Text>
-  </Flex>
-)
 
 const Component = (props: Props) => {
   const menus = React.useMemo(

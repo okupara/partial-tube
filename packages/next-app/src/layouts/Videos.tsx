@@ -1,11 +1,11 @@
 import React from "react"
 import { Box, Stack, Text } from "@chakra-ui/core"
-import { useMutation } from "@apollo/react-hooks"
 import gql from "graphql-tag"
 import { PartialVideo as GQLDefVideo } from "../graphql/typ-defs.graphqls"
 import { PartialVideoCard } from "../components/Card/PartialVideoCard"
-import { AlertDeleteDialog } from "../components/Parts/AlertDeleteDialog"
-import { useIsOpen } from "../hooks/useIsOpen"
+import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
+import { useDeleteRecord } from "../hooks/useDeleteRecord"
+import { useApolloClient } from "@apollo/react-hooks"
 
 type Props = {
   onClickCard?: (id: string) => void
@@ -15,14 +15,7 @@ type Props = {
 }
 
 export const Videos = ({ videos, onClickEditMenu }: Props) => {
-  const openState = useIsOpen(false)
-  const { executeDelete, isDoneDelete, setId, deleteState } = useDeleteVideo()
-  React.useEffect(() => {
-    if (openState.isOpen && isDoneDelete) {
-      openState.close()
-    }
-  }, [isDoneDelete])
-
+  const deleteState = useDeleteVideo()
   return (
     <Box px={6}>
       <Stack spacing={6}>
@@ -31,10 +24,7 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
             <PartialVideoCard
               {...v}
               onClickEditMenu={onClickEditMenu}
-              onClickDeleteMenu={(id) => {
-                openState.open()
-                setId(id)
-              }}
+              onClickDeleteMenu={deleteState.setId}
             />
           </Box>
         ))}
@@ -42,37 +32,34 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
       <AlertDeleteDialog
         title="Delete video"
         messageView={() => <Text>Do you really want to delete this video?</Text>}
-        isOpen={openState.isOpen}
-        onClose={openState.close}
-        onSubmit={executeDelete}
-        isLoading={deleteState.loading}
+        isOpen={deleteState.readyToDelete}
+        onClose={deleteState.resetId}
+        onSubmit={deleteState.executeDelete}
+        isLoading={deleteState.deleting}
       />
     </Box>
   )
 }
 
 const useDeleteVideo = () => {
-  const [executeDelete, deleteState] = useMutation(deleteQuery)
-  const [doneDeleteFlag, setDoneDeleteFalg] = React.useState(false)
-  const [id, setId] = React.useState<string | null>(null)
+  const deleteState = useDeleteRecord(deleteQuery)
+  const client = useApolloClient()
 
   React.useEffect(() => {
-    if (deleteState.data) {
-      setDoneDeleteFalg(true)
-    } else {
-      setDoneDeleteFalg(false)
-    }
-  }, [deleteState.data])
-
-  return {
-    executeDelete() {
-      if (id) {
-        executeDelete({ variables: { id } })
+    if (deleteState.isDoneDelete) {
+      const data = client.readQuery<QueryVideos<GQLVideo>>({ query })
+      const newData = data?.videos.filter((item) => item.id !== deleteState.id)
+      if (newData) {
+        client.writeQuery<QueryVideos<GQLVideo>>({
+          query,
+          data: { videos: newData },
+        })
       }
-    },
-    deleteState,
-    isDoneDelete: doneDeleteFlag === true,
-    setId,
+      deleteState.resetId()
+    }
+  }, [deleteState.isDoneDelete])
+  return {
+    ...deleteState,
   }
 }
 

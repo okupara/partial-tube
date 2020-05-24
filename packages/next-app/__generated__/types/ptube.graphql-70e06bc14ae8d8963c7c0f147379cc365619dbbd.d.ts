@@ -19,6 +19,7 @@ declare module '*/ptube.graphql' {
       addPlaylist?: Maybe<Playlist>;
       video?: Maybe<PartialVideo>;
       deleteVideo: Scalars['String'];
+      deletePlaylist: Scalars['String'];
   };
   export type MutationAddPlaylistArgs = {
       playlist?: Maybe<PlaylistInput>;
@@ -27,6 +28,9 @@ declare module '*/ptube.graphql' {
       video?: Maybe<VideoInput>;
   };
   export type MutationDeleteVideoArgs = {
+      id: Scalars['ID'];
+  };
+  export type MutationDeletePlaylistArgs = {
       id: Scalars['ID'];
   };
   export type PartialVideo = {

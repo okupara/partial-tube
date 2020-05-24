@@ -21,6 +21,7 @@ export type Mutation = {
   addPlaylist?: Maybe<Playlist>;
   video?: Maybe<PartialVideo>;
   deleteVideo: Scalars['String'];
+  deletePlaylist: Scalars['String'];
 };
 
 
@@ -35,6 +36,11 @@ export type MutationVideoArgs = {
 
 
 export type MutationDeleteVideoArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeletePlaylistArgs = {
   id: Scalars['ID'];
 };
 

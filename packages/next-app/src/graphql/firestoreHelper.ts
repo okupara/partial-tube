@@ -202,6 +202,7 @@ export class FirestoreDao {
       }),
     )
   }
+
   async getPlaylistVideoLinksByVideo(
     video: string | firebase.firestore.DocumentReference,
   ) {
@@ -263,23 +264,61 @@ export class FirestoreDao {
         : playlist
     await doc.update({ totalSec })
   }
+  async deletePlaylist(playlist: string | firestore.DocumentReference) {
+    const doc =
+      typeof playlist === "string" ? this.playlistCollection.doc(playlist) : playlist
+    await doc.delete()
+  }
   async deleteVideoFromPlaylist({
     playlist,
     video,
+    duration,
   }: {
     playlist: string | firestore.DocumentReference
     video: string | firestore.DocumentReference
+    duration: number
   }) {
     const playlistDoc =
       typeof playlist === "string" ? this.playlistCollection.doc(playlist) : playlist
     const videoDoc =
       typeof video === "string" ? this.videoCollection.doc(video) : video
-    const snapshot = await playlistDoc
+    const snapshots = await playlistDoc
       .collection(FirestoreDao.PLAYLISTS_VIDEOS)
       .where("ref", "==", videoDoc)
       .get()
+
     await Promise.all(
-      snapshot.docs.map(async (item) => {
+      snapshots.docs.map(async (item) => {
+        await item.ref.delete()
+        await this.updatePlaylistWithNewInfo({
+          playlist: playlistDoc,
+          totalSec: duration,
+          type: "delete",
+        })
+      }),
+    )
+  }
+  async deleteVideoFromPlaylistGroup(video: string | firestore.DocumentReference) {
+    const videoDoc =
+      typeof video === "string" ? this.videoCollection.doc(video) : video
+    const videoSnapshot = await videoDoc.get()
+    const videoData = {
+      start: videoSnapshot.get("start"),
+      end: videoSnapshot.get("end"),
+    }
+    const snapshots = await this.db
+      .collectionGroup(FirestoreDao.PLAYLISTS_VIDEOS)
+      .where("uid", "==", this.uid)
+      .where("ref", "==", videoDoc)
+      .get()
+
+    await Promise.all(
+      snapshots.docs.map(async (item) => {
+        await this.updatePlaylistWithNewInfo({
+          playlist: item.get("playlistRef"),
+          totalSec: videoData.end - videoData.start,
+          type: "delete",
+        })
         await item.ref.delete()
       }),
     )
