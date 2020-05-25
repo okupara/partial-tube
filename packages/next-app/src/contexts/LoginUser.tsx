@@ -29,3 +29,13 @@ export const useLoginUser = () => {
   }
   return context
 }
+
+export const useLogoutUser = () => {
+  const context = React.useContext(UserContext)
+  if (context === null) {
+    throw new Error("Can not call useLoginUser outside of Provider")
+  }
+  return () => {
+    context.setUser(null)
+  }
+}

@@ -1045,18 +1045,11 @@ type VideoInput = {
 declare namespace PagePlaylists {
   type Playlist = import("./src/graphql/type-defs.graphqls").Playlist
 }
-// declare namespace GQLPartialVideoForm {
-//   type Playlist = {
-//     id: string
-//     name: string
-//   }
-//   type AddedPlaylists = {
-//     addedPlaylists: ReadonlyArray<GQLPlaylist>
-//   }
-//   type SelectedPlaylists = {
-//     seletectedPlaylists: ReadonlyArray<GQLPlaylist>
-//   }
-// }
+
+// extend types of Next.js
+type SessionNextApiRequest = import("next").NextApiRequest & {
+  session: { user: User.Model; token: string } | null
+}
 
 // from https://github.com/storybookjs/storybook/issues/8183
 // in a file called typings/addonDocs.d.ts

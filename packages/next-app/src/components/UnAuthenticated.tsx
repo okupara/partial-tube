@@ -1,7 +1,7 @@
 import React from "react"
 import AppHeader from "./AppHeader"
 import { Flex, Box, Button } from "@chakra-ui/core"
-import { Menu } from "../components/Parts/Menu"
+import { FeaturesMenu } from "../components/Parts/FeaturesMenu"
 import { AppTitle } from "../components/Parts/AppTitle"
 import { createOptions, MenuType, NotLoggedInMenus } from "../routes/MenuRouter"
 
@@ -23,7 +23,7 @@ export const UnAuthenticated: React.FC<Props> = ({
       <Flex alignItems="center">
         <AppTitle />
         <Box ml={4}>
-          <Menu
+          <FeaturesMenu
             current={currentMenu}
             menus={
               currentMenu ? createOptions(currentMenu, false) : NotLoggedInMenus

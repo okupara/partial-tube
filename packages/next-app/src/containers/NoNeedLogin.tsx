@@ -36,6 +36,7 @@ export const NoNeedLogin: React.FC<Props> = ({ fbAuth, children, currentMenu }) 
         onChangeMenu={moveNextUrl}
         user={userContext.user}
         onClickAdd={moveToAdd}
+        logout={fbAuth.logout}
       >
         {children}
       </Authenticated>

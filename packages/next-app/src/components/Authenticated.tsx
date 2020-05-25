@@ -1,10 +1,18 @@
 import React from "react"
-import { Box, IconButton, Flex } from "@chakra-ui/core"
+import {
+  Box,
+  IconButton,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/core"
 import AppHeader from "./AppHeader"
 import { UserAvatar } from "../components/Avatar/UserAvatar"
 import * as User from "../models/User"
 import { AppTitle } from "../components/Parts/AppTitle"
-import { Menu } from "../components/Parts/Menu"
+import { FeaturesMenu } from "../components/Parts/FeaturesMenu"
 import { MenuType, createOptions, Menus } from "../routes/MenuRouter"
 
 type Props = {
@@ -12,6 +20,7 @@ type Props = {
   onClickAdd?: () => void
   currentMenu?: MenuType
   onChangeMenu?: (value: string) => void
+  logout?: () => void
 }
 
 export const Authenticated: React.FC<Props> = ({
@@ -20,13 +29,14 @@ export const Authenticated: React.FC<Props> = ({
   user,
   onClickAdd,
   onChangeMenu,
+  logout,
 }) => (
   <React.Fragment>
     <AppHeader>
       <Flex alignItems="center">
         <AppTitle />
         <Box ml={4}>
-          <Menu
+          <FeaturesMenu
             current={currentMenu}
             menus={currentMenu ? createOptions(currentMenu, true) : Menus}
             onClick={onChangeMenu}
@@ -49,7 +59,14 @@ export const Authenticated: React.FC<Props> = ({
         />
       </Box>
       <Box>
-        <UserAvatar name={user.name ?? "*"} />
+        <Menu>
+          <MenuButton>
+            <UserAvatar name={user.name ?? "*"} />
+          </MenuButton>
+          <MenuList minWidth="120px">
+            <MenuItem onClick={logout}>Sign out</MenuItem>
+          </MenuList>
+        </Menu>
       </Box>
     </AppHeader>
     <Box pt={32} pb={16}>

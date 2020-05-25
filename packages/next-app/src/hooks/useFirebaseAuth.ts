@@ -3,7 +3,7 @@ import getConfig from "next/config"
 import firebase from "firebase"
 import { Machine } from "xstate"
 import { useMachine } from "@xstate/react"
-import { useLoginUser } from "../contexts/LoginUser"
+import { useLoginUser, useLogoutUser } from "../contexts/LoginUser"
 import * as User from "../models/User"
 import fetch from "isomorphic-unfetch"
 
@@ -32,8 +32,12 @@ export const initAuthMachine = (initState: StateTypes) =>
           DETECTED_USER: "loggedIn",
         },
       },
-      loggedIn: {},
-      notLoggedIn: {},
+      loggedIn: {
+        on: {
+          NOT_DETECTED_USER: "notLoggedIn",
+        },
+      },
+      notLoggedIn: {}, // waits for nothing because that login flow needs moving page to Google
     },
   })
 
@@ -41,6 +45,7 @@ export type HooksReturnType = {
   user: User.Model | null
   state: StateTypes | null
   login: () => void
+  logout: () => void
 }
 export const useFirebaseAuth = (): HooksReturnType => {
   const mode: Mode = typeof window === "undefined" ? "server" : "browser"
@@ -58,13 +63,14 @@ export const useFirebaseAuth = (): HooksReturnType => {
 function createEmpty() {
   const userContext = useLoginUser()
   const state: StateTypes = userContext.user ? "loggedIn" : "loading"
-  return { login() {}, user: userContext.user, state }
+  return { login() {}, logout() {}, user: userContext.user, state }
 }
 
 function createAuth() {
   const mountedRef = useRef<boolean>(true)
   const providerRef = useRef<firebase.auth.GoogleAuthProvider | null>(null)
   const userContext = useLoginUser()
+  const logoutUser = useLogoutUser()
 
   const [machine, dispatchMachine] = useMachine(
     initAuthMachine(userContext.user ? "loggedIn" : "loading"),
@@ -85,7 +91,7 @@ function createAuth() {
     providerRef.current = new firebase.auth.GoogleAuthProvider()
     firebase.auth().onAuthStateChanged(
       (user) => {
-        console.log("T", user)
+        console.log("Goggle auth state is changed", user)
         // TODO: we need prove if @xstate/react prevents memory-leaks when component unmounted
         if (user === null) {
           dispatchMachine({ type: "NOT_DETECTED_USER" })
@@ -133,6 +139,14 @@ function createAuth() {
     login() {
       firebase.auth().signInWithRedirect(providerRef.current!)
     },
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => postLogout())
+        .then(() => logoutUser())
+        .catch((error) => console.error("Error occured at loggingout", error))
+    },
   }
 }
 
@@ -144,10 +158,11 @@ async function activeSession(fbUser: firebase.User) {
   if (!res.result) throw new Error("The server-response is unexpectedly 'false'")
 }
 
-type LoginResponse = {
+type AuthAPIResponse = {
   result: boolean
 }
-function postLogin(token: string): Promise<LoginResponse> {
+
+const postLogin = (token: string): Promise<AuthAPIResponse> => {
   return fetch("/api/login", {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
@@ -156,3 +171,13 @@ function postLogin(token: string): Promise<LoginResponse> {
     body: JSON.stringify({ token }),
   }).then((response) => response.json())
 }
+
+const postLogout = (): Promise<AuthAPIResponse> =>
+  fetch("/api/logout", {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    method: "POST",
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("Error occurs at loggingout", error))

@@ -33,4 +33,4 @@ const Component = (props: Props) => (
   </ChakraMenu>
 )
 
-export const Menu = React.memo(Component)
+export const FeaturesMenu = React.memo(Component)
