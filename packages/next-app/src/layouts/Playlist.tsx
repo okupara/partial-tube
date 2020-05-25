@@ -1,13 +1,12 @@
-import React from "react"
+import * as React from "react"
 import {
   PartialVideo as GQLDefVideo,
   Playlist as GQLDefPlaylist,
 } from "../graphql/type-defs.graphqls"
-import { StackList } from "../components/List/StackList"
 import { useLoginUser } from "../contexts/LoginUser"
-import { Box, Flex } from "@chakra-ui/core"
-import { PartialVideoCard } from "../components/Card/PartialVideoCard"
-import { PlaylistHeader } from "../components/Parts/PlaylistHeader"
+import { Box, Flex, Stack } from "@chakra-ui/core"
+import { PartialVideoCard } from "../components/videos/PartialVideoCard"
+import { PlaylistHeader } from "../components/playlists/PlaylistHeader"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 
@@ -16,12 +15,11 @@ type Props = {
   playlistId: string
 }
 export const Playlist = (props: Props) => {
-  const { data, error } = useQuery<Playlist<GQLPlaylist>>(query, {
+  const { data } = useQuery<Playlist<GQLPlaylist>>(query, {
     variables: { id: props.playlistId },
   })
   const userContext = useLoginUser()
   if (!userContext.user) throw new Error("Unexpectedly, user is null")
-  console.log("DA", data, error)
 
   const playlist = data ? data.playlist : null
 
@@ -40,20 +38,13 @@ export const Playlist = (props: Props) => {
           />
         </Box>
         <Box mt={6}>
-          <StackList
-            list={playlist.videos}
-            component={(p) => (
-              <PartialVideoCard
-                key={p.id}
-                id={p.id}
-                title={p.title}
-                videoId={p.videoId}
-                comment={p.comment ?? ""}
-                start={p.start}
-                end={p.end}
-              />
-            )}
-          />
+          <Stack spacing={6}>
+            {playlist.videos.map((v) => (
+              <Box key={v.id}>
+                <PartialVideoCard {...v} />
+              </Box>
+            ))}
+          </Stack>
         </Box>
       </Flex>
     )

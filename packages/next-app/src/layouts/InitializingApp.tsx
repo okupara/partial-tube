@@ -1,5 +1,5 @@
 import React from "react"
-import { AppHeader } from "../components/AppHeader"
+import { AppHeader } from "../components/auth/AppHeader"
 import { Box, Spinner, Flex, Text } from "@chakra-ui/core"
 
 // TOOO: Should suspense any seconds until showing this.

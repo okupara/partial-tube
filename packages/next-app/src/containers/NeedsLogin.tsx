@@ -1,10 +1,10 @@
 import React from "react"
 import { useRouter } from "next/router"
 import { HooksReturnType } from "../hooks/useFirebaseAuth"
-import { LetsLogin } from "../components/Parts/LetsLogin"
+import { LetsLogin } from "../components/auth/LetsLogin"
 import { InitializingApp } from "../layouts/InitializingApp"
-import { UnAuthenticated } from "../components/UnAuthenticated"
-import { Authenticated } from "../components/Authenticated"
+import { UnAuthenticated } from "../components/auth/UnAuthenticated"
+import { Authenticated } from "../components/auth/Authenticated"
 import { useLoginUser } from "../contexts/LoginUser"
 import { MenuType, determineURL } from "../routes/MenuRouter"
 

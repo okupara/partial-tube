@@ -118,7 +118,6 @@ const Mutation: Required<MutationResolvers> = {
   },
   async video(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    // const db = firebase.firestore()
     if (!args.video) {
       throw new Error("Coudn't find an appropriate parameter")
     }

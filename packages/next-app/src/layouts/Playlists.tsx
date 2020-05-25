@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Stack, Text } from "@chakra-ui/core"
 import { Playlist } from "../graphql/type-defs.graphqls"
-import { PlaylistCard } from "../components/Card/PlaylistCard"
+import { PlaylistCard } from "../components/playlists/PlaylistCard"
 import gql from "graphql-tag"
 import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
 import { useDeleteRecord } from "../hooks/useDeleteRecord"

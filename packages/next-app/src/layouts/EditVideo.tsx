@@ -1,7 +1,7 @@
 import * as React from "react"
 import gql from "graphql-tag"
 import { Box } from "@chakra-ui/core"
-import { PartialVideoForm } from "../components/Form/PartialVideoForm"
+import { VideoForm } from "../components/save-video/VideoForm"
 import { useQuery, useApolloClient } from "@apollo/react-hooks"
 import { PartialVideo } from "../graphql/type-defs.graphqls"
 import { Skeleton } from "@chakra-ui/core"
@@ -16,7 +16,7 @@ export const EditVideo = ({ id }: Props) => {
     <Skeleton height={20} isLoaded={!!data}>
       {data && (
         <Box px={8} mb={20}>
-          <PartialVideoForm
+          <VideoForm
             id={id}
             videoId={data.video.videoId}
             title={data.video.title}

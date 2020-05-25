@@ -1,6 +1,6 @@
 import React from "react"
 import { render } from "@testing-library/react"
-import { TimeText } from "../src/components/Text/TimeText"
+import { TimeText } from "../src/components/shared/TimeText"
 import "@testing-library/jest-dom/extend-expect"
 
 describe("TimeText", () => {

@@ -1,7 +1,7 @@
 import React from "react"
 import { Flex, Box } from "@chakra-ui/core"
-import { PartialVideoForm } from "../components/Form/PartialVideoForm"
-import { InputVideoUrlContainer } from "../containers/InputVideoUrlContainer"
+import { VideoForm } from "../components/save-video/VideoForm"
+import { YoutubeVideoFormControl } from "../components/save-video/YoutubeVideoFormControl"
 
 export const AddVideo = () => {
   const [video, setVideo] = React.useState<{
@@ -12,11 +12,11 @@ export const AddVideo = () => {
   return (
     <Flex flexDirection="column" px={8} mb={20}>
       <Box>
-        <InputVideoUrlContainer onGetVideoId={setVideo} />
+        <YoutubeVideoFormControl onGetVideoId={setVideo} />
       </Box>
       {video.videoId && (
         <Box mt={5}>
-          <PartialVideoForm videoId={video.videoId} title={video.title} />
+          <VideoForm videoId={video.videoId} title={video.title} />
         </Box>
       )}
     </Flex>

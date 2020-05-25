@@ -1,16 +1,15 @@
 import React from "react"
 import { Flex, Box, Text } from "@chakra-ui/core"
-import { PlayerController } from "../components/Parts/PlayerController"
-import { DescriptionBox } from "../components/Text/DescriptionBox"
-import { YoutubePlayer, VideoProps } from "../components/YoutubePlayer"
-import { Props as TCProps } from "../components/Card/TinyPartialVideoCard"
-import { Authenticated } from "../components/Authenticated"
+import { PlayerController } from "../components/player/PlayerController"
+import { DescriptionBox } from "../components/shared/DescriptionBox"
+import { YoutubePlayer, VideoProps } from "../components/shared/YoutubePlayer"
+import { Authenticated } from "../components/auth/Authenticated"
 import { useLoginUser } from "../contexts/LoginUser"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 import { PartialVideo as GQLDefVideo } from "../graphql/type-defs.graphqls"
-import { HorizonListContainer } from "../components/List/HorizonListContainer"
-import { TinyPartialVideoCard } from "../components/Card/TinyPartialVideoCard"
+import { FooterListFrame } from "../components/player/FooterListFrame"
+import { TinyVideoCard, Props as TCProps } from "../components/player/TinyVideoCard"
 
 console.warn("[TODO] Reconsider this type definition")
 export type ListProps = ReadonlyArray<
@@ -98,7 +97,7 @@ export const Player: React.FC<Props> = (props) => {
           </Box>
         </Flex>
         <Box position="absolute" bottom={0} width="100%">
-          <HorizonListContainer
+          <FooterListFrame
             list={res.data.playlist.videos}
             titleView={() => (
               <Text fontSize="sm" fontWeight="bold">
@@ -106,7 +105,7 @@ export const Player: React.FC<Props> = (props) => {
               </Text>
             )}
             elementView={(pv) => (
-              <TinyPartialVideoCard
+              <TinyVideoCard
                 videoId={pv.videoId}
                 comment={pv.comment}
                 start={pv.start}
