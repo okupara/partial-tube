@@ -92,7 +92,7 @@ function createAuth() {
     firebase.auth().onAuthStateChanged(
       (user) => {
         console.log("Goggle auth state is changed", user)
-        // TODO: we need prove if @xstate/react prevents memory-leaks when component unmounted
+        console.warn("[TODO] It should be proved that ther's no memory leak")
         if (user === null) {
           dispatchMachine({ type: "NOT_DETECTED_USER" })
         } else {

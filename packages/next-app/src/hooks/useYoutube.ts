@@ -146,12 +146,6 @@ export const youtubeMachine = Machine<MachineContext, MachineSchema, MachineEven
     },
   },
   {
-    // activities: {
-    //   consolee: ctx => {
-    //     console.log("START")
-    //     return () => console.log("END")
-    //   },
-    // },
     actions: {
       // I haven't figured out the way to avoid using "any" here...
       // putting "LoadVideoEvent" occured an type error.

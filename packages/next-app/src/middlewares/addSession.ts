@@ -3,8 +3,8 @@ import cookieSession from "cookie-session"
 import { NextApiRequest, NextApiResponse } from "next"
 
 // NextApi* types don't match as arguments for cookie-session...
+console.warn('[TODO] Stop using "any"')
 export const addSession = (req: any, res: any) => {
-  // @TODO: improve type safety
   const { serverRuntimeConfig } = getConfig()
   const sessionSecrets = [
     serverRuntimeConfig.sessionKey1,

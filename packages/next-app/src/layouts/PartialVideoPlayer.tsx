@@ -12,8 +12,7 @@ import { PartialVideo as GQLDefVideo } from "../graphql/type-defs.graphqls"
 import { HorizonListContainer } from "../components/List/HorizonListContainer"
 import { TinyPartialVideoCard } from "../components/Card/TinyPartialVideoCard"
 
-// @TODO: improve this, it's hard to understand now.
-//        maybe the definition of the PartialVideo model should be here.
+console.warn("[TODO] Reconsider this type definition")
 export type ListProps = ReadonlyArray<
   TCProps & Pick<VideoProps, "id"> & { title: string }
 >

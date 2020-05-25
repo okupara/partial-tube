@@ -27,12 +27,6 @@ const handler = (req: SessionNextApiRequest, res: NextApiResponse) => {
         },
         token,
       }
-      // req.session!.user = {
-      //   id: actual.user_id,
-      //   avatarUrl: actual.picture,
-      //   name: actual.name,
-      // }
-      // req.session.token = token
       res.send({ result: true })
     })
     .catch((e) => {

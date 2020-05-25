@@ -18,7 +18,6 @@ export const NeedsLogin: React.FC<Props> = ({ fbAuth, children, currentMenu }) =
   const router = useRouter()
   const moveNextUrl = (value: string) => router.push(determineURL(value))
   const moveToAdd = () => router.push("/video/add")
-  console.log("HAPPY", fbAuth.state)
 
   if (fbAuth.state === "notLoggedIn") {
     return (
