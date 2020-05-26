@@ -1,16 +1,17 @@
 import React from "react"
-import { Box, Stack, Text } from "@chakra-ui/core"
+import { Box, Stack, Text, MenuItem } from "@chakra-ui/core"
 import gql from "graphql-tag"
 import { PartialVideo as GQLDefVideo } from "../graphql/typ-defs.graphqls"
-import { PartialVideoCard } from "../components/videos/PartialVideoCard"
+import { VideoItem } from "../components/videos/VideoItem"
 import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
 import { useDeleteRecord } from "../hooks/useDeleteRecord"
 import { useApolloClient } from "@apollo/react-hooks"
+import { Card } from "../components/shared/Card"
+import { DeleteLabel, EditLabel } from "../components/shared/MenuLabels"
 
 type Props = {
   onClickCard?: (id: string) => void
   onClickEditMenu?: (id: string) => void
-  onClickDeleteMenu?: (id: string) => void
   videos: ReadonlyArray<GQLVideo>
 }
 
@@ -21,11 +22,18 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
       <Stack spacing={6}>
         {videos.map((v) => (
           <Box key={v.id}>
-            <PartialVideoCard
-              {...v}
-              onClickEditMenu={onClickEditMenu}
-              onClickDeleteMenu={deleteState.setId}
-            />
+            <Card
+              menuItems={() => [
+                <MenuItem key="edit" onClick={() => onClickEditMenu?.(v.id)}>
+                  <EditLabel />
+                </MenuItem>,
+                <MenuItem key="delete" onClick={() => deleteState.setId(v.id)}>
+                  <DeleteLabel />
+                </MenuItem>,
+              ]}
+            >
+              <VideoItem {...v} />
+            </Card>
           </Box>
         ))}
       </Stack>

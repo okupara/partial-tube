@@ -7,3 +7,10 @@ export const DeleteLabel = () => (
     <Text ml={1}>delete</Text>
   </Flex>
 )
+
+export const EditLabel = () => (
+  <Flex alignItems="center">
+    <Icon name="edit" />
+    <Text ml={1}>edit</Text>
+  </Flex>
+)

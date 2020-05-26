@@ -1,11 +1,13 @@
 import React from "react"
-import { Box, Stack, Text } from "@chakra-ui/core"
+import { Box, Stack, Text, MenuItem } from "@chakra-ui/core"
 import { Playlist } from "../graphql/type-defs.graphqls"
-import { PlaylistCard } from "../components/playlists/PlaylistCard"
+import { PlaylistItem } from "../components/playlists/PlaylistItem"
 import gql from "graphql-tag"
 import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
 import { useDeleteRecord } from "../hooks/useDeleteRecord"
 import { useApolloClient } from "@apollo/react-hooks"
+import { Card } from "../../src/components/shared/Card"
+import { DeleteLabel } from "../components/shared/MenuLabels"
 
 type Props = {
   onClickCard?: (id: string) => void
@@ -19,16 +21,23 @@ export const Playlists = (props: Props) => {
       <Stack spacing={4}>
         {props.playlists.map((el) => (
           <Box key={el.id}>
-            <PlaylistCard
-              onClickCard={props.onClickCard}
-              onClickDeleteMenu={deleteState.setId}
-              id={el.id}
-              name={el.name}
-              comment={el.comment}
-              updated={el.created}
-              firstVideoId={el.firstVideoId}
-              numOfVideos={el.numOfVideos}
-            />
+            <Card
+              onClick={() => props.onClickCard?.(el.id)}
+              menuItems={() => (
+                <MenuItem onClick={() => deleteState.setId(el.id)}>
+                  <DeleteLabel />
+                </MenuItem>
+              )}
+            >
+              <PlaylistItem
+                id={el.id}
+                name={el.name}
+                comment={el.comment}
+                updated={el.created}
+                firstVideoId={el.firstVideoId}
+                numOfVideos={el.numOfVideos}
+              />
+            </Card>
           </Box>
         ))}
       </Stack>

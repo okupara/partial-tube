@@ -1,4 +1,5 @@
 import { NextPageContext } from "next"
+import { Box } from "@chakra-ui/core"
 import { Player as PlayerLayout } from "../../layouts/PartialVideoPlayer"
 import { HooksReturnType } from "../../hooks/useFirebaseAuth"
 import { NeedsLogin } from "../../containers/NeedsLogin"
@@ -13,7 +14,9 @@ type Props = {
 const Player = (props: Props) => {
   return (
     <NeedsLogin fbAuth={props.fbAuth}>
-      <PlayerLayout playlistId={props.id} />
+      <Box>
+        <PlayerLayout playlistId={props.id} />
+      </Box>
     </NeedsLogin>
   )
 }

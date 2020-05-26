@@ -5,6 +5,7 @@ import { withAuth } from "../compositions/withAuth"
 import { Videos as LayoutVideos, query, GQLVideo } from "../layouts/Videos"
 import { withApollo } from "../compositions/withApollo"
 import { useQuery } from "@apollo/react-hooks"
+import { ContentBox } from "../components/shared/ContentBox"
 
 type Props = {
   fbAuth: HooksReturnType
@@ -18,14 +19,16 @@ const Videos = (props: Props) => {
 
   return (
     <NeedsLogin currentMenu="videos" fbAuth={props.fbAuth}>
-      {data && (
-        <LayoutVideos
-          videos={data.videos}
-          onClickEditMenu={(id) =>
-            router.push("/video/edit/[id]", `/video/edit/${id}`)
-          }
-        />
-      )}
+      <ContentBox>
+        {data && (
+          <LayoutVideos
+            videos={data.videos}
+            onClickEditMenu={(id) =>
+              router.push("/video/edit/[id]", `/video/edit/${id}`)
+            }
+          />
+        )}
+      </ContentBox>
     </NeedsLogin>
   )
 }

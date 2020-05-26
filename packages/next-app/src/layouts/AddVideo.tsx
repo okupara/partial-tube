@@ -10,7 +10,7 @@ export const AddVideo = () => {
   }>({ videoId: null, title: "" })
 
   return (
-    <Flex flexDirection="column" px={8} mb={20}>
+    <Flex flexDirection="column" px={8}>
       <Box>
         <YoutubeVideoFormControl onGetVideoId={setVideo} />
       </Box>

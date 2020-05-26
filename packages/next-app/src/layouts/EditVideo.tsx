@@ -4,31 +4,27 @@ import { Box } from "@chakra-ui/core"
 import { VideoForm } from "../components/save-video/VideoForm"
 import { useQuery, useApolloClient } from "@apollo/react-hooks"
 import { PartialVideo } from "../graphql/type-defs.graphqls"
-import { Skeleton } from "@chakra-ui/core"
 
 type Props = {
   video: GQLVideo
   id: string
 }
+console.warn("[TODO] show something during requests")
 export const EditVideo = ({ id }: Props) => {
   const { data } = useEditVideo(id)
-  return (
-    <Skeleton height={20} isLoaded={!!data}>
-      {data && (
-        <Box px={8} mb={20}>
-          <VideoForm
-            id={id}
-            videoId={data.video.videoId}
-            title={data.video.title}
-            start={data.video.start}
-            end={data.video.end}
-            comment={data.video.comment || ""}
-            playlists={data.video.playlists as ReadonlyArray<GQLPlaylist>}
-          />
-        </Box>
-      )}
-    </Skeleton>
-  )
+  return data ? (
+    <Box px={8}>
+      <VideoForm
+        id={id}
+        videoId={data.video.videoId}
+        title={data.video.title}
+        start={data.video.start}
+        end={data.video.end}
+        comment={data.video.comment || ""}
+        playlists={data.video.playlists as ReadonlyArray<GQLPlaylist>}
+      />
+    </Box>
+  ) : null
 }
 
 const useEditVideo = (playlistId: string) => {

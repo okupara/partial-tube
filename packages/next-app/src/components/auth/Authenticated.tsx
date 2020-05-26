@@ -69,8 +69,6 @@ export const Authenticated: React.FC<Props> = ({
         </Menu>
       </Box>
     </AppHeader>
-    <Box pt={32} pb={16}>
-      {children}
-    </Box>
+    {children}
   </React.Fragment>
 )

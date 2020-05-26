@@ -3,6 +3,7 @@ import { withApollo } from "../../compositions/withApollo"
 import { NeedsLogin } from "../../containers/NeedsLogin"
 import { HooksReturnType } from "../../hooks/useFirebaseAuth"
 import { AddVideo } from "../../layouts/AddVideo"
+import { ContentBox } from "../../components/shared/ContentBox"
 
 type Props = {
   fbAuth: HooksReturnType
@@ -11,7 +12,9 @@ type Props = {
 const Add = (props: Props) => {
   return (
     <NeedsLogin fbAuth={props.fbAuth}>
-      <AddVideo />
+      <ContentBox>
+        <AddVideo />
+      </ContentBox>
     </NeedsLogin>
   )
 }

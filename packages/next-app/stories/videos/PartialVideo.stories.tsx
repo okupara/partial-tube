@@ -1,9 +1,14 @@
 import * as React from "react"
-import { PartialVideoCard } from "../../src/components/videos/PartialVideoCard"
 import { MarginDecorator } from "../Decorators"
 import { partialVideoListMock } from "../../__mocks__/ParitalVideoList"
+import { Card } from "../../src/components/shared/Card"
+import { VideoItem } from "../../src/components/videos/VideoItem"
 
-export const videoCard = () => <PartialVideoCard {...partialVideoListMock[0]} />
+export const videoCard = () => (
+  <Card>
+    <VideoItem {...partialVideoListMock[0]} />
+  </Card>
+)
 videoCard.sotry = {
   name: "videoCard",
 }

@@ -5,6 +5,7 @@ import { NeedsLogin } from "../../../containers/NeedsLogin"
 import { HooksReturnType } from "../../../hooks/useFirebaseAuth"
 import { EditVideo, query, GQLVideo } from "../../../layouts/EditVideo"
 import { NextPageContext } from "next"
+import { ContentBox } from "../../../components/shared/ContentBox"
 
 type Props = {
   id: string
@@ -15,7 +16,7 @@ const Edit = ({ id, fbAuth }: Props) => {
   const { data } = useQuery<QueryVideo<GQLVideo>>(query, { variables: { id } })
   return (
     <NeedsLogin fbAuth={fbAuth}>
-      {data && <EditVideo video={data.video} id={id} />}
+      <ContentBox>{data && <EditVideo video={data.video} id={id} />}</ContentBox>
     </NeedsLogin>
   )
 }

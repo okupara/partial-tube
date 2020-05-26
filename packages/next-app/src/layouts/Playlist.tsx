@@ -4,11 +4,13 @@ import {
   Playlist as GQLDefPlaylist,
 } from "../graphql/type-defs.graphqls"
 import { useLoginUser } from "../contexts/LoginUser"
-import { Box, Flex, Stack } from "@chakra-ui/core"
-import { PartialVideoCard } from "../components/videos/PartialVideoCard"
+import { Box, Flex, Stack, MenuItem } from "@chakra-ui/core"
+import { VideoItem } from "../components/videos/VideoItem"
 import { PlaylistHeader } from "../components/playlists/PlaylistHeader"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
+import { Card } from "../components/shared/Card"
+import { DeleteLabel, EditLabel } from "../components/shared/MenuLabels"
 
 type Props = {
   onPlay?: (playlistId: string) => void
@@ -41,7 +43,18 @@ export const Playlist = (props: Props) => {
           <Stack spacing={6}>
             {playlist.videos.map((v) => (
               <Box key={v.id}>
-                <PartialVideoCard {...v} />
+                <Card
+                  menuItems={() => [
+                    <MenuItem key="edit">
+                      <EditLabel />
+                    </MenuItem>,
+                    <MenuItem key="delete">
+                      <DeleteLabel />
+                    </MenuItem>,
+                  ]}
+                >
+                  <VideoItem {...v} />
+                </Card>
               </Box>
             ))}
           </Stack>

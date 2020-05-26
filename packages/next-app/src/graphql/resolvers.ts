@@ -66,10 +66,17 @@ const Query: Required<QueryResolvers> = {
   },
   async youtubeVideo(_, args) {
     const { serverRuntimeConfig } = getConfig()
+    if (!args.videoId) {
+      throw new Error("Illegal parameter.")
+    }
+    console.log(
+      `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=${serverRuntimeConfig.youtubeApiKey}`,
+    )
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?id=${args.videoId}&part=snippet&key=${serverRuntimeConfig.youtubeApiKey}`,
     )
     const obj = await res.json()
+    console.log(obj)
     if (Array.isArray(obj.items) === false || obj.items.length === 0) {
       return null
     }
