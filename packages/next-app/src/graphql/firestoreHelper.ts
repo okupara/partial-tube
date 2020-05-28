@@ -436,7 +436,7 @@ export class FirestoreDao {
     }
 
     const videos = videoSnapshots.docs.map((video) => ({
-      id: video.id,
+      id: video.get("ref").id,
       title: video.get("title"),
       start: video.get("start"),
       end: video.get("end"),

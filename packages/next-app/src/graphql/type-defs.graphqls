@@ -64,4 +64,5 @@ type Mutation {
   video(video: VideoInput): PartialVideo
   deleteVideo(id: ID!): String!
   deletePlaylist(id: ID!): String!
+  deleteVideoFromPlaylist(playlistId: ID!, videoId: ID!): String!
 }

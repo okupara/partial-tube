@@ -1023,7 +1023,7 @@ type Playlists<T> = {
   playlists: ReadonlyArray<T>
 }
 
-type Playlist<T> = {
+type QueryPlaylist<T> = {
   playlist: T
 }
 

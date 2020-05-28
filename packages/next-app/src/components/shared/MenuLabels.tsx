@@ -1,10 +1,13 @@
 import * as React from "react"
 import { Flex, Icon, Text } from "@chakra-ui/core"
 
-export const DeleteLabel = () => (
+type DeleteLabelProps = {
+  title?: string
+}
+export const DeleteLabel = ({ title }: DeleteLabelProps) => (
   <Flex alignItems="center">
     <Icon name="delete" />
-    <Text ml={1}>delete</Text>
+    <Text ml={1}>{title ?? "delete"}</Text>
   </Flex>
 )
 

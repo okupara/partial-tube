@@ -1,6 +1,5 @@
 import React from "react"
 import { Box } from "@chakra-ui/core"
-import { CardMenu } from "./CardMenu"
 
 export type MenuProps = {
   label: React.ReactNode
@@ -10,8 +9,6 @@ export type MenuProps = {
 type Props = {
   mb?: number
   onClick?: () => void
-  menus?: ReadonlyArray<MenuProps>
-  menuItems?: () => React.ReactNode
 }
 
 export const Card: React.FC<Props> = (props) => (
@@ -28,12 +25,6 @@ export const Card: React.FC<Props> = (props) => (
       props.onClick?.()
     }}
   >
-    {props.menuItems && (
-      <Box position="absolute" top={3} right={3}>
-        <CardMenu>{props.menuItems()}</CardMenu>
-      </Box>
-    )}
-
     {props.children}
   </Box>
 )

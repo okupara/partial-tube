@@ -108,6 +108,17 @@ const Mutation: Required<MutationResolvers> = {
       videos: [],
     }
   },
+  async deleteVideoFromPlaylist(_, args, ctx: NextPageContext): Promise<string> {
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user.id)
+    const video = await dao.getVideo(args.videoId)
+    await dao.deleteVideoFromPlaylist({
+      playlist: args.playlistId,
+      video: video.doc,
+      duration: video.data.end - video.data.start,
+    })
+    return "success"
+  },
   async deletePlaylist(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
     const dao = new helper.FirestoreDao(user.id)

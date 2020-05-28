@@ -2,25 +2,26 @@ import * as React from "react"
 import { useMutation } from "@apollo/react-hooks"
 import { DocumentNode } from "graphql"
 
-export const useDeleteRecord = (deleteQuery: DocumentNode) => {
+export const useDeleteRecord = <T extends {}>(deleteQuery: DocumentNode) => {
   const [executeDelete, deleteState] = useMutation(deleteQuery)
-  const [id, setId] = React.useState<string | null>(null)
+  const [deleteParameter, setDeleteParameter] = React.useState<T | null>(null)
 
   return {
     executeDelete() {
-      if (id) {
-        executeDelete({ variables: { id } })
+      if (deleteParameter) {
+        executeDelete({ variables: deleteParameter })
       }
     },
     deleting: deleteState.loading,
-    readyToDelete: id !== null,
+    readyToDelete: deleteParameter !== null,
     isDoneDelete: !!deleteState.data,
-    id,
-    setId(id: string) {
-      setId(id)
+    deleteParameter,
+    setDeleteParameter(parameter: T) {
+      setDeleteParameter(parameter)
     },
-    resetId() {
-      setId(null)
+    resetParameter() {
+      console.log("cALLLBACK")
+      setDeleteParameter(null)
     },
   }
 }

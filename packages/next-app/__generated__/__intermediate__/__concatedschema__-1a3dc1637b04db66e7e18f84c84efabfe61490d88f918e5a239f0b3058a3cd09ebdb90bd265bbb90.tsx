@@ -18,6 +18,7 @@ export type Mutation = {
   video?: Maybe<PartialVideo>;
   deleteVideo: Scalars['String'];
   deletePlaylist: Scalars['String'];
+  deleteVideoFromPlaylist: Scalars['String'];
 };
 
 
@@ -38,6 +39,12 @@ export type MutationDeleteVideoArgs = {
 
 export type MutationDeletePlaylistArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationDeleteVideoFromPlaylistArgs = {
+  playlistId: Scalars['ID'];
+  videoId: Scalars['ID'];
 };
 
 export type PartialVideo = {
@@ -236,6 +243,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   video?: Resolver<Maybe<ResolversTypes['PartialVideo']>, ParentType, ContextType, RequireFields<MutationVideoArgs, never>>,
   deleteVideo?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteVideoArgs, 'id'>>,
   deletePlaylist?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeletePlaylistArgs, 'id'>>,
+  deleteVideoFromPlaylist?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteVideoFromPlaylistArgs, 'playlistId' | 'videoId'>>,
 };
 
 export type PartialVideoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartialVideo'] = ResolversParentTypes['PartialVideo']> = {

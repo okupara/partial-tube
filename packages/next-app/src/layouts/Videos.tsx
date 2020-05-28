@@ -7,6 +7,7 @@ import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
 import { useDeleteRecord } from "../hooks/useDeleteRecord"
 import { useApolloClient } from "@apollo/react-hooks"
 import { Card } from "../components/shared/Card"
+import { CardMenu } from "../components/shared/CardMenu"
 import { DeleteLabel, EditLabel } from "../components/shared/MenuLabels"
 
 type Props = {
@@ -22,16 +23,17 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
       <Stack spacing={6}>
         {videos.map((v) => (
           <Box key={v.id}>
-            <Card
-              menuItems={() => [
-                <MenuItem key="edit" onClick={() => onClickEditMenu?.(v.id)}>
+            <Card>
+              <CardMenu>
+                <MenuItem onClick={() => onClickEditMenu?.(v.id)}>
                   <EditLabel />
-                </MenuItem>,
-                <MenuItem key="delete" onClick={() => deleteState.setId(v.id)}>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => deleteState.setDeleteParameter({ id: v.id })}
+                >
                   <DeleteLabel />
-                </MenuItem>,
-              ]}
-            >
+                </MenuItem>
+              </CardMenu>
               <VideoItem {...v} />
             </Card>
           </Box>
@@ -41,7 +43,7 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
         title="Delete video"
         messageView={() => <Text>Do you really want to delete this video?</Text>}
         isOpen={deleteState.readyToDelete}
-        onClose={deleteState.resetId}
+        onClose={deleteState.resetParameter}
         onSubmit={deleteState.executeDelete}
         isLoading={deleteState.deleting}
       />
@@ -50,20 +52,22 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
 }
 
 const useDeleteVideo = () => {
-  const deleteState = useDeleteRecord(deleteQuery)
+  const deleteState = useDeleteRecord<{ id: string }>(deleteQuery)
   const client = useApolloClient()
 
   React.useEffect(() => {
     if (deleteState.isDoneDelete) {
       const data = client.readQuery<QueryVideos<GQLVideo>>({ query })
-      const newData = data?.videos.filter((item) => item.id !== deleteState.id)
+      const newData = data?.videos.filter(
+        (item) => item.id !== deleteState.deleteParameter!.id,
+      )
       if (newData) {
         client.writeQuery<QueryVideos<GQLVideo>>({
           query,
           data: { videos: newData },
         })
       }
-      deleteState.resetId()
+      deleteState.resetParameter()
     }
   }, [deleteState.isDoneDelete])
   return {

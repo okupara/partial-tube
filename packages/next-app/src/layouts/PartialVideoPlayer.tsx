@@ -23,7 +23,7 @@ export const usePlayerQueue = (playlistId: string) => {
   const [limit, setLimit] = React.useState(0)
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const changeCurrent = (fn: (current: number) => number) => setCurrentIndex(fn)
-  const { data, loading, error } = useQuery<Playlist<GQLPlaylist>>(query, {
+  const { data, loading, error } = useQuery<QueryPlaylist<GQLPlaylist>>(query, {
     variables: { id: playlistId },
   })
 

@@ -7,6 +7,7 @@ import { AlertDeleteDialog } from "../components/shared/AlertDeleteDialog"
 import { useDeleteRecord } from "../hooks/useDeleteRecord"
 import { useApolloClient } from "@apollo/react-hooks"
 import { Card } from "../../src/components/shared/Card"
+import { CardMenu } from "../../src/components/shared/CardMenu"
 import { DeleteLabel } from "../components/shared/MenuLabels"
 
 type Props = {
@@ -21,14 +22,17 @@ export const Playlists = (props: Props) => {
       <Stack spacing={4}>
         {props.playlists.map((el) => (
           <Box key={el.id}>
-            <Card
-              onClick={() => props.onClickCard?.(el.id)}
-              menuItems={() => (
-                <MenuItem onClick={() => deleteState.setId(el.id)}>
+            <Card onClick={() => props.onClickCard?.(el.id)}>
+              <CardMenu>
+                <MenuItem
+                  onClick={(e: any) => {
+                    e.stopPropagation()
+                    deleteState.setDeleteParameter({ id: el.id })
+                  }}
+                >
                   <DeleteLabel />
                 </MenuItem>
-              )}
-            >
+              </CardMenu>
               <PlaylistItem
                 id={el.id}
                 name={el.name}
@@ -45,7 +49,7 @@ export const Playlists = (props: Props) => {
         title="Delete video"
         messageView={() => <Text>Do you really want to delete this video?</Text>}
         isOpen={deleteState.readyToDelete}
-        onClose={deleteState.resetId}
+        onClose={deleteState.resetParameter}
         onSubmit={deleteState.executeDelete}
         isLoading={deleteState.deleting}
       />
@@ -54,15 +58,17 @@ export const Playlists = (props: Props) => {
 }
 
 const useDeletePlaylist = () => {
-  const deleteState = useDeleteRecord(deleteQuery)
+  const deleteState = useDeleteRecord<{ id: string }>(deleteQuery)
   const client = useApolloClient()
 
   React.useEffect(() => {
     if (deleteState.isDoneDelete) {
       const data = client.readQuery<Playlists<GQLPlaylist>>({ query })
-      const newData = data?.playlists.filter((item) => item.id !== deleteState.id)
+      const newData = data?.playlists.filter(
+        (item) => item.id !== deleteState.deleteParameter!.id,
+      )
       client.writeQuery({ query, data: { playlists: newData } })
-      deleteState.resetId()
+      deleteState.resetParameter()
     }
   }, [deleteState.isDoneDelete])
   return {
