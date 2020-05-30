@@ -27,7 +27,7 @@ export const Playlists = (props: Props) => {
                 <MenuItem
                   onClick={(e: any) => {
                     e.stopPropagation()
-                    deleteState.setDeleteParameter({ id: el.id })
+                    deleteState.setParameters({ id: el.id })
                   }}
                 >
                   <DeleteLabel />
@@ -65,7 +65,7 @@ const useDeletePlaylist = () => {
     if (deleteState.isDoneDelete) {
       const data = client.readQuery<Playlists<GQLPlaylist>>({ query })
       const newData = data?.playlists.filter(
-        (item) => item.id !== deleteState.deleteParameter!.id,
+        (item) => item.id !== deleteState.parameters!.id,
       )
       client.writeQuery({ query, data: { playlists: newData } })
       deleteState.resetParameter()

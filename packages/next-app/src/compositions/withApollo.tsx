@@ -101,13 +101,14 @@ function initApolloClient(param?: InitApolloParam) {
 }
 
 function createApolloClient(param?: InitApolloParam) {
-  const cache = new InMemoryCache().restore(
-    param?.initialState ? param.initialState : {},
-  )
+  const cache = new InMemoryCache({
+    dataIdFromObject: (object) => object.id,
+  }).restore(param?.initialState ? param.initialState : {})
 
   return new ApolloClient({
     ssrMode: isOnServer(),
     link: createIsomorphLink(param?.context),
+    ssrForceFetchDelay: 50,
     cache,
     resolvers: {
       Query: {},

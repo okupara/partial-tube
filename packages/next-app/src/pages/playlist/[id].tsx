@@ -20,7 +20,10 @@ type Props = {
 
 export const Playlist = ({ id, fbAuth }: Props) => {
   const router = useRouter()
-  const { data } = useQuery<QueryPlaylist<GQLPlaylist>>(query, { variables: { id } })
+  const { data } = useQuery<QueryPlaylist<GQLPlaylist>>(query, {
+    variables: { id },
+    fetchPolicy: "cache-and-network",
+  })
 
   return (
     <NoNeedLogin fbAuth={fbAuth}>

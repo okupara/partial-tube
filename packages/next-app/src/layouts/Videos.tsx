@@ -28,9 +28,7 @@ export const Videos = ({ videos, onClickEditMenu }: Props) => {
                 <MenuItem onClick={() => onClickEditMenu?.(v.id)}>
                   <EditLabel />
                 </MenuItem>
-                <MenuItem
-                  onClick={() => deleteState.setDeleteParameter({ id: v.id })}
-                >
+                <MenuItem onClick={() => deleteState.setParameters({ id: v.id })}>
                   <DeleteLabel />
                 </MenuItem>
               </CardMenu>
@@ -59,7 +57,7 @@ const useDeleteVideo = () => {
     if (deleteState.isDoneDelete) {
       const data = client.readQuery<QueryVideos<GQLVideo>>({ query })
       const newData = data?.videos.filter(
-        (item) => item.id !== deleteState.deleteParameter!.id,
+        (item) => item.id !== deleteState.parameters!.id,
       )
       if (newData) {
         client.writeQuery<QueryVideos<GQLVideo>>({

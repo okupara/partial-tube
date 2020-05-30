@@ -46,7 +46,7 @@ export const Playlist = ({ playlist, onPlay }: Props) => {
                     </MenuItem>
                     <MenuItem
                       onClick={() =>
-                        deleteState.setDeleteParameter({
+                        deleteState.setParameters({
                           videoId: v.id,
                           playlistId: playlist.id,
                         })
@@ -81,10 +81,35 @@ const useDeleteVideoFromPlaylist = () => {
   const client = useApolloClient()
   React.useEffect(() => {
     if (deleteState.isDoneDelete) {
-      const data = client.readQuery<QueryPlaylist<GQLPlaylist>>({ query })
+      // should be server returns current data and updated based on the data, but I just wanna give it a try...
+      const fragmentVideo = client.readFragment<FragmentVideo>({
+        id: deleteState.parameters!.videoId,
+        fragment: videoFragmentQuery,
+      })
+      const fragmentPlaylist = client.readFragment<FragmentPlaylist>({
+        id: deleteState.parameters!.playlistId,
+        fragment: playlistFragmentQuery,
+      })
+      console.log("fragmentPlaylist", fragmentPlaylist)
+
+      client.writeFragment<FragmentPlaylist>({
+        id: deleteState.parameters!.playlistId,
+        fragment: playlistFragmentQuery,
+        data: {
+          totalSec:
+            fragmentPlaylist!.totalSec - (fragmentVideo!.end - fragmentVideo!.start),
+          numOfVideos: fragmentPlaylist!.numOfVideos - 1,
+          __typename: "Playlist",
+        },
+      })
+
+      const data = client.readQuery<QueryPlaylist<GQLPlaylist>>({
+        query,
+        variables: { id: deleteState.parameters!.playlistId },
+      })
       const newVideoData = data
         ? data.playlist.videos.filter(
-            (video) => video.id !== deleteState.deleteParameter?.videoId,
+            (video) => video.id !== deleteState.parameters?.videoId,
           )
         : []
 
@@ -92,6 +117,7 @@ const useDeleteVideoFromPlaylist = () => {
         query,
         data: { playlist: { ...data!.playlist, videos: newVideoData } },
       })
+      deleteState.resetParameter()
     }
   }, [deleteState.isDoneDelete])
 
@@ -99,6 +125,25 @@ const useDeleteVideoFromPlaylist = () => {
     ...deleteState,
   }
 }
+
+const playlistFragmentQuery = gql`
+  fragment CurrentPlaylist on Playlist {
+    totalSec
+    numOfVideos
+  }
+`
+type FragmentPlaylist = Pick<GQLDefPlaylist, "totalSec" | "numOfVideos"> & {
+  __typename: "Playlist"
+}
+
+const videoFragmentQuery = gql`
+  fragment Video on PartialVideo {
+    id
+    start
+    end
+  }
+`
+type FragmentVideo = Pick<GQLDefVideo, "id" | "start" | "end">
 
 const deleteQuery = gql`
   mutation DeleteVideoFromPlaylist($playlistId: ID!, $videoId: ID!) {
