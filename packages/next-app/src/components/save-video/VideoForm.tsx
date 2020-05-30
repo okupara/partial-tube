@@ -27,6 +27,7 @@ export const VideoForm = ({
   comment,
   playlists,
 }: Props) => {
+  console.log("TITLE", title)
   const { input, loadingAdd, executeAdd, ...inputDispatch } = useVideoForm({
     id,
     videoId,
@@ -101,7 +102,7 @@ const useVideoForm = (initValues: Input) => {
   React.useEffect(() => {
     if (addRes.data) {
       showToast({
-        title: "A video is added.",
+        title: "A video is added successfully.",
         description: "You can check it on videos page.",
       })
       setInput((state) =>

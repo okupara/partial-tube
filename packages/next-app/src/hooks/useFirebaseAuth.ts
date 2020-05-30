@@ -93,6 +93,7 @@ function createAuth() {
     providerRef.current = new firebase.auth.GoogleAuthProvider()
     firebase.auth().onAuthStateChanged(
       (user) => {
+        console.log("from?", userContext)
         console.log("Goggle auth state is changed", user)
         console.warn("[TODO] It should be proved that ther's no memory leak")
         if (user === null) {
