@@ -6,6 +6,7 @@ import { useMachine } from "@xstate/react"
 import { useLoginUser, useLogoutUser } from "../contexts/LoginUser"
 import * as User from "../models/User"
 import fetch from "isomorphic-unfetch"
+import { useToast } from "../hooks/useToast"
 
 type Mode = "browser" | "server"
 type MachineContext = {}
@@ -71,6 +72,7 @@ function createAuth() {
   const providerRef = useRef<firebase.auth.GoogleAuthProvider | null>(null)
   const userContext = useLoginUser()
   const logoutUser = useLogoutUser()
+  const { showToast } = useToast()
 
   const [machine, dispatchMachine] = useMachine(
     initAuthMachine(userContext.user ? "loggedIn" : "loading"),
@@ -144,7 +146,13 @@ function createAuth() {
         .auth()
         .signOut()
         .then(() => postLogout())
-        .then(() => logoutUser())
+        .then(() => {
+          logoutUser()
+          showToast({
+            title: "You successfully logged out.",
+            description: "I hope you come back here soon!",
+          })
+        })
         .catch((error) => console.error("Error occured at loggingout", error))
     },
   }

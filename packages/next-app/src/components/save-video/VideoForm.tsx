@@ -1,9 +1,10 @@
-import React from "react"
-import { Flex, Box, Button, Textarea, useToast } from "@chakra-ui/core"
+import * as React from "react"
+import { Flex, Box, Button, Textarea } from "@chakra-ui/core"
 import { StartEndFormControl } from "./StartEndFormControl"
 import { SelectedPlaylistsFormControl } from "./SelectedPlaylistsFormControl"
 import { YoutubePlayer } from "../shared/YoutubePlayer"
 import { useMutation, useQuery, useApolloClient } from "@apollo/react-hooks"
+import { useToast } from "../../hooks/useToast"
 import gql from "graphql-tag"
 
 type Props = {
@@ -95,11 +96,14 @@ const useVideoForm = (initValues: Input) => {
   const client = useApolloClient()
   const selectedPlaylistsRes = useQuery<SelectedPlaylists<GQLPlaylist>>(query)
   const selectedPlaylists = selectedPlaylistsRes.data?.selectedPlaylists
-  const { showToast } = useDoneToast()
+  const { showToast } = useToast()
 
   React.useEffect(() => {
     if (addRes.data) {
-      showToast()
+      showToast({
+        title: "A video is added.",
+        description: "You can check it on videos page.",
+      })
       setInput((state) =>
         // In edit mode, only resets comment
         state.id ? { ...state } : { ...state, start: null, end: null, comment: "" },
@@ -156,18 +160,3 @@ const query = gql`
     }
   }
 `
-
-const useDoneToast = () => {
-  const toast = useToast()
-  const showToast = React.useCallback(() => {
-    toast({
-      position: "bottom-right",
-      title: "Video added.",
-      description: "You can check it on Videos page.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    })
-  }, [])
-  return { showToast }
-}
