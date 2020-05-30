@@ -26,7 +26,7 @@ export const VideoForm = ({
   comment,
   playlists,
 }: Props) => {
-  const { input, executeAdd, ...inputDispatch } = useVideoForm({
+  const { input, loadingAdd, executeAdd, ...inputDispatch } = useVideoForm({
     id,
     videoId,
     title,
@@ -67,7 +67,13 @@ export const VideoForm = ({
         />
       </Box>
       <Flex mt={5} alignItems="center" justifyContent="center">
-        <Button onClick={() => executeAdd()}>SAVE</Button>
+        <Button
+          loadingText="SAVING"
+          isLoading={loadingAdd}
+          onClick={() => executeAdd()}
+        >
+          SAVE
+        </Button>
       </Flex>
     </Flex>
   )
@@ -96,7 +102,7 @@ const useVideoForm = (initValues: Input) => {
       showToast()
       setInput((state) =>
         // In edit mode, only resets comment
-        state.id ? { ...state, comment: "" } : { ...state, start: null, end: null },
+        state.id ? { ...state } : { ...state, start: null, end: null, comment: "" },
       )
     }
   }, [addRes.data])

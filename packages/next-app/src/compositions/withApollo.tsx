@@ -108,7 +108,7 @@ function createApolloClient(param?: InitApolloParam) {
   return new ApolloClient({
     ssrMode: isOnServer(),
     link: createIsomorphLink(param?.context),
-    ssrForceFetchDelay: 50,
+    ssrForceFetchDelay: 100,
     cache,
     resolvers: {
       Query: {},
