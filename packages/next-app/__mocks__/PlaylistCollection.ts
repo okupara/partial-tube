@@ -13,7 +13,19 @@ export const playlistsMock: ReadonlyArray<Playlist> = [
     permission: "public",
     totalSec: 10,
     created: timestamp,
-    videos: [],
+    videos: [
+      {
+        id: "Ov8nx71wJWo5w6mEvIJb",
+        start: 267.4119990896454,
+        end: 270.7732861506805,
+        videoId: "RiYHoc06gPs",
+        title: "「働く男①」～超カンタンカンタビレ#20～",
+        comment: "private",
+        created: new Date(),
+        playlists: [],
+      },
+    ],
+    isOwner: true,
   },
   {
     id: "12346",
@@ -25,6 +37,7 @@ export const playlistsMock: ReadonlyArray<Playlist> = [
     totalSec: 8,
     created: timestamp,
     videos: [],
+    isOwner: true,
   },
   {
     id: "12347",
@@ -36,5 +49,6 @@ export const playlistsMock: ReadonlyArray<Playlist> = [
     totalSec: 10,
     created: timestamp,
     videos: [],
+    isOwner: true,
   },
 ]

@@ -69,6 +69,7 @@ export type Playlist = {
   created: Scalars['Date'];
   totalSec: Scalars['Float'];
   firstVideoId?: Maybe<Scalars['String']>;
+  isOwner: Scalars['Boolean'];
   videos: Array<Maybe<PartialVideo>>;
 };
 
@@ -86,6 +87,7 @@ export type Query = {
   youtubeVideo?: Maybe<YouTubeVideo>;
   videos?: Maybe<Array<PartialVideo>>;
   video?: Maybe<PartialVideo>;
+  publicPlaylists: Array<Maybe<Playlist>>;
 };
 
 
@@ -208,12 +210,12 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Date: ResolverTypeWrapper<Scalars['Date']>,
   Float: ResolverTypeWrapper<Scalars['Float']>,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   PartialVideo: ResolverTypeWrapper<PartialVideo>,
   YouTubeVideo: ResolverTypeWrapper<YouTubeVideo>,
   Mutation: ResolverTypeWrapper<{}>,
   PlaylistInput: PlaylistInput,
   VideoInput: VideoInput,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -226,12 +228,12 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'],
   Date: Scalars['Date'],
   Float: Scalars['Float'],
+  Boolean: Scalars['Boolean'],
   PartialVideo: PartialVideo,
   YouTubeVideo: YouTubeVideo,
   Mutation: {},
   PlaylistInput: PlaylistInput,
   VideoInput: VideoInput,
-  Boolean: Scalars['Boolean'],
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -267,6 +269,7 @@ export type PlaylistResolvers<ContextType = any, ParentType extends ResolversPar
   created?: Resolver<ResolversTypes['Date'], ParentType, ContextType>,
   totalSec?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
   firstVideoId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  isOwner?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   videos?: Resolver<Array<Maybe<ResolversTypes['PartialVideo']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
@@ -278,6 +281,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   youtubeVideo?: Resolver<Maybe<ResolversTypes['YouTubeVideo']>, ParentType, ContextType, RequireFields<QueryYoutubeVideoArgs, 'videoId'>>,
   videos?: Resolver<Maybe<Array<ResolversTypes['PartialVideo']>>, ParentType, ContextType>,
   video?: Resolver<Maybe<ResolversTypes['PartialVideo']>, ParentType, ContextType, RequireFields<QueryVideoArgs, 'id'>>,
+  publicPlaylists?: Resolver<Array<Maybe<ResolversTypes['Playlist']>>, ParentType, ContextType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

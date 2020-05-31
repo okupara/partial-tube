@@ -11,10 +11,7 @@ const extractUserSession = (ctx: NextPageContext) => {
   addSession(req, res)
   const actualReq = (req as unknown) as RequestWithSession
   const user = actualReq.session?.user
-  if (!user) {
-    throw new Error("Authentication is required.")
-  }
-  return user
+  return user ?? null
 }
 
 const Query: Required<QueryResolvers> = {
@@ -23,29 +20,42 @@ const Query: Required<QueryResolvers> = {
   },
   async video(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     const video = await dao.getVideo(args.id)
-    console.log("VIDEO", video)
     return video.data
   },
   async videos(_, __, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     const videos = await dao.getVideos()
     return videos
   },
   // TODO: Filter words, offsets
   async playlists(_, __, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     const results = await dao.getPlaylists()
     console.log("RES", results)
     return results
   },
+  async publicPlaylists(_, __, ctx: NextPageContext): Promise<any> {
+    const user = extractUserSession(ctx)
+    const dao = new helper.FirestoreDao(user)
+    return await dao.getPublicPlaylists()
+  },
   // TODO: stop using "any"....
   async playlist(_: any, args: any, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    const dao = new helper.FirestoreDao(user)
     const result = await dao.getPlaylist(args.id)
     if (!result) {
       return null
@@ -59,7 +69,7 @@ const Query: Required<QueryResolvers> = {
       numOfVideos: playlist.numOfVideos,
       name: playlist.name,
       totalSec: playlist.totalSec,
-      uid: playlist.uid,
+      isOwner: playlist.isOwner,
       firstVideoId,
       videos,
     }
@@ -94,7 +104,10 @@ const Query: Required<QueryResolvers> = {
 const Mutation: Required<MutationResolvers> = {
   async addPlaylist(_, { playlist }, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     // TODO: reconsider to use "!"
     const resPlaylist = await dao.addPlaylist(playlist!)
     return {
@@ -110,7 +123,10 @@ const Mutation: Required<MutationResolvers> = {
   },
   async deleteVideoFromPlaylist(_, args, ctx: NextPageContext): Promise<string> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     const video = await dao.getVideo(args.videoId)
     await dao.deleteVideoFromPlaylist({
       playlist: args.playlistId,
@@ -121,7 +137,10 @@ const Mutation: Required<MutationResolvers> = {
   },
   async deletePlaylist(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
+    const dao = new helper.FirestoreDao(user)
     await dao.deletePlaylist(args.id)
     return args.id
   },
@@ -129,19 +148,24 @@ const Mutation: Required<MutationResolvers> = {
     // also should be in a transaction, though...
     const videoId = args.id
     const user = extractUserSession(ctx)
-    const dao = new helper.FirestoreDao(user.id)
+    if (!user) {
+      throw new Error("Permission deined")
+    }
+    const dao = new helper.FirestoreDao(user)
     await dao.deleteVideoFromPlaylistGroup(videoId)
     await dao.deleteVideo(videoId)
     return args.id
   },
   async video(_, args, ctx: NextPageContext): Promise<any> {
     const user = extractUserSession(ctx)
+    if (!user) {
+      throw new Error("Permission denied.")
+    }
     if (!args.video) {
       throw new Error("Coudn't find an appropriate parameter")
     }
     const video = args.video!
-    const dao = new helper.FirestoreDao(user.id)
-    console.log("request", video.playlists)
+    const dao = new helper.FirestoreDao(user)
 
     if (video.id) {
       const videoRes = await dao.getVideo(video.id)
@@ -174,7 +198,6 @@ const Mutation: Required<MutationResolvers> = {
         }
       }
       const alreadyLinkedPlaylistSet = new Set(alreadyLinkedPlaylistIds)
-      console.log("alreadyLinkedPlaylistSet", alreadyLinkedPlaylistSet)
       if (video.playlists) {
         for (const playlistId of video.playlists) {
           if (alreadyLinkedPlaylistSet.has(playlistId)) continue

@@ -38,6 +38,6 @@ export const UnAuthenticated: React.FC<Props> = ({
         </Button>
       </Box>
     </AppHeader>
-    <Box pt={32}>{children}</Box>
+    {children}
   </React.Fragment>
 )

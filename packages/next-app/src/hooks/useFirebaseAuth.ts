@@ -80,6 +80,9 @@ function createAuth() {
 
   const { publicRuntimeConfig } = getConfig()
 
+  const delay = (n: number) =>
+    new Promise((resolve) => window.setTimeout(resolve, n))
+
   useEffect(() => {
     console.log("DO FIREBASE!!!!")
     if (firebase.apps.length === 0) {
@@ -92,24 +95,28 @@ function createAuth() {
     }
     providerRef.current = new firebase.auth.GoogleAuthProvider()
     firebase.auth().onAuthStateChanged(
-      (user) => {
-        console.log("from?", userContext)
+      async (user) => {
         console.log("Goggle auth state is changed", user)
         console.warn("[TODO] It should be proved that ther's no memory leak")
         if (user === null) {
           dispatchMachine({ type: "NOT_DETECTED_USER" })
         } else {
-          dispatchMachine({
-            type: "DETECTED_USER",
-          })
           if (userContext.user === null) {
+            // doing nothing for now when error happens...(just shows errors on the console)
+            await activeSession(user)
             userContext.setUser({
               id: user.uid,
               avatarUrl: user.photoURL,
               name: user.displayName,
             })
-            // doing nothing for now when error happens...(just shows errors on the console)
-            activeSession(user)
+            await delay(100)
+            dispatchMachine({
+              type: "DETECTED_USER",
+            })
+          } else {
+            dispatchMachine({
+              type: "DETECTED_USER",
+            })
           }
         }
       },

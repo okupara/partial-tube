@@ -27,7 +27,6 @@ export const VideoForm = ({
   comment,
   playlists,
 }: Props) => {
-  console.log("TITLE", title)
   const { input, loadingAdd, executeAdd, ...inputDispatch } = useVideoForm({
     id,
     videoId,

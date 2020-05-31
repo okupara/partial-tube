@@ -1,6 +1,7 @@
 import firebase, { firestore } from "firebase"
 import { VideoInput, PlaylistInput } from "../graphql/type-defs.graphqls"
 import { initFirebase } from "../utils/initFirebase"
+import * as User from "../models/User"
 
 export class FirestoreDao {
   static PLAYLISTS_VIDEOS = "playlists_videos"
@@ -8,15 +9,15 @@ export class FirestoreDao {
   static PLAYLISTS = "playlists"
 
   db: firebase.firestore.Firestore
-  uid: string
+  user: User.Model | null
   playlistCollection: firebase.firestore.CollectionReference
   videoCollection: firebase.firestore.CollectionReference
   playlistsVideoLinkCollection: firebase.firestore.CollectionReference
 
-  constructor(uid: string) {
+  constructor(user: User.Model | null) {
     initFirebase()
     this.db = firebase.firestore()
-    this.uid = uid
+    this.user = user
     this.playlistCollection = this.db.collection(FirestoreDao.PLAYLISTS)
     this.videoCollection = this.db.collection(FirestoreDao.VIDEOS)
     this.playlistsVideoLinkCollection = this.db.collection(
@@ -24,11 +25,14 @@ export class FirestoreDao {
     )
   }
   async deleteVideo(id: string | firestore.DocumentReference) {
+    if (!this.user) {
+      throw new Error("Unexpecdly, the user isn't authenticated.")
+    }
     const doc = typeof id === "string" ? this.videoCollection.doc(id) : id
     const snapshots = await this.db
       .collectionGroup(FirestoreDao.PLAYLISTS_VIDEOS)
       .where("ref", "==", doc)
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .get()
 
     await Promise.all(
@@ -55,7 +59,7 @@ export class FirestoreDao {
       throw new Error("This video doesn't exist")
     }
     const data = playlistRes.data()!
-    if (data.uid !== this.uid) {
+    if (data.uid !== this.user?.id) {
       throw new Error("Permission denied")
     }
     await playlistDoc.update({
@@ -81,28 +85,6 @@ export class FirestoreDao {
       end: videoInput.end,
     })
   }
-  async getPlaylistById(id: string) {
-    const doc = this.db.collection(FirestoreDao.PLAYLISTS).doc(id)
-    const snapshot = await doc.get()
-    if (!snapshot.exists) {
-      throw new Error("This video doesn't exist")
-    }
-    const data = snapshot.data()!
-    if (data.uid !== this.uid) {
-      throw new Error("Permission denied")
-    }
-    return {
-      doc,
-      data: {
-        id: data.id,
-        name: data.name,
-        numOfVideos: data.numOfVideos,
-        totalSec: data.totalSec,
-        created: data.created.toDate(),
-        comment: data.comment,
-      },
-    }
-  }
   async getVideo(video: string | firebase.firestore.DocumentReference) {
     const doc =
       typeof video === "string"
@@ -113,13 +95,13 @@ export class FirestoreDao {
       throw new Error("This video deosn't exist")
     }
     const data = snapshot.data()!
-    if (data.uid !== this.uid) {
+    if (!this.user || data.uid !== this.user.id) {
       throw new Error("Permission denied")
     }
     const tmpSnapshots = await this.db
       .collectionGroup(FirestoreDao.PLAYLISTS_VIDEOS)
       .where("ref", "==", doc)
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .get()
 
     const playlists = await Promise.all(
@@ -153,8 +135,12 @@ export class FirestoreDao {
     }
   }
   async getVideos() {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
+
     const snapshots = await this.videoCollection
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .orderBy("created", "desc")
       .get()
     if (snapshots.empty) {
@@ -167,14 +153,17 @@ export class FirestoreDao {
       start: item.get("start"),
       end: item.get("end"),
       comment: item.get("comment"),
-      uid: this.uid,
+      uid: this.user?.id,
       created: item.get("created").toDate(),
     }))
   }
   async getPlaylists() {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
     const snapshots = await this.db
       .collection(FirestoreDao.PLAYLISTS)
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .orderBy("created", "desc")
       .get()
     if (snapshots.empty) {
@@ -202,33 +191,42 @@ export class FirestoreDao {
       }),
     )
   }
-
-  async getPlaylistVideoLinksByVideo(
-    video: string | firebase.firestore.DocumentReference,
+  private async createPlaylistsFromSnapshot(
+    snapshot: firestore.QuerySnapshot<firestore.DocumentData>,
   ) {
-    const videoDoc =
-      typeof video === "string"
-        ? this.db.collection(FirestoreDao.VIDEOS).doc()
-        : video
-    const snapshots = await this.db
-      .collection(FirestoreDao.PLAYLISTS_VIDEOS)
-      .where("video", "==", videoDoc)
-      .where("uid", "==", this.uid)
+    return await Promise.all(
+      snapshot.docs.map(async (item) => {
+        const first = await item.ref
+          .collection(FirestoreDao.PLAYLISTS_VIDEOS)
+          .orderBy("created", "asc")
+          .limit(1)
+          .get()
+        const firstVideoId = first.empty ? "" : first.docs[0].get("videoId")
+        return {
+          id: item.id,
+          name: item.get("name"),
+          comment: item.get("comment"),
+          numOfVideos: item.get("numOfVideos"),
+          totalSec: item.get("totalSec"),
+          firstVideoId,
+          permission: item.get("permission"),
+          created: item.get("created").toDate(),
+        }
+      }),
+    )
+  }
+
+  async getPublicPlaylists() {
+    const snapshots = await this.playlistCollection
+      .where("permission", "==", "public")
+      .orderBy("created", "desc")
       .get()
-    return snapshots.docs.map((item) => {
-      const data = item.data()
-      return {
-        doc: this.db.collection(FirestoreDao.PLAYLISTS_VIDEOS).doc(item.id),
-        data: {
-          video: data.video,
-          playlist: data.playlist,
-          created: data.created.toDate(),
-          videoId: data.videoId,
-        },
-      }
-    })
+    return await this.createPlaylistsFromSnapshot(snapshots)
   }
   async getPlaylistsByVideo(video: string | firebase.firestore.DocumentReference) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
     const videoDoc =
       typeof video === "string"
         ? this.db.collection(FirestoreDao.VIDEOS).doc()
@@ -236,7 +234,7 @@ export class FirestoreDao {
     const snapshots = await this.db
       .collectionGroup(FirestoreDao.PLAYLISTS_VIDEOS)
       .where("ref", "==", videoDoc)
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .get()
 
     return await Promise.all(
@@ -258,15 +256,27 @@ export class FirestoreDao {
     playlist: string | firebase.firestore.DocumentReference,
     totalSec: number,
   ) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
     const doc =
       typeof playlist === "string"
         ? this.db.collection(FirestoreDao.PLAYLISTS).doc(playlist)
         : playlist
+    const snapshot = await doc.get()
+    if (snapshot.get("uid") !== this.user.id) {
+      throw new Error("Permission denined.")
+    }
     await doc.update({ totalSec })
   }
   async deletePlaylist(playlist: string | firestore.DocumentReference) {
     const doc =
       typeof playlist === "string" ? this.playlistCollection.doc(playlist) : playlist
+    // if there's any way to authenticate users in server-side, we don't have to do it.
+    const playlistSnapshot = await doc.get()
+    if (playlistSnapshot.get("uid") !== this.user?.id) {
+      throw new Error("Permission denied.")
+    }
     await doc.delete()
   }
   async deleteVideoFromPlaylist({
@@ -278,17 +288,25 @@ export class FirestoreDao {
     video: string | firestore.DocumentReference
     duration: number
   }) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
+
     const playlistDoc =
       typeof playlist === "string" ? this.playlistCollection.doc(playlist) : playlist
     const videoDoc =
       typeof video === "string" ? this.videoCollection.doc(video) : video
     const snapshots = await playlistDoc
       .collection(FirestoreDao.PLAYLISTS_VIDEOS)
+      .where("uid", "==", this.user.id)
       .where("ref", "==", videoDoc)
       .get()
 
     await Promise.all(
       snapshots.docs.map(async (item) => {
+        if (item.get("uid") !== this.user?.id) {
+          throw new Error("Permission denied.")
+        }
         await item.ref.delete()
         await this.updatePlaylistWithNewInfo({
           playlist: playlistDoc,
@@ -306,9 +324,12 @@ export class FirestoreDao {
       start: videoSnapshot.get("start"),
       end: videoSnapshot.get("end"),
     }
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user is not authenticated.")
+    }
     const snapshots = await this.db
       .collectionGroup(FirestoreDao.PLAYLISTS_VIDEOS)
-      .where("uid", "==", this.uid)
+      .where("uid", "==", this.user.id)
       .where("ref", "==", videoDoc)
       .get()
 
@@ -323,44 +344,28 @@ export class FirestoreDao {
       }),
     )
   }
-  async addPlaylistsVideosLink(params: {
-    video: string | firebase.firestore.DocumentReference
-    playlist: string | firebase.firestore.DocumentReference
-    videoId: string
-  }) {
-    const { video, playlist, videoId } = params
-    const videoDoc =
-      typeof video === "string"
-        ? this.db.collection(FirestoreDao.VIDEOS).doc(video)
-        : video
-    const playlistDoc =
-      typeof playlist === "string"
-        ? this.db.collection(FirestoreDao.VIDEOS).doc(playlist)
-        : video
-    const snapshot = await this.playlistsVideoLinkCollection.add({
-      video: videoDoc,
-      playlist: playlistDoc,
-      created: new Date(),
-      uid: this.uid,
-      videoId,
-    })
-    return snapshot.id
-  }
   async addVideo(input: VideoInput) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
+
     return await this.videoCollection.add({
-      user: this.uid,
+      user: this.user.id,
       title: input.title,
       start: input.start,
       end: input.end,
       comment: input.comment,
       videoId: input.videoId,
-      uid: this.uid,
+      uid: this.user.id,
       created: new Date(),
     })
   }
   async addPlaylist(input: PlaylistInput) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, this user didn't get authenticated.")
+    }
     return await this.playlistCollection.add({
-      uid: this.uid,
+      uid: this.user.id,
       name: input.name,
       permission: input.permission,
       comment: input.comment ?? "",
@@ -376,8 +381,16 @@ export class FirestoreDao {
     playlist: string | firestore.DocumentReference
     video: firestore.DocumentReference
   }) {
+    if (!this.user) {
+      throw new Error("Unexpectedly, the user isn't authenticated.")
+    }
     const doc =
       typeof playlist === "string" ? this.playlistCollection.doc(playlist) : playlist
+
+    const snapshot = await doc.get()
+    if (snapshot.get("uid") !== this.user.id) {
+      throw new Error("Permission denied.")
+    }
     const videosCollection = doc.collection(FirestoreDao.PLAYLISTS_VIDEOS)
     const videoSnapshot = await video.get()
     if (!videoSnapshot.exists) {
@@ -393,7 +406,7 @@ export class FirestoreDao {
       end,
       comment: videoSnapshot.get("comment"),
       created: videoSnapshot.get("created").toDate(),
-      uid: this.uid,
+      uid: this.user.id,
       ref: video,
     })
     await doc.update({
@@ -411,6 +424,13 @@ export class FirestoreDao {
     }
     const playlistData = playlistSnapshot.data()!
 
+    if (
+      this.user?.id !== playlistData.uid &&
+      playlistData.permission === "private"
+    ) {
+      throw new Error("Permission denied.")
+    }
+
     const playlistResult = {
       id: playlistSnapshot.id,
       name: playlistData.name,
@@ -418,7 +438,7 @@ export class FirestoreDao {
       comment: playlistData.comment,
       totalSec: playlistData.totalSec,
       numOfVideos: playlistData.numOfVideos,
-      uid: playlistData.uid,
+      isOwner: this.user?.id === playlistData.uid,
       created: playlistData.created.toDate(),
     }
 

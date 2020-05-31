@@ -1,4 +1,3 @@
-import React from "react"
 import { AppProps } from "next/app"
 import { CoreStyleProvider } from "../contexts/CoreStyleProvider"
 import { initUser, LoginUserProvider } from "../contexts/LoginUser"

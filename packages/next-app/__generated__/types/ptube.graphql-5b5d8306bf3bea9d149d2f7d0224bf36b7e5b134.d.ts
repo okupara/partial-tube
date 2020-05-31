@@ -59,6 +59,7 @@ declare module '*/ptube.graphql' {
       created: Scalars['Date'];
       totalSec: Scalars['Float'];
       firstVideoId?: Maybe<Scalars['String']>;
+      isOwner: Scalars['Boolean'];
       videos: Array<Maybe<PartialVideo>>;
   };
   export type PlaylistInput = {
@@ -74,6 +75,7 @@ declare module '*/ptube.graphql' {
       youtubeVideo?: Maybe<YouTubeVideo>;
       videos?: Maybe<Array<PartialVideo>>;
       video?: Maybe<PartialVideo>;
+      publicPlaylists: Array<Maybe<Playlist>>;
   };
   export type QueryPlaylistArgs = {
       id: Scalars['String'];
