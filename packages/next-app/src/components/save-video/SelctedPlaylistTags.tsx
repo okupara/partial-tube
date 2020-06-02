@@ -1,6 +1,7 @@
 import React from "react"
 import { Stack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/core"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery, useApolloClient } from "@apollo/react-hooks"
+import { DocumentNode } from "graphql"
 import gql from "graphql-tag"
 import { useNormalizedData, map } from "../../utils/DataNormalizer"
 
@@ -17,6 +18,8 @@ type QueryData = SelectedPlaylists<GQLPlaylist>
 
 export const Component = () => {
   const { normalizedData } = useSelectedPlaylists()
+  const createDeleteFn = useDeleteSelectedPlaylists(query)
+
   return (
     <Stack spacing={2} isInline>
       {normalizedData &&
@@ -30,12 +33,28 @@ export const Component = () => {
               variantColor="blue"
             >
               <TagLabel>{item.name}</TagLabel>
-              <TagCloseButton onClick={() => {}} />
+              <TagCloseButton onClick={createDeleteFn(item.id)} />
             </Tag>
           )
         })}
     </Stack>
   )
+}
+
+export const useDeleteSelectedPlaylists = (query: DocumentNode) => {
+  const client = useApolloClient()
+
+  return (id: string) => () => {
+    const data = client.readQuery<QueryData>({ query })
+    if (data) {
+      client.writeQuery<QueryData>({
+        query,
+        data: {
+          selectedPlaylists: data.selectedPlaylists.filter((p) => p.id !== id),
+        },
+      })
+    }
+  }
 }
 
 export const useSelectedPlaylists = () => {

@@ -13,7 +13,10 @@ type Props = {
 }
 
 const Edit = ({ id, fbAuth }: Props) => {
-  const { data } = useQuery<QueryVideo<GQLVideo>>(query, { variables: { id } })
+  const { data } = useQuery<QueryVideo<GQLVideo>>(query, {
+    variables: { id },
+    fetchPolicy: "network-only",
+  })
   return (
     <NeedsLogin fbAuth={fbAuth}>
       <ContentBox>{data && <EditVideo video={data.video} id={id} />}</ContentBox>
