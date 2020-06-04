@@ -58,4 +58,4 @@ export type GQLPlaylist = Pick<
   | "created"
   | "firstVideoId"
 >
-export type QueryData = Playlists<GQLPlaylist>
+export type QueryData = QueryPlaylists<GQLPlaylist>

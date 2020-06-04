@@ -63,7 +63,7 @@ const useDeletePlaylist = () => {
 
   React.useEffect(() => {
     if (deleteState.isDoneDelete) {
-      const data = client.readQuery<Playlists<GQLPlaylist>>({ query })
+      const data = client.readQuery<QueryPlaylists<GQLPlaylist>>({ query })
       const newData = data?.playlists.filter(
         (item) => item.id !== deleteState.parameters!.id,
       )
@@ -106,4 +106,4 @@ type GQLPlaylist = Pick<
   | "created"
   | "firstVideoId"
 >
-export type QueryData = Playlists<GQLPlaylist>
+export type QueryData = QueryPlaylists<GQLPlaylist>

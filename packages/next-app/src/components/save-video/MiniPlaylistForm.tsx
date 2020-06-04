@@ -12,7 +12,9 @@ import {
 } from "@chakra-ui/core"
 import gql from "graphql-tag"
 import { useIsOpen } from "../../hooks/useIsOpen"
-import { useMutation, useApolloClient } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/react-hooks"
+import { useUpdatePlaylists } from "./hooks/useQueryPlaylists"
+import { useDispatchSelectedPlaylists } from "./hooks/LocalSelectedPlaylists"
 
 export const Component = () => {
   const res = useMiniNewPlaylist()
@@ -66,10 +68,9 @@ type MutationData = {
 const useMiniNewPlaylist = () => {
   const [name, setName] = React.useState("")
   const [permission, setPermission] = React.useState<Permission>(DEFAULT_PERMISSION)
-  const [executeAdd, res] = useMutation<MutationData>(addQuery)
-  const client = useApolloClient()
-  // just because no need to re-render
-  const addedPlaylistsRef = React.useRef<ReadonlyArray<GQLPlaylist>>([])
+  const [executeAdd] = useMutation<MutationData>(addQuery)
+  const mutateCallback = useUpdatePlaylists()
+  const dispatch = useDispatchSelectedPlaylists()
 
   const onChangePermission = React.useCallback(
     (ev: React.ChangeEvent<HTMLSelectElement>) => {
@@ -83,22 +84,17 @@ const useMiniNewPlaylist = () => {
     },
     [name],
   )
-  // TODO: Try when network is slow and what happens when user close this dialog in the case api haven't finished yet
-  React.useEffect(() => {
-    if (res.data) {
-      setName("")
-      setPermission(DEFAULT_PERMISSION)
-      addedPlaylistsRef.current = [
-        ...addedPlaylistsRef.current,
-        res.data.addPlaylist,
-      ]
-      console.log("TEST", addedPlaylistsRef.current)
-      client.writeData({ data: { addedPlaylists: addedPlaylistsRef.current } })
-    }
-  }, [res.data])
 
   const createOnClickAddPlaylist = () => {
-    executeAdd({ variables: { playlist: { name, permission } } })
+    executeAdd({
+      variables: { playlist: { name, permission } },
+      update: (_, res) => {
+        if (res.data) {
+          mutateCallback(res.data.addPlaylist)
+          dispatch.add({ newPlaylist: res.data.addPlaylist })
+        }
+      },
+    })
   }
 
   return {

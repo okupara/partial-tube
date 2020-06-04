@@ -9,7 +9,6 @@ type Props = {
   video: GQLVideo
   id: string
 }
-console.warn("[TODO] show something during requests")
 export const EditVideo = ({ id }: Props) => {
   const { data } = useEditVideo(id)
   return data ? (

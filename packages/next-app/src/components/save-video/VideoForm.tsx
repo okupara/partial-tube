@@ -3,8 +3,9 @@ import { Flex, Box, Button, Textarea } from "@chakra-ui/core"
 import { StartEndFormControl } from "./StartEndFormControl"
 import { SelectedPlaylistsFormControl } from "./SelectedPlaylistsFormControl"
 import { YoutubePlayer } from "../shared/YoutubePlayer"
-import { useMutation, useQuery, useApolloClient } from "@apollo/react-hooks"
+import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import { useToast } from "../../hooks/useToast"
+import { useSelectedPlaylistsQuery } from "./hooks/LocalSelectedPlaylists"
 import gql from "graphql-tag"
 
 type Props = {
@@ -94,7 +95,7 @@ const useVideoForm = (initValues: Input) => {
   })
   const [executeAdd, addRes] = useMutation(mutation)
   const client = useApolloClient()
-  const selectedPlaylistsRes = useQuery<SelectedPlaylists<GQLPlaylist>>(query)
+  const selectedPlaylistsRes = useSelectedPlaylistsQuery()
   const selectedPlaylists = selectedPlaylistsRes.data?.selectedPlaylists
   const { showToast } = useToast()
 
@@ -148,15 +149,6 @@ const mutation = gql`
   mutation AddVideo($video: VideoInput!) {
     video(video: $video) {
       id
-    }
-  }
-`
-const query = gql`
-  query {
-    selectedPlaylists @client {
-      id
-      name
-      permission
     }
   }
 `

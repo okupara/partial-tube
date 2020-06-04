@@ -1,24 +1,17 @@
 import React from "react"
 import { Stack, Tag, TagLabel, TagCloseButton } from "@chakra-ui/core"
-import { useQuery, useApolloClient } from "@apollo/react-hooks"
+import { useApolloClient } from "@apollo/react-hooks"
 import { DocumentNode } from "graphql"
-import gql from "graphql-tag"
 import { useNormalizedData, map } from "../../utils/DataNormalizer"
-
-const query = gql`
-  query {
-    selectedPlaylists @client {
-      id
-      name
-      permission
-    }
-  }
-`
-type QueryData = SelectedPlaylists<GQLPlaylist>
+import {
+  useSelectedPlaylistsQuery,
+  useDispatchSelectedPlaylists,
+  GQLPlaylist,
+} from "./hooks/LocalSelectedPlaylists"
 
 export const Component = () => {
   const { normalizedData } = useSelectedPlaylists()
-  const createDeleteFn = useDeleteSelectedPlaylists(query)
+  const dispatch = useDispatchSelectedPlaylists()
 
   return (
     <Stack spacing={2} isInline>
@@ -33,13 +26,15 @@ export const Component = () => {
               variantColor="blue"
             >
               <TagLabel>{item.name}</TagLabel>
-              <TagCloseButton onClick={createDeleteFn(item.id)} />
+              <TagCloseButton onClick={() => dispatch.delete({ id: item.id })} />
             </Tag>
           )
         })}
     </Stack>
   )
 }
+
+export const SelectedPlaylistTags = React.memo(Component)
 
 export const useDeleteSelectedPlaylists = (query: DocumentNode) => {
   const client = useApolloClient()
@@ -58,7 +53,7 @@ export const useDeleteSelectedPlaylists = (query: DocumentNode) => {
 }
 
 export const useSelectedPlaylists = () => {
-  const { data, loading, error } = useQuery<QueryData>(query)
+  const { data, loading, error } = useSelectedPlaylistsQuery()
   const { normalizedData, withNormalize } = useNormalizedData<GQLPlaylist>()
 
   React.useEffect(() => {
@@ -74,4 +69,4 @@ export const useSelectedPlaylists = () => {
   }
 }
 
-export const SelectedPlaylistTags = React.memo(Component)
+type QueryData = SelectedPlaylists<GQLPlaylist>
