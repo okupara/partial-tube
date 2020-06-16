@@ -36,4 +36,6 @@ const queryPlaylists = gql`
   }
 `
 
-export type GQLPlaylist = Pick<Playlist, "id" | "name" | "permission">
+export type GQLPlaylist = Pick<Playlist, "id" | "name"> & {
+  permission: PlaylistPermission
+}

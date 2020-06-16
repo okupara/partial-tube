@@ -1045,6 +1045,8 @@ type VideoInput = {
   comment: string
 }
 
+type PlaylistPermission = "public" | "private"
+
 declare namespace PagePlaylists {
   type Playlist = import("./src/graphql/type-defs.graphqls").Playlist
 }

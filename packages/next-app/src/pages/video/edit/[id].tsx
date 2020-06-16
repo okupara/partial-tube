@@ -19,7 +19,9 @@ const Edit = ({ id, fbAuth }: Props) => {
   })
   return (
     <NeedsLogin fbAuth={fbAuth}>
-      <ContentBox>{data && <EditVideo video={data.video} id={id} />}</ContentBox>
+      <ContentBox>
+        <EditVideo video={data?.video ?? null} id={id} />
+      </ContentBox>
     </NeedsLogin>
   )
 }
